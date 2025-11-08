@@ -1,4 +1,4 @@
-package com.movito.movito
+package com.movito.movito.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -48,7 +48,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.movito.movito.ui.theme.MovitoTheme
+import com.movito.movito.HomeViewModel
+import com.movito.movito.Movie
+import com.movito.movito.R
+import com.movito.movito.theme.MovitoTheme
 
 /**
  * مهممممممم جداً
