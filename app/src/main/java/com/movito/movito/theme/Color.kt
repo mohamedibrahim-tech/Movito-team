@@ -1,4 +1,4 @@
-package com.movito.movito.ui.theme
+package com.movito.movito.theme
 
 import androidx.compose.ui.graphics.Color
 

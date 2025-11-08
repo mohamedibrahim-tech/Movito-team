@@ -1,6 +1,5 @@
-package com.movito.movito.ui.theme
+package com.movito.movito.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
