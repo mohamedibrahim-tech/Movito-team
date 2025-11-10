@@ -108,22 +108,38 @@ fun HomeScreen(
                 NavigationBarItem(
                     selected = selectedItem == "home", onClick = { selectedItem = "home" },
                     icon = { Icon(painter = painterResource(id = R.drawable.home), contentDescription = "Home", modifier = Modifier.size(24.dp)) },
-                    colors = NavigationBarItemDefaults.colors(selectedIconColor = MaterialTheme.colorScheme.primary, unselectedIconColor = Color.Gray, indicatorColor = Color.Transparent)
+                    colors = NavigationBarItemDefaults.colors(
+                        selectedIconColor = MaterialTheme.colorScheme.primary,
+                        unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        indicatorColor = Color.Transparent
+                    )
                 )
                 NavigationBarItem(
                     selected = selectedItem == "search", onClick = { selectedItem = "search" },
                     icon = { Icon(painter = painterResource(id = R.drawable.search), contentDescription = "Search", modifier = Modifier.size(24.dp)) },
-                    colors = NavigationBarItemDefaults.colors(selectedIconColor = MaterialTheme.colorScheme.primary, unselectedIconColor = Color.Gray, indicatorColor = Color.Transparent)
+                    colors = NavigationBarItemDefaults.colors(
+                        selectedIconColor = MaterialTheme.colorScheme.primary,
+                        unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        indicatorColor = Color.Transparent
+                    )
                 )
                 NavigationBarItem(
                     selected = selectedItem == "favorite", onClick = { selectedItem = "favorite" },
                     icon = { Icon(painter = painterResource(id = R.drawable.like), contentDescription = "Favorite", modifier = Modifier.size(24.dp)) },
-                    colors = NavigationBarItemDefaults.colors(selectedIconColor = MaterialTheme.colorScheme.primary, unselectedIconColor = Color.Gray, indicatorColor = Color.Transparent)
+                    colors = NavigationBarItemDefaults.colors(
+                        selectedIconColor = MaterialTheme.colorScheme.primary,
+                        unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        indicatorColor = Color.Transparent
+                    )
                 )
                 NavigationBarItem(
                     selected = selectedItem == "profile", onClick = { selectedItem = "profile" },
                     icon = { Icon(painter = painterResource(id = R.drawable.user), contentDescription = "Profile", modifier = Modifier.size(24.dp)) },
-                    colors = NavigationBarItemDefaults.colors(selectedIconColor = MaterialTheme.colorScheme.primary, unselectedIconColor = Color.Gray, indicatorColor = Color.Transparent)
+                    colors = NavigationBarItemDefaults.colors(
+                        selectedIconColor = MaterialTheme.colorScheme.primary,
+                        unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        indicatorColor = Color.Transparent
+                    )
                 )
             }
         }
