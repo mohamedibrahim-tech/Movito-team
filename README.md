@@ -1,102 +1,141 @@
-# Movito team
+# Movito Team
 
-Welcome to **Movito team** repository!  
-We are a group of passionate developers working together on Android projects using **Kotlin, Jetpack Compose, and modern development practices**.
-
----
-
-## 👥 Team Members
-- **Mohamed Ibrahim Abdel-Samee** (Team Leader)  
-- **Youssef Sayed**  
-- **Yehia Mohamed**  
-- **Ahmed Essam**  
-- **Basmala Wahid**  
-- **Alyaa Osama**
+Welcome to Movito team repository.  
+We are a group of passionate developers working together on Android projects using Kotlin, Jetpack Compose, and modern development practices.
 
 ---
 
-## 🎬 Project Name
-**Movito (Movie Discovery App)**
+## Team Members
+- Mohamed Ibrahim Abdel-Samee (Team Leader)  
+- Youssef Sayed  
+- Yehia Mohamed  
+- Ahmed Essam  
+- Basmala Wahid  
+- Alyaa Osama
 
 ---
 
-## 🎯 Project Idea
-We are building a **Movie Discovery App** that allows users to:
-- Browse **popular movies** in a beautiful grid layout.  
-- View **detailed information** about a selected movie (title, synopsis, rating, release date).  
-- **Search** for movies by title.  
-- Enjoy a **modern UI/UX** powered by **Jetpack Compose** and **Material Design 3**.
+## Project Name
+Movito (Movie Discovery App)
 
 ---
 
-## ⚡ Functional Requirements  
+## Project Idea
+We are building a Movie Discovery App that allows users to:
+- Browse popular movies in a beautiful grid layout  
+- View detailed information about a selected movie (title, synopsis, rating, release date)  
+- Search for movies by title  
+- Enjoy a modern UI/UX powered by Jetpack Compose and Material Design 3
+
+---
+
+## Functional Requirements  
 The app should allow users to:  
-- **Login / Sign Up** → Create a new account or sign in securely.  
-- **Browse Popular Movies** → View a grid/list of trending and top-rated movies.  
-- **Search Movies** → Find movies by title.  
-- **View Movie Details** → See title, synopsis, rating, release date, and poster.  
-- **Watch Movie Trailer** → Play official trailers inside the app (YouTube/embedded).  
-- **Add to Favorites** → Save movies to a personal favorites list.  
+- Login / Sign Up → Create a new account or sign in securely  
+- Browse Popular Movies → View a grid/list of trending and top-rated movies  
+- Search Movies → Find movies by title  
+- View Movie Details → See title, synopsis, rating, release date, and poster  
+- Watch Movie Trailer → Play official trailers inside the app  
+- Add to Favorites → Save movies to a personal favorites list
 
 ---
 
-## ⚡ Technologies
-- **Language:** Kotlin & XML
-- **UI Toolkit:** Jetpack Compose  
-- **Networking:** Retrofit   
-- **Image Loading:** Coil  
-- **Architecture:** MVVM / Clean Architecture  
-- **Database:** Room (for caching/offline mode)  
-- **Version Control:** Git & GitHub  
-- **Testing:** Unit Testing + Compose UI Testing  
-- **Security:** Secure API key storage using `gradle.properties` (no hardcoded keys)  
+## Technologies
+- Language: Kotlin & XML  
+- UI Toolkit: Jetpack Compose  
+- Networking: Retrofit  
+- Image Loading: Coil  
+- Architecture: MVVM / Clean Architecture  
+- Database: Room (for caching/offline mode)  
+- Version Control: Git & GitHub  
+- Testing: Unit Testing + Compose UI Testing  
+- Security: Secure API key storage using gradle.properties (no hardcoded keys)  
 
 ---
 
-## 🗓 Project Plan  
+## Project Plan  
 
 ### Week 1: Design & Setup  
-- Set up project structure in Android Studio.  
-- Configure Gradle dependencies (Jetpack Compose, Retrofit, Coil, Coroutines).  
-- Create mock data to design UI without API.  
-- Build main screens with Jetpack Compose:  
-  - **Home Screen** (movie grid)  
-  - **Movie Details Screen**  
-- Navigation setup with Navigation-Compose.  
+- Project structure setup, Gradle dependencies, mock data  
+- Screens & Navigation setup  
 
 ### Week 2: API & Data Layer  
-- Integrate **TMDB API** using Retrofit/OkHttp.  
-- Implement Repository & Data Models (MVVM/Clean Architecture).  
-- Use Coroutines + Flow for asynchronous calls.  
-- Replace mock data with real API responses.  
-- Handle loading and error states.  
+- TMDB API integration, Repository & Data Models  
+- Asynchronous calls with Coroutines + Flow  
+- Loading & error handling  
 
 ### Week 3: Features & Improvements  
-- Add **Search** functionality and optional filters/sorting.  
-- Implement pagination (infinite scroll).  
-- Enhance UI with **Material3** design and animations.  
-- Optional: Cache movies with Room for offline mode.  
+- Search, filters, pagination, UI enhancements  
+- Optional offline caching with Room  
 
 ### Week 4: Final Touches & Release  
-- Unit testing (ViewModel & Repository).  
-- UI testing with Compose.  
-- Optimize performance (lazy grids, image loading).  
-- Add **Splash Screen** & App Icon.  
-- Prepare Play Store–ready build.
+- Unit & UI testing, performance optimization  
+- Splash Screen & App Icon  
+- Prepare Play Store build  
 
 ---
 
-## 📌 Team Responsibilities  
+## Team Responsibilities  
 
-### Week 1: Design & Setup  
-👨‍🎨 Mohamed Ibrahim & Youssef Sayed → UI/UX Design, Jetpack Compose Screens  
+### Mohamed Ibrahim
+UI:  
+- Wireframe & High-fidelity UI Screen Design  
+- Splash Screen  
+- Home Screen  
 
-### Week 2: API & Data Layer  
-🗄️ Yehia Mohamed & Ahmed Essam → API Integration, Repository & Data Models  
+Logic:  
+- Splash Screen Logic  
+- Home Logic (ViewModel)  
+- Theme Mode Logic (Dark/Light Mode persistence)  
+- Navigation Logic (Navigation Graph + Bottom Navigation Bar)  
+- Project Setup (Git Repository, Dependencies)  
+- Code Review  
 
-### Week 3: Features & Improvements  
-⚙️ Mohamed Ibrahim & Youssef Sayed → Search, Pagination, State Management  
+### Basmala Wahid
+UI:  
+- Favorites Screen  
+- Settings Screen  
 
-### Week 4: Final Touches & Release  
-✨ Basmala Wahid & Alyaa Osama → Testing, Animations, Polishing, Multi-device Testing  
+Logic:  
+- Favorites Logic (Add/Remove + Room DB)  
+- Notifications Logic (Handling settings toggles)  
 
+### Alyaa Osama
+UI:  
+- Sign Up Screen  
+- Movie Details Screen  
+- Search Screen  
+
+Logic:  
+- Sign Up Logic  
+- Movie Details Logic (ViewModel)  
+
+### Youssef Sayed
+UI:  
+- Sign In Screen  
+- Profile Screen  
+
+Logic:  
+- Authentication Logic (Sign In, Continue with Google)  
+- Session Management  
+- Sign Out Logic  
+- Profile Info Logic  
+
+### Yehia Mohamed
+UI:  
+- Search Results UI  
+- Home Screen Enhancements (Filter, Sort UI components)  
+
+Logic:  
+- API Service Setup  
+- Search & Filter Logic (ViewModel)  
+- Search Logic (ViewModel)  
+
+### Ahmed Essam
+UI:  
+- Settings Enhancements (Notification Toggles UI)  
+- Favorites List UI Integration  
+
+Logic:  
+- Database Integration (Favorites DB operations)  
+- Theme Persistence Logic  
