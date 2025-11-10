@@ -15,10 +15,8 @@ private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
     secondary = PurpleGrey80,
     tertiary = Pink80,
-    // --- (1) اتأكدنا إنه بيستخدم المتغير الصح ---
     background = DarkBlueBackground,
     surface = DarkBlueBackground,
-    // ---------------------------------
     onPrimary = Color.Black,
     onSecondary = Color.Black,
     onTertiary = Color.Black,
