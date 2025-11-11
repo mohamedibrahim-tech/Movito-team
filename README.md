@@ -103,8 +103,7 @@ Logic:
 ### Alyaa Osama
 UI:  
 - Sign Up Screen  
-- Movie Details Screen  
-- Search Screen  
+- Movie Details Screen   
 
 Logic:  
 - Sign Up Logic  
