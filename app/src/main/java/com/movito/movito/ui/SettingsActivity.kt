@@ -1,4 +1,4 @@
-package com.movito.movito
+package com.movito.movito.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -37,7 +37,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.movito.movito.ui.theme.MovitoTheme
+import com.movito.movito.theme.MovitoTheme // (1) اتأكد إن مسار الثيم ده صح
 
 class SettingsActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -152,7 +152,7 @@ fun SettingsScreen(modifier: Modifier = Modifier,
             ) {
                 Text(
                     "Sign Out",
-                    color = Color.White,
+                    color = Color.White, // (2) ده سبناه أبيض عشان الخلفية الجريدينت
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium
                 )
@@ -238,9 +238,16 @@ fun SettingsScreen(modifier: Modifier = Modifier,
                     fontSize = 20.sp
                 )
                 Spacer(Modifier.weight(1f))
+                // ضفنا الألوان عشان يظبط مع الثيم
                 Switch(
                     checked = downloadsWifiOnly,
-                    onCheckedChange = { downloadsWifiOnly = it }
+                    onCheckedChange = { downloadsWifiOnly = it },
+                    colors = SwitchDefaults.colors(
+                        checkedThumbColor = MaterialTheme.colorScheme.onPrimary,
+                        checkedTrackColor = MaterialTheme.colorScheme.primary,
+                        uncheckedThumbColor = MaterialTheme.colorScheme.onSurface,
+                        uncheckedTrackColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+                    )
                 )
 
             }
@@ -264,7 +271,7 @@ fun SettingsScreen(modifier: Modifier = Modifier,
             Spacer(Modifier.height(6.dp))
             Text(
                 text = "Github Repository",
-                color = MaterialTheme.colorScheme.primary,
+                color = MaterialTheme.colorScheme.primary, // ده بيستخدم الثيم (ممتاز)
                 fontSize = 20.sp,
                 textDecoration = TextDecoration.Underline,
                 modifier = Modifier.clickable {/*code*/ }
@@ -278,7 +285,7 @@ fun SettingsCards(content: @Composable ColumnScope.() -> Unit){
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface), // بيستخدم الثيم (ممتاز)
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
