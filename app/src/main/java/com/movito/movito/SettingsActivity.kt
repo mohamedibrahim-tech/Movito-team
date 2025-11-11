@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
@@ -43,16 +44,28 @@ class SettingsActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            MovitoTheme {
-                SettingsScreen()
+            var isDarkMode by remember { mutableStateOf(false) }
+            MovitoTheme(darkTheme = isDarkMode) {
+                Scaffold(
+                    modifier = Modifier.fillMaxSize(),
+                    containerColor = MaterialTheme.colorScheme.background // لون الخلفية من الثيم
+                ) { paddingValues ->
+                    SettingsScreen(
+                        modifier = Modifier.padding(paddingValues),
+                        onThemeToggle = { isDarkMode = it },
+                        currentThemeIsDark = isDarkMode
+                    )
+                }
             }
+
         }
     }
 }
 
 @Composable
-fun SettingsScreen() {
-    var isDarkMode by remember { mutableStateOf(false) }
+fun SettingsScreen(modifier: Modifier = Modifier,
+                   onThemeToggle: (Boolean) -> Unit,
+                   currentThemeIsDark: Boolean) {
     var notifications by remember { mutableStateOf(false) }
     var downloadsWifiOnly by remember { mutableStateOf(true) }
 
@@ -60,7 +73,7 @@ fun SettingsScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF0A0F1F))
+            .background(MaterialTheme.colorScheme.background)
             .padding(16.dp)
     ) {
         Row(
@@ -76,7 +89,7 @@ fun SettingsScreen() {
                 Text(
                     text = "Profile",
                     fontSize = 28.sp,
-                    color = Color.White
+                    color = MaterialTheme.colorScheme.onBackground
                 )
             }
         }
@@ -89,7 +102,7 @@ fun SettingsScreen() {
             Text(
                 text = "Account",
                 fontSize = 28.sp,
-                color = Color.White
+                color = MaterialTheme.colorScheme.onSurface
             )
             Spacer(Modifier.height(12.dp))
 
@@ -105,12 +118,12 @@ fun SettingsScreen() {
                 ) {
                     Text(
                         text = "Profile info",
-                        color = Color.White,
+                        color = MaterialTheme.colorScheme.onSurface,
                         fontSize = 20.sp,
                     )
                     Text(
                         text = "user@gmail.com",
-                        color = Color.Gray,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontSize = 16.sp,
                     )
 
@@ -151,7 +164,7 @@ fun SettingsScreen() {
         SettingsCards {
             Text(
                 "Appearance",
-                color = Color.White,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontSize = 28.sp,
                 fontWeight = FontWeight.SemiBold
             )
@@ -163,19 +176,20 @@ fun SettingsScreen() {
             ) {
                 Text(
                     "Theme Mode",
-                    color = Color.Gray,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 20.sp
                 )
                 Spacer(Modifier.weight(1f))
                 Switch(
-                    checked = isDarkMode,
-                    onCheckedChange = { isDarkMode = it },
+                    checked = currentThemeIsDark,
+                    onCheckedChange = onThemeToggle,
                     colors = SwitchDefaults.colors(
-                        checkedThumbColor = Color.White,
-                        checkedTrackColor = Color(0xFF64DFDF),
-                        uncheckedThumbColor = Color.White,
-                        uncheckedTrackColor = Color(0xFF374151)
+                        checkedThumbColor = MaterialTheme.colorScheme.onPrimary,
+                        checkedTrackColor = MaterialTheme.colorScheme.primary,
+                        uncheckedThumbColor = MaterialTheme.colorScheme.onSurface,
+                        uncheckedTrackColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f) // لون غير محدد باهت
                     )
+
                 )
             }
 
@@ -188,7 +202,7 @@ fun SettingsScreen() {
             ) {
                 Text(
                     "Notifications",
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.onSurface,
                     fontSize = 28.sp,
                     fontWeight = FontWeight.SemiBold
                 )
@@ -197,10 +211,10 @@ fun SettingsScreen() {
                     checked = notifications,
                     onCheckedChange = { notifications = it },
                     colors = SwitchDefaults.colors(
-                        checkedThumbColor = Color.White,
-                        checkedTrackColor = Color(0xFF64DFDF),
-                        uncheckedThumbColor = Color.White,
-                        uncheckedTrackColor = Color(0xFF374151)
+                        checkedThumbColor = MaterialTheme.colorScheme.onPrimary,
+                        checkedTrackColor = MaterialTheme.colorScheme.primary,
+                        uncheckedThumbColor = MaterialTheme.colorScheme.onSurface,
+                        uncheckedTrackColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
                     )
                 )
             }
@@ -209,7 +223,7 @@ fun SettingsScreen() {
         SettingsCards {
             Text(
                 "Downloads",
-                color = Color.White,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontSize = 28.sp,
                 fontWeight = FontWeight.SemiBold
             )
@@ -220,7 +234,7 @@ fun SettingsScreen() {
             ) {
                 Text(
                     "WiFi only",
-                    color = Color.Gray,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 20.sp
                 )
                 Spacer(Modifier.weight(1f))
@@ -235,7 +249,7 @@ fun SettingsScreen() {
         SettingsCards {
             Text(
                 "About",
-                color = Color.White,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontSize = 28.sp,
                 fontWeight = FontWeight.SemiBold
             )
@@ -243,14 +257,14 @@ fun SettingsScreen() {
             Spacer(Modifier.height(8.dp))
             Text(
                 "Version: 1.0.0",
-                color = Color(0xFF6B7280),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 fontSize = 20.sp
             )
 
             Spacer(Modifier.height(6.dp))
             Text(
                 text = "Github Repository",
-                color = Color(0xFF64DFDF),
+                color = MaterialTheme.colorScheme.primary,
                 fontSize = 20.sp,
                 textDecoration = TextDecoration.Underline,
                 modifier = Modifier.clickable {/*code*/ }
@@ -264,7 +278,7 @@ fun SettingsCards(content: @Composable ColumnScope.() -> Unit){
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF11182A)),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
@@ -273,10 +287,38 @@ fun SettingsCards(content: @Composable ColumnScope.() -> Unit){
     }
 }
 
-@Preview(showSystemUi = true)
+@Preview(showSystemUi = true, name = "Dark Mode")
 @Composable
-fun GreetingPreview() {
-    MovitoTheme {
-        SettingsScreen()
+fun SettingsPreviewDark() {
+    var isDark by remember { mutableStateOf(true) }
+    MovitoTheme(darkTheme = isDark) {
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            containerColor = MaterialTheme.colorScheme.background
+        ) { paddingValues ->
+            SettingsScreen(
+                modifier = Modifier.padding(paddingValues),
+                onThemeToggle = { isDark = it },
+                currentThemeIsDark = isDark
+            )
+        }
+    }
+}
+
+@Preview(showSystemUi = true, name = "Light Mode")
+@Composable
+fun SettingsPreviewLight() {
+    var isDark by remember { mutableStateOf(false) }
+    MovitoTheme(darkTheme = isDark) {
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            containerColor = MaterialTheme.colorScheme.background
+        ) { paddingValues ->
+            SettingsScreen(
+                modifier = Modifier.padding(paddingValues),
+                onThemeToggle = { isDark = it },
+                currentThemeIsDark = isDark
+            )
+        }
     }
 }
