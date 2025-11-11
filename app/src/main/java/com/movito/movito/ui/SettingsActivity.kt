@@ -48,7 +48,7 @@ class SettingsActivity : ComponentActivity() {
             MovitoTheme(darkTheme = isDarkMode) {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
-                    containerColor = MaterialTheme.colorScheme.background // لون الخلفية من الثيم
+                    containerColor = MaterialTheme.colorScheme.background
                 ) { paddingValues ->
                     SettingsScreen(
                         modifier = Modifier.padding(paddingValues),
@@ -152,7 +152,7 @@ fun SettingsScreen(modifier: Modifier = Modifier,
             ) {
                 Text(
                     "Sign Out",
-                    color = Color.White, // (2) ده سبناه أبيض عشان الخلفية الجريدينت
+                    color = Color.White,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium
                 )
@@ -187,7 +187,7 @@ fun SettingsScreen(modifier: Modifier = Modifier,
                         checkedThumbColor = MaterialTheme.colorScheme.onPrimary,
                         checkedTrackColor = MaterialTheme.colorScheme.primary,
                         uncheckedThumbColor = MaterialTheme.colorScheme.onSurface,
-                        uncheckedTrackColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f) // لون غير محدد باهت
+                        uncheckedTrackColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
                     )
 
                 )
@@ -238,7 +238,6 @@ fun SettingsScreen(modifier: Modifier = Modifier,
                     fontSize = 20.sp
                 )
                 Spacer(Modifier.weight(1f))
-                // ضفنا الألوان عشان يظبط مع الثيم
                 Switch(
                     checked = downloadsWifiOnly,
                     onCheckedChange = { downloadsWifiOnly = it },
@@ -271,7 +270,7 @@ fun SettingsScreen(modifier: Modifier = Modifier,
             Spacer(Modifier.height(6.dp))
             Text(
                 text = "Github Repository",
-                color = MaterialTheme.colorScheme.primary, // ده بيستخدم الثيم (ممتاز)
+                color = MaterialTheme.colorScheme.primary,
                 fontSize = 20.sp,
                 textDecoration = TextDecoration.Underline,
                 modifier = Modifier.clickable {/*code*/ }
