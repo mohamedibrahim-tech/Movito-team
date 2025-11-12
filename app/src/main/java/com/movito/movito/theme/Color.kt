@@ -13,3 +13,8 @@ val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 val LightBackground = Color(0xFFFFFFFF)
 val LightOnBackground = Color(0xFF1C1B1F)
+
+
+
+val CardBackground = Color(0xFF1C1B1F)
+
