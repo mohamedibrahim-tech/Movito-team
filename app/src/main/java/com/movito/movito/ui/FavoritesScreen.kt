@@ -64,7 +64,7 @@ fun FavoritesScreen(
         },
         bottomBar = {
             var selectedItem by remember { mutableStateOf("favorite") }
-            MovitoNavBar(selectedItem) { selectedItem = it}
+            MovitoNavBar(selectedItem) { selectedItem = it }
         }
     ) { innerPadding ->
 

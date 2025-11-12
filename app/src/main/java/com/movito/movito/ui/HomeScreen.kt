@@ -91,7 +91,7 @@ fun HomeScreen(
         // Navigation bar
         bottomBar = {
             var selectedItem by remember { mutableStateOf("home") }
-            MovitoNavBar(selectedItem) { selectedItem = it}
+            MovitoNavBar(selectedItem) { selectedItem = it }
         }
     ) { innerPadding ->
 
@@ -165,8 +165,10 @@ fun HomePreviewLight() {
 fun MovieCardPreview() {
     val mockMovie = Movie(1, "Cosmic Echoes", "2025", "2h 15m", R.drawable.poster_test)
     MovitoTheme(darkTheme = true) {
-        MovieCard(modifier = Modifier
-            .padding(16.dp)
-            .height(280.dp), movie = mockMovie)
+        MovieCard(
+            modifier = Modifier
+                .padding(16.dp)
+                .height(280.dp), movie = mockMovie
+        )
     }
 }
