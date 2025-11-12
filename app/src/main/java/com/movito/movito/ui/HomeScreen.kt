@@ -129,7 +129,7 @@ fun HomeScreen(
                         horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         items(items = uiState.movies, key = { it.id }) { movie ->
-                            MovieCard(movie = movie)
+                            MovieCard(modifier = Modifier.height(280.dp), movie = movie)
                         }
                     }
                 }
