@@ -69,6 +69,7 @@ dependencies {
     // Splash Screen API
     implementation("androidx.core:core-splashscreen:1.0.1")
 
+    implementation("androidx.compose.material:material-icons-extended")
     //   مكتبة Coil لتحميل الصور من الإنترنت
     implementation("io.coil-kt:coil-compose:2.6.0")
 
