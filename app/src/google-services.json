@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "557091230186",
+    "project_id": "movies-bceda",
+    "storage_bucket": "movies-bceda.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:557091230186:android:88a1d973d3aa0504fd6293",
+        "android_client_info": {
+          "package_name": "com.movito.movito"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCDqQgBZa6fI7sYDDmXvkaTOWWpgSaWHQU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

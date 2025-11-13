@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("com.google.gms.google-services")
+
 }
 
 android {
@@ -58,6 +60,7 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
+
     // ViewModel
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.3")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.3")
@@ -71,5 +74,8 @@ dependencies {
 
     //   مكتبة Coil لتحميل الصور من الإنترنت
     implementation("io.coil-kt:coil-compose:2.6.0")
+    implementation("com.google.firebase:firebase-auth")
+    implementation(platform("com.google.firebase:firebase-bom:33.1.0"))
+    implementation("com.google.android.gms:play-services-auth:21.2.0")
 
 }
