@@ -37,7 +37,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.movito.movito.theme.MovitoTheme // (1) اتأكد إن مسار الثيم ده صح
+import com.movito.movito.theme.MovitoTheme
 
 class SettingsActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,7 +48,11 @@ class SettingsActivity : ComponentActivity() {
             MovitoTheme(darkTheme = isDarkMode) {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
-                    containerColor = MaterialTheme.colorScheme.background
+                    containerColor = MaterialTheme.colorScheme.background,
+                    bottomBar = {
+                        var selectedItem by remember { mutableStateOf("profile") }
+                        MovitoNavBar(selectedItem = selectedItem) { selectedItem = it }
+                    }
                 ) { paddingValues ->
                     SettingsScreen(
                         modifier = Modifier.padding(paddingValues),
@@ -63,9 +67,11 @@ class SettingsActivity : ComponentActivity() {
 }
 
 @Composable
-fun SettingsScreen(modifier: Modifier = Modifier,
-                   onThemeToggle: (Boolean) -> Unit,
-                   currentThemeIsDark: Boolean) {
+fun SettingsScreen(
+    modifier: Modifier = Modifier,
+    onThemeToggle: (Boolean) -> Unit,
+    currentThemeIsDark: Boolean
+) {
     var notifications by remember { mutableStateOf(false) }
     var downloadsWifiOnly by remember { mutableStateOf(true) }
 
@@ -279,8 +285,9 @@ fun SettingsScreen(modifier: Modifier = Modifier,
     }
 
 }
+
 @Composable
-fun SettingsCards(content: @Composable ColumnScope.() -> Unit){
+fun SettingsCards(content: @Composable ColumnScope.() -> Unit) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),

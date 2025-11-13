@@ -1,23 +1,37 @@
 package com.movito.movito.ui
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.grid.*
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.movito.movito.Movie
@@ -49,77 +63,8 @@ fun FavoritesScreen(
             )
         },
         bottomBar = {
-            BottomAppBar(containerColor = MaterialTheme.colorScheme.background) {
-                var selectedItem by remember { mutableStateOf("favorite") }
-
-                NavigationBarItem(
-                    selected = selectedItem == "home",
-                    onClick = { selectedItem = "home" },
-                    icon = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.home),
-                            contentDescription = "Home",
-                            modifier = Modifier.size(24.dp)
-                        )
-                    },
-                    colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = MaterialTheme.colorScheme.primary,
-                        unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                        indicatorColor = Color.Transparent
-                    )
-                )
-
-                NavigationBarItem(
-                    selected = selectedItem == "search",
-                    onClick = { selectedItem = "search" },
-                    icon = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.search),
-                            contentDescription = "Search",
-                            modifier = Modifier.size(24.dp)
-                        )
-                    },
-                    colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = MaterialTheme.colorScheme.primary,
-                        unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                        indicatorColor = Color.Transparent
-                    )
-                )
-
-                NavigationBarItem(
-                    selected = selectedItem == "favorite",
-                    onClick = { selectedItem = "favorite" },
-                    icon = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.like),
-                            contentDescription = "Favorite",
-                            modifier = Modifier.size(24.dp)
-                        )
-                    },
-                    colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = MaterialTheme.colorScheme.primary,
-                        unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                        indicatorColor = Color.Transparent
-                    )
-                )
-
-                NavigationBarItem(
-                    selected = selectedItem == "profile",
-                    onClick = { selectedItem = "profile" },
-                    icon = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.user),
-                            contentDescription = "Profile",
-                            modifier = Modifier.size(24.dp)
-                        )
-                    },
-                    colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = MaterialTheme.colorScheme.primary,
-                        unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                        indicatorColor = Color.Transparent
-                    )
-                )
-            }
+            var selectedItem by remember { mutableStateOf("favorite") }
+            MovitoNavBar(selectedItem) { selectedItem = it }
         }
     ) { innerPadding ->
 
@@ -186,81 +131,21 @@ fun FavoriteMovieCard(
     modifier: Modifier = Modifier,
     movie: Movie,
     onRemoveFavorite: () -> Unit
-) {
-    Card(
-        modifier = modifier.height(280.dp),
-        shape = RoundedCornerShape(16.dp)
+) = MovieCard(modifier = modifier.height(280.dp), movie = movie) {
+    IconButton(
+        onClick = onRemoveFavorite,
+        modifier = Modifier
+            .align(Alignment.TopEnd)
+            .padding(8.dp)
     ) {
-        Box(modifier = Modifier.fillMaxSize()) {
-
-            Image(
-                painter = painterResource(id = movie.posterUrl),
-                contentDescription = movie.title,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()
-            )
-
-
-            IconButton(
-                onClick = onRemoveFavorite,
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(8.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Favorite,
-                    contentDescription = "Remove from favorites",
-                    tint = Color.Red,
-                    modifier = Modifier.size(28.dp)
-                )
-            }
-
-
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(
-                        Brush.verticalGradient(
-                            colors = listOf(Color.Transparent, Color.Black),
-                            startY = 400f
-                        )
-                    ),
-                contentAlignment = Alignment.BottomStart
-            ) {
-
-                Column(
-                    modifier = Modifier.padding(12.dp)
-                ) {
-                    Text(
-                        text = movie.title,
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White.copy(alpha = 0.8f)
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Row {
-                        Text(
-                            text = movie.year,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = Color.White.copy(alpha = 0.6f)
-                        )
-                        Text(
-                            text = " | ",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = Color.White.copy(alpha = 0.6f)
-                        )
-                        Text(
-                            text = movie.time,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = Color.White.copy(alpha = 0.6f)
-                        )
-                    }
-                }
-            }
-        }
+        Icon(
+            imageVector = Icons.Default.Favorite,
+            contentDescription = "Remove from favorites",
+            tint = Color.Red,
+            modifier = Modifier.size(28.dp)
+        )
     }
 }
-
 
 
 @Preview(showSystemUi = true, name = "Favorites - Empty State")
