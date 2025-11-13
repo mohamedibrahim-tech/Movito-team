@@ -50,6 +50,7 @@ import coil.compose.AsyncImage //  إضافة import مكتبة Coil  اللي �
 import com.movito.movito.R
 import com.movito.movito.theme.MovitoTheme
 import com.movito.movito.data.model.Movie
+import com.movito.movito.ui.common.MovitoNavBar
 import com.movito.movito.viewmodel.SearchViewModel
 
 /**

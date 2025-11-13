@@ -3,7 +3,6 @@ package com.movito.movito.ui
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -38,6 +37,7 @@ import com.movito.movito.theme.MovitoTheme
 import com.movito.movito.ui.common.MovieCard
 import com.movito.movito.viewmodel.HomeViewModel
 import com.movito.movito.data.model.Movie
+import com.movito.movito.ui.common.MovitoNavBar
 
 /**
  * شاشة الهوم
