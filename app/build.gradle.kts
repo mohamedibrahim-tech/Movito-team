@@ -72,4 +72,9 @@ dependencies {
     //   مكتبة Coil لتحميل الصور من الإنترنت
     implementation("io.coil-kt:coil-compose:2.6.0")
 
+    // Networking (Retrofit + Gson)
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
+
+
 }
