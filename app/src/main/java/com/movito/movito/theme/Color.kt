@@ -16,5 +16,5 @@ val LightOnBackground = Color(0xFF1C1B1F)
 
 
 
-val CardBackground = Color(0xFF1C1B1F)
+
 
