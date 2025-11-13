@@ -1,5 +1,7 @@
 package com.movito.movito.ui
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -15,7 +17,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-//  إضافة: imports للـ Scroll
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -33,11 +34,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.movito.movito.BuildConfig
 import com.movito.movito.theme.MovitoTheme
 import com.movito.movito.ui.common.SettingsCards
 
@@ -57,7 +60,6 @@ class SettingsActivity : ComponentActivity() {
                 ) { paddingValues ->
                     SettingsScreen(
                         modifier = Modifier.padding(paddingValues),
-                        // The toggle is now just an indicator, so we don't handle clicks
                         onThemeToggle = {},
                         currentThemeIsDark = systemIsDark
                     )
@@ -76,6 +78,8 @@ fun SettingsScreen(
 ) {
     var notifications by remember { mutableStateOf(false) }
     var downloadsWifiOnly by remember { mutableStateOf(true) }
+    val context = LocalContext.current
+    val githubUrl = "https://github.com/mohamedibrahim-tech/Movito-team/"
 
 
     Column(
@@ -267,7 +271,7 @@ fun SettingsScreen(
 
             Spacer(Modifier.height(8.dp))
             Text(
-                "Version: 1.0.0",
+                "Version: ${BuildConfig.VERSION_NAME}",
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 fontSize = 20.sp
             )
@@ -278,7 +282,10 @@ fun SettingsScreen(
                 color = MaterialTheme.colorScheme.primary,
                 fontSize = 20.sp,
                 textDecoration = TextDecoration.Underline,
-                modifier = Modifier.clickable {/*code*/ }
+                modifier = Modifier.clickable {
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(githubUrl))
+                    context.startActivity(intent)
+                }
             )
         }
         Spacer(Modifier.height(16.dp))
