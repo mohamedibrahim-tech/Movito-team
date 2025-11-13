@@ -3,6 +3,7 @@ package com.movito.movito.ui
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -25,9 +26,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -35,16 +33,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.movito.movito.HomeViewModel
-import com.movito.movito.Movie
 import com.movito.movito.R
 import com.movito.movito.theme.MovitoTheme
+import com.movito.movito.ui.common.MovieCard
+import com.movito.movito.viewmodel.HomeViewModel
+import com.movito.movito.data.model.Movie
 
 /**
- * مهممممممم جداً
- *home screen function
- *TopBar, BottomBar, Grid
- * وبتاخد الـ state بتاعها من الـ HomeViewModel.
+ * شاشة الهوم
+ * (تم تعديل الـ BottomBar)
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -56,14 +53,13 @@ fun HomeScreen(
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
-        // الشريط العلوي (يحتوي على اللوجو وزرار الـ Refresh)
         topBar = {
             TopAppBar(
                 title = {
                     Image(
                         painter = painterResource(id = R.drawable.movito_logo),
                         contentDescription = "Movito Logo",
-                        modifier = Modifier.height(32.dp) // تحديد ارتفاع اللوجو
+                        modifier = Modifier.height(32.dp)
                     )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -88,10 +84,9 @@ fun HomeScreen(
                 }
             )
         },
-        // Navigation bar
+        // شيلت الـ state بتاع selectedItem واستدعينا الـ NavBar الجديد
         bottomBar = {
-            var selectedItem by remember { mutableStateOf("home") }
-            MovitoNavBar(selectedItem) { selectedItem = it }
+            MovitoNavBar(selectedItem = "home")
         }
     ) { innerPadding ->
 
@@ -102,12 +97,9 @@ fun HomeScreen(
                 .fillMaxSize()
         ) {
             when {
-                // في حالة التحميل لأول مرة
                 uiState.isLoading -> {
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                 }
-
-                // في حالة وجود خطأ
                 uiState.error != null -> {
                     Text(
                         text = "فشل تحميل البيانات: ${uiState.error}",
@@ -118,8 +110,6 @@ fun HomeScreen(
                             .padding(16.dp)
                     )
                 }
-
-                // في حالة النجاح (عرض شبكة الأفلام)
                 else -> {
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(2),
@@ -129,6 +119,7 @@ fun HomeScreen(
                         horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         items(items = uiState.movies, key = { it.id }) { movie ->
+                            //  استدعاء ال card المشترك
                             MovieCard(modifier = Modifier.height(280.dp), movie = movie)
                         }
                     }
@@ -138,11 +129,15 @@ fun HomeScreen(
     }
 }
 
+//  الـ Previews زي ما هي، بس هتستخدم الكارت المشترك
+
 @Preview(showSystemUi = true, name = "Dark Mode")
 @Composable
 fun HomePreview() {
     val mockViewModel = HomeViewModel()
-    mockViewModel.loadMovies()
+    //  تعديل: الـ Preview مبقاش بيحتاج loadMovies()
+    // (لأن الـ ViewModel اتغير لـ String URL)
+    // mockViewModel.loadMovies() // ده هيعمل Crash لو مشغلناش النت
 
     MovitoTheme(darkTheme = true) {
         HomeScreen(viewModel = mockViewModel)
@@ -153,7 +148,6 @@ fun HomePreview() {
 @Composable
 fun HomePreviewLight() {
     val mockViewModel = HomeViewModel()
-    mockViewModel.loadMovies()
 
     MovitoTheme(darkTheme = false) {
         HomeScreen(viewModel = mockViewModel)
@@ -163,7 +157,8 @@ fun HomePreviewLight() {
 @Preview(name = "Movie Card Preview")
 @Composable
 fun MovieCardPreview() {
-    val mockMovie = Movie(1, "Cosmic Echoes", "2025", "2h 15m", R.drawable.poster_test)
+    //  تعديل: استخدمنا رابط صورة حقيقي
+    val mockMovie = Movie(1, "Cosmic Echoes", "2025", "2h 15m", "https://image.tmdb.org/t/p/w500/qA9b2xSJ8nCK2z3yIuVnAwmWsum.jpg")
     MovitoTheme(darkTheme = true) {
         MovieCard(
             modifier = Modifier

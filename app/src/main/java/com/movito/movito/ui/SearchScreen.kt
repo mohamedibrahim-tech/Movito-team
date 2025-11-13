@@ -1,7 +1,6 @@
 package com.movito.movito.ui
 
-
-import androidx.compose.foundation.Image
+//  شيلت 'Image' وضفنا 'AsyncImage'
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -47,13 +46,15 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.movito.movito.Movie
+import coil.compose.AsyncImage //  إضافة import مكتبة Coil  اللي عملناها في الجرادل
+import com.movito.movito.R
 import com.movito.movito.theme.MovitoTheme
+import com.movito.movito.data.model.Movie
 import com.movito.movito.viewmodel.SearchViewModel
 
 /**
- * Search Screen
- * Contains a SearchBar for the search field and a LazyColumn for search results.
+ * شاشة البحث
+ * (تم تعديل الـ BottomBar)
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -66,9 +67,8 @@ fun SearchScreen(
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
-            // Using SearchBar as a fixed top bar in this example
-            // The 'active' state controls hiding/showing the default data
             SearchBar(
+                //  (كل كود الـ SearchBar زي ما هو)
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = if (active) 0.dp else 16.dp),
@@ -114,9 +114,9 @@ fun SearchScreen(
                 }
             }
         },
+        // شيلنا الـ state بتاع selectedItem واستدعينا الـ NavBar الجديد
         bottomBar = {
-            var selectedItem by remember { mutableStateOf("home") }
-            MovitoNavBar(selectedItem = selectedItem) { selectedItem = it }
+            MovitoNavBar(selectedItem = "search")
         }
     ) { innerPadding ->
         Box(
@@ -125,7 +125,6 @@ fun SearchScreen(
                 .fillMaxSize()
         ) {
             when {
-                // Loading state
                 uiState.isLoading -> {
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                 }
@@ -180,7 +179,7 @@ fun SearchScreen(
 }
 
 /**
- * Design for a single item in the search results list (ListView).
+ * تصميم عنصر واحد في قايمة البحث (ListView).
  */
 @Composable
 fun MovieListItem(
@@ -198,11 +197,14 @@ fun MovieListItem(
             modifier = Modifier.size(width = 80.dp, height = 120.dp),
             shape = RoundedCornerShape(8.dp)
         ) {
-            Image(
-                painter = painterResource(id = movie.posterUrl),
+            //  استخدمنا AsyncImage (Coil)
+            // (عشان نجهز للـ API الحقيقي)
+            AsyncImage(
+                model = movie.posterUrl, // (بقى String)
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
+                placeholder = painterResource(id = R.drawable.poster_test)
             )
         }
         Spacer(modifier = Modifier.size(12.dp))
