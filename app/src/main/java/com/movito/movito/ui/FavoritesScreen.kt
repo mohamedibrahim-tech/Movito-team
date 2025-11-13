@@ -33,7 +33,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.movito.movito.R
 import com.movito.movito.theme.MovitoTheme
 import com.movito.movito.ui.common.MovieCard
 import com.movito.movito.data.model.Movie
@@ -117,7 +116,8 @@ fun FavoritesScreen(
                 ) {
                     items(
                         items = favoriteMovies,
-                        key = { it.id }
+                        key = { it.id },
+                        contentType = { "movie" } // لتحسين الأداء
                     ) { movie ->
                         FavoriteMovieCard(
                             movie = movie,
@@ -153,9 +153,6 @@ fun FavoriteMovieCard(
         }
     }
 }
-
-
-
 
 
 // Dark Mode Preview - Empty
@@ -202,8 +199,8 @@ fun FavoritesWithMoviesPreviewDark() {
 @Composable
 fun FavoritesWithMoviesPreviewLight() {
     val mockMovies = listOf(
-        Movie(1, "Cosmic Echoes", "2025", "2h 15m", "https://image.tmdb.org/t/p/w500/qA9b2xSJ8nCK2z3yIuVnAwmWsum.jpg"),
-        Movie(2, "Time Warp", "2024", "1h 50m", "https://image.tmdb.org/t/p/w500/d5NXSklXo0qyIYkgV94XAgMIckC.jpg"),
+        Movie(1, "Cosmic Echoes", "2025-03-15", "/qA9b2xSJ8nCK2z3yIuVnAwmWsum.jpg", 8.5, "An epic space opera.", listOf(878)),
+        Movie(2, "Time Warp", "2024-07-22", "/d5NXSklXo0qyIYkgV94XAgMIckC.jpg", 7.8, "A thrilling time travel adventure.", listOf(28, 12)),
     )
 
     MovitoTheme(darkTheme = false) {
@@ -218,7 +215,7 @@ fun FavoritesWithMoviesPreviewLight() {
 @Preview(name = "Favorite Movie Card Dark")
 @Composable
 fun FavoriteMovieCardPreviewDark() {
-    val mockMovie = Movie(1, "Cosmic Echoes", "2025", "2h 15m", "https://image.tmdb.org/t/p/w500/qA9b2xSJ8nCK2z3yIuVnAwmWsum.jpg")
+    val mockMovie = Movie(1, "Cosmic Echoes", "2025-03-15", "/qA9b2xSJ8nCK2z3yIuVnAwmWsum.jpg", 8.5, "An epic space opera.", listOf(878))
     MovitoTheme(darkTheme = true) {
         FavoriteMovieCard(
             modifier = Modifier.padding(16.dp),
@@ -231,7 +228,7 @@ fun FavoriteMovieCardPreviewDark() {
 @Preview(name = "Favorite Movie Card Light")
 @Composable
 fun FavoriteMovieCardPreviewLight() {
-    val mockMovie = Movie(1, "Cosmic Echoes", "2025", "2h 15m", "https://image.tmdb.org/t/p/w500/qA9b2xSJ8nCK2z3yIuVnAwmWsum.jpg")
+    val mockMovie = Movie(1, "Cosmic Echoes", "2025-03-15", "/qA9b2xSJ8nCK2z3yIuVnAwmWsum.jpg", 8.5, "An epic space opera.", listOf(878))
     MovitoTheme(darkTheme = false) {
         FavoriteMovieCard(
             modifier = Modifier.padding(16.dp),

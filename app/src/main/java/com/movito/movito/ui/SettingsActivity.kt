@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -45,8 +46,8 @@ class SettingsActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            var isDarkMode by remember { mutableStateOf(false) }
-            MovitoTheme(darkTheme = isDarkMode) {
+            val systemIsDark = isSystemInDarkTheme()
+            MovitoTheme(darkTheme = systemIsDark) {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     containerColor = MaterialTheme.colorScheme.background,
@@ -56,8 +57,9 @@ class SettingsActivity : ComponentActivity() {
                 ) { paddingValues ->
                     SettingsScreen(
                         modifier = Modifier.padding(paddingValues),
-                        onThemeToggle = { isDarkMode = it },
-                        currentThemeIsDark = isDarkMode
+                        // The toggle is now just an indicator, so we don't handle clicks
+                        onThemeToggle = {},
+                        currentThemeIsDark = systemIsDark
                     )
                 }
             }
