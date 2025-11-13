@@ -27,6 +27,10 @@ class HomeViewModel : ViewModel() {
 
     private val apiKey = BuildConfig.TMDB_API_KEY
 
+    init {
+        loadMovies(isLoading = true)
+    }
+
     fun loadMovies(isLoading: Boolean = false, isRefreshing: Boolean = false) {
         viewModelScope.launch {
             _uiState.update {

@@ -1,5 +1,6 @@
 package com.movito.movito.ui.common
 
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -22,10 +23,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.movito.movito.R
 import com.movito.movito.data.model.Movie
 
@@ -41,7 +44,12 @@ fun MovieCard(
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             AsyncImage(
-                model = "https://image.tmdb.org/t/p/w500${movie.posterPath}",
+                //ضيفت زي انميشن عشان التقطيع
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data("https://image.tmdb.org/t/p/w500${movie.posterPath}")
+                    .crossfade(true)
+                    .crossfade(400) // مدة الأنيميشن بالمللي ثانية
+                    .build(),
                 contentDescription = movie.title,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize(),

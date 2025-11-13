@@ -23,7 +23,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -50,10 +49,6 @@ fun HomeScreen(
     viewModel: HomeViewModel = viewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
-
-    LaunchedEffect(key1 = Unit) {
-        viewModel.loadMovies(isLoading = true)
-    }
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -104,7 +99,7 @@ fun HomeScreen(
                 }
                 uiState.error != null -> {
                     Text(
-                        text = "فشل تحميل البيانات: ${uiState.error}",
+                        text = "Failed to load movies",
                         color = MaterialTheme.colorScheme.error,
                         textAlign = TextAlign.Center,
                         modifier = Modifier
@@ -120,7 +115,11 @@ fun HomeScreen(
                         verticalArrangement = Arrangement.spacedBy(16.dp),
                         horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        items(items = uiState.movies, key = { it.id }) { movie ->
+                        items(
+                            items = uiState.movies,
+                            key = { it.id },
+                            contentType = { "movie" } // هذا هو السطر المهم
+                        ) { movie ->
                             MovieCard(modifier = Modifier.height(280.dp), movie = movie)
                         }
                     }
