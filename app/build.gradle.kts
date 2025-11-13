@@ -64,6 +64,8 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.material3)
+    implementation(libs.androidx.compose.runtime)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -98,4 +100,6 @@ dependencies {
     implementation("com.github.bumptech.glide:glide:5.0.5")
 
 
+// لإصلاح أخطاء Icons و filled:
+    implementation("androidx.compose.material:material-icons-extended")
 }
