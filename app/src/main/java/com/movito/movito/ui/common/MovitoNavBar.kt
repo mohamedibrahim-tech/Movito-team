@@ -1,4 +1,4 @@
-package com.movito.movito.ui
+package com.movito.movito.ui.common
 
 // (1) --- إضافة: imports جديدة عشان الـ Intent ---
 import android.app.Activity
@@ -23,6 +23,7 @@ import com.movito.movito.R
 import com.movito.movito.theme.MovitoTheme
 import com.movito.movito.ui.SearchActivity
 import com.movito.movito.ui.FavoritesActivity
+import com.movito.movito.ui.SettingsActivity
 
 /**
  * (4) --- تعديل: تم إزالة دالة MovieCard من هنا ---
