@@ -1,6 +1,5 @@
 package com.movito.movito.ui
 
-//  شيلت 'Image' وضفنا 'AsyncImage'
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -46,16 +45,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import coil.compose.AsyncImage //  إضافة import مكتبة Coil  اللي عملناها في الجرادل
+import coil.compose.AsyncImage
 import com.movito.movito.R
-import com.movito.movito.theme.MovitoTheme
 import com.movito.movito.data.model.Movie
+import com.movito.movito.theme.MovitoTheme
 import com.movito.movito.viewmodel.SearchViewModel
 
-/**
- * شاشة البحث
- * (تم تعديل الـ BottomBar)
- */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(
@@ -68,33 +63,29 @@ fun SearchScreen(
         modifier = modifier.fillMaxSize(),
         topBar = {
             SearchBar(
-                //  (كل كود الـ SearchBar زي ما هو)
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = if (active) 0.dp else 16.dp),
                 query = uiState.searchQuery,
                 onQueryChange = { viewModel.updateSearchQuery(it) },
                 onSearch = {
-                    active = false // Close the 'active' state when pressing Enter
-                    viewModel.searchMovies(it) // Execute the search
+                    active = false
+                    viewModel.searchMovies(it)
                 },
                 active = active,
                 onActiveChange = { active = it },
                 placeholder = { Text("Search for movies, series...") },
                 leadingIcon = {
                     if (active) {
-                        // Back button when in 'active' state
                         IconButton(onClick = { active = false }) {
                             Icon(Icons.Default.ArrowBack, contentDescription = "Back")
                         }
                     } else {
-                        // Default search icon
                         Icon(Icons.Default.Search, contentDescription = null)
                     }
                 },
                 trailingIcon = {
                     if (uiState.searchQuery.isNotEmpty()) {
-                        // Clear search field button
                         IconButton(onClick = { viewModel.updateSearchQuery("") }) {
                             Icon(Icons.Default.Close, contentDescription = "Clear search")
                         }
@@ -104,8 +95,6 @@ fun SearchScreen(
                     containerColor = MaterialTheme.colorScheme.surfaceVariant,
                 )
             ) {
-                // Content when in 'active' state (you can put search history here)
-                // In this example, we place a simple message
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
                         "Type the movie or series name to search...",
@@ -114,7 +103,6 @@ fun SearchScreen(
                 }
             }
         },
-        // شيلنا الـ state بتاع selectedItem واستدعينا الـ NavBar الجديد
         bottomBar = {
             MovitoNavBar(selectedItem = "search")
         }
@@ -129,7 +117,6 @@ fun SearchScreen(
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                 }
 
-                // Error state
                 uiState.error != null -> {
                     Text(
                         text = "Search failed: ${uiState.error}",
@@ -140,7 +127,6 @@ fun SearchScreen(
                     )
                 }
 
-                // Message if the result list is empty after a search
                 uiState.hasSearched && uiState.movies.isEmpty() -> {
                     Text(
                         text = "No results found for \"${uiState.searchQuery}\"",
@@ -150,7 +136,6 @@ fun SearchScreen(
                     )
                 }
 
-                // Welcome message before starting the search
                 !uiState.hasSearched && uiState.searchQuery.isEmpty() -> {
                     Text(
                         text = "Welcome! Type a movie or series name to search.",
@@ -161,7 +146,6 @@ fun SearchScreen(
                     )
                 }
 
-                // Display search results
                 else -> {
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),
@@ -178,9 +162,6 @@ fun SearchScreen(
     }
 }
 
-/**
- * تصميم عنصر واحد في قايمة البحث (ListView).
- */
 @Composable
 fun MovieListItem(
     modifier: Modifier = Modifier, movie: Movie
@@ -192,15 +173,12 @@ fun MovieListItem(
             .clickable { /* Handle item click */ }
             .padding(4.dp),
         verticalAlignment = Alignment.CenterVertically) {
-        // Thumbnail poster image
         Card(
             modifier = Modifier.size(width = 80.dp, height = 120.dp),
             shape = RoundedCornerShape(8.dp)
         ) {
-            //  استخدمنا AsyncImage (Coil)
-            // (عشان نجهز للـ API الحقيقي)
             AsyncImage(
-                model = movie.posterUrl, // (بقى String)
+                model = "https://image.tmdb.org/t/p/w500${movie.posterPath}",
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize(),
@@ -208,9 +186,8 @@ fun MovieListItem(
             )
         }
         Spacer(modifier = Modifier.size(12.dp))
-        // Movie information
         Column(
-            modifier = Modifier.weight(1f) // To make the column take the remaining space
+            modifier = Modifier.weight(1f)
         ) {
             Text(
                 text = movie.title,
@@ -222,25 +199,14 @@ fun MovieListItem(
             Spacer(modifier = Modifier.height(4.dp))
             Row {
                 Text(
-                    text = movie.year,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Text(
-                    text = " | ",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Text(
-                    text = movie.time,
+                    text = movie.releaseDate.take(4),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
             Spacer(modifier = Modifier.height(4.dp))
-            // Add a short description (optional)
             Text(
-                text = "A science fiction and action film revolving around the exploration of distant galaxies.",
+                text = movie.overview,
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f),
                 maxLines = 2,
