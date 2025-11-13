@@ -1,4 +1,4 @@
-package com.movito.movito.ui
+package com.movito.movito.ui.common
 
 import android.app.Activity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -55,6 +55,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.movito.movito.R
 import com.movito.movito.theme.MovitoTheme
+import com.movito.movito.ui.AuthViewModel
 
 
 @Composable
@@ -344,7 +345,7 @@ fun SignUpScreen(
 
 
 @Preview(
-    showBackground = false,
+    showBackground = true,
     showSystemUi = true,
     name = "Dark Mode Preview"
 )
@@ -356,7 +357,7 @@ fun FinalSignUpScreenPreviewDark() {
 }
 
 @Preview(
-    showBackground = false,
+    showBackground = true,
     showSystemUi = true,
     name = "Light Mode Preview"
 )
