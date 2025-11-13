@@ -15,7 +15,7 @@ android {
         minSdk = 29
         targetSdk = 36
         versionCode = 1
-        versionName = "1.0"
+        versionName = "2.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -61,11 +61,15 @@ dependencies {
     // ViewModel
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.3")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.3")
+    implementation("androidx.activity:activity-ktx:1.9.0")
 
     // Coroutines (عشان الـ ViewModel)
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
     // Splash Screen API
     implementation("androidx.core:core-splashscreen:1.0.1")
+
+    //   مكتبة Coil لتحميل الصور من الإنترنت
+    implementation("io.coil-kt:coil-compose:2.6.0")
 
 }
