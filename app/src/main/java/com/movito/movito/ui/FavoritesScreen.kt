@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -32,8 +33,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.movito.movito.R
 import com.movito.movito.theme.MovitoTheme
 import com.movito.movito.ui.common.MovieCard
@@ -58,8 +61,11 @@ fun FavoritesScreen(
                 title = {
                     Text(
                         text = "Favorites",
+                        fontSize = 28.sp,
                         style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
                     )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -67,7 +73,6 @@ fun FavoritesScreen(
                 )
             )
         },
-        // شيلنا الـ state بتاع selectedItem واستدعينا الـ NavBar الجديد
         bottomBar = {
             MovitoNavBar(selectedItem = "favorite")
         }
@@ -137,9 +142,7 @@ fun FavoriteMovieCard(
     movie: Movie,
     onRemoveFavorite: () -> Unit
 ) {
-    //  بقى بيستدعي الcard المشترك
     MovieCard(modifier = modifier.height(280.dp), movie = movie) {
-        //  ده المحتوى الإضافي (القلب)
         IconButton(
             onClick = onRemoveFavorite,
             modifier = Modifier
@@ -157,9 +160,13 @@ fun FavoriteMovieCard(
 }
 
 
-@Preview(showSystemUi = true, name = "Favorites - Empty State")
+
+
+
+// Dark Mode Preview - Empty
+@Preview(showSystemUi = true, name = "Favorites - Empty Dark Mode")
 @Composable
-fun FavoritesEmptyPreview() {
+fun FavoritesEmptyPreviewDark() {
     MovitoTheme(darkTheme = true) {
         FavoritesScreen(
             favoriteMovies = emptyList()
@@ -167,10 +174,21 @@ fun FavoritesEmptyPreview() {
     }
 }
 
-@Preview(showSystemUi = true, name = "Favorites - With Movies")
+// Light Mode Preview - Empty
+@Preview(showSystemUi = true, name = "Favorites - Empty Light Mode")
 @Composable
-fun FavoritesWithMoviesPreview() {
-    //  استخدمنا رابط صورة حقيقي
+fun FavoritesEmptyPreviewLight() {
+    MovitoTheme(darkTheme = false) {
+        FavoritesScreen(
+            favoriteMovies = emptyList()
+        )
+    }
+}
+
+// Dark Mode Preview - With Movies
+@Preview(showSystemUi = true, name = "Favorites - With Movies Dark Mode")
+@Composable
+fun FavoritesWithMoviesPreviewDark() {
     val mockMovies = listOf(
         Movie(1, "Cosmic Echoes", "2025", "2h 15m", "https://image.tmdb.org/t/p/w500/qA9b2xSJ8nCK2z3yIuVnAwmWsum.jpg"),
         Movie(2, "Time Warp", "2024", "1h 50m", "https://image.tmdb.org/t/p/w500/d5NXSklXo0qyIYkgV94XAgMIckC.jpg"),
@@ -184,11 +202,42 @@ fun FavoritesWithMoviesPreview() {
     }
 }
 
-@Preview(name = "Favorite Movie Card Preview")
+// Light Mode Preview - With Movies
+@Preview(showSystemUi = true, name = "Favorites - With Movies Light Mode")
 @Composable
-fun FavoriteMovieCardPreview() {
+fun FavoritesWithMoviesPreviewLight() {
+    val mockMovies = listOf(
+        Movie(1, "Cosmic Echoes", "2025", "2h 15m", "https://image.tmdb.org/t/p/w500/qA9b2xSJ8nCK2z3yIuVnAwmWsum.jpg"),
+        Movie(2, "Time Warp", "2024", "1h 50m", "https://image.tmdb.org/t/p/w500/d5NXSklXo0qyIYkgV94XAgMIckC.jpg"),
+    )
+
+    MovitoTheme(darkTheme = false) {
+        FavoritesScreen(
+            favoriteMovies = mockMovies,
+            onRemoveFavorite = { }
+        )
+    }
+}
+
+// Favorite Movie Card Previews
+@Preview(name = "Favorite Movie Card Dark")
+@Composable
+fun FavoriteMovieCardPreviewDark() {
     val mockMovie = Movie(1, "Cosmic Echoes", "2025", "2h 15m", "https://image.tmdb.org/t/p/w500/qA9b2xSJ8nCK2z3yIuVnAwmWsum.jpg")
     MovitoTheme(darkTheme = true) {
+        FavoriteMovieCard(
+            modifier = Modifier.padding(16.dp),
+            movie = mockMovie,
+            onRemoveFavorite = { }
+        )
+    }
+}
+
+@Preview(name = "Favorite Movie Card Light")
+@Composable
+fun FavoriteMovieCardPreviewLight() {
+    val mockMovie = Movie(1, "Cosmic Echoes", "2025", "2h 15m", "https://image.tmdb.org/t/p/w500/qA9b2xSJ8nCK2z3yIuVnAwmWsum.jpg")
+    MovitoTheme(darkTheme = false) {
         FavoriteMovieCard(
             modifier = Modifier.padding(16.dp),
             movie = mockMovie,

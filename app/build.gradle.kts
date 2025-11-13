@@ -71,5 +71,4 @@ dependencies {
 
     //   مكتبة Coil لتحميل الصور من الإنترنت
     implementation("io.coil-kt:coil-compose:2.6.0")
-
 }

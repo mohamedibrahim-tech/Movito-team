@@ -50,7 +50,6 @@ class SettingsActivity : ComponentActivity() {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     containerColor = MaterialTheme.colorScheme.background,
-                    // شيلنا الـ state بتاع selectedItem واستدعينا الـ NavBar الجديد
                     bottomBar = {
                         MovitoNavBar(selectedItem = "profile")
                     }
@@ -78,11 +77,11 @@ fun SettingsScreen(
 
 
     Column(
-        modifier = modifier //  ضفنا الـ Scroll
+        modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
             .verticalScroll(rememberScrollState())
-            .padding(horizontal = 16.dp) //  خليت الـ Padding أفقي بس
+            .padding(horizontal = 16.dp)
     ) {
         Row(
             modifier = Modifier
@@ -106,7 +105,6 @@ fun SettingsScreen(
         Spacer(Modifier.height(20.dp))
 
 
-        //  بقى بيستدعي الcard المشترك
         SettingsCards {
             Text(
                 text = "Account",
@@ -281,22 +279,16 @@ fun SettingsScreen(
                 modifier = Modifier.clickable {/*code*/ }
             )
         }
-        //  مسافة تحت عشان الـ Scroll تعديل للشكل
         Spacer(Modifier.height(16.dp))
     }
 
 }
 
-//هنا انا شلت الfunction  بتاعت SettingsCards
-
-//  الـ Preview مبقاش فيه Scaffold
-// (عشان نعرض الشاشة بس، والـ BottomBar بقى في الـ Activity)
 @Preview(showSystemUi = true, name = "Dark Mode")
 @Composable
 fun SettingsPreviewDark() {
     var isDark by remember { mutableStateOf(true) }
     MovitoTheme(darkTheme = isDark) {
-        //  شيلت الـ Scaffold من هنا
         SettingsScreen(
             onThemeToggle = { isDark = it },
             currentThemeIsDark = isDark
