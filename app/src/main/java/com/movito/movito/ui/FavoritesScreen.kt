@@ -34,11 +34,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.movito.movito.Movie
 import com.movito.movito.R
 import com.movito.movito.theme.MovitoTheme
+import com.movito.movito.ui.common.MovieCard
+import com.movito.movito.data.model.Movie
 
 
+/**
+ * شاشة المفضلة
+ * (تم تعديل الـ BottomBar)
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoritesScreen(
@@ -62,9 +67,9 @@ fun FavoritesScreen(
                 )
             )
         },
+        // شيلنا الـ state بتاع selectedItem واستدعينا الـ NavBar الجديد
         bottomBar = {
-            var selectedItem by remember { mutableStateOf("favorite") }
-            MovitoNavBar(selectedItem) { selectedItem = it }
+            MovitoNavBar(selectedItem = "favorite")
         }
     ) { innerPadding ->
 
@@ -131,19 +136,23 @@ fun FavoriteMovieCard(
     modifier: Modifier = Modifier,
     movie: Movie,
     onRemoveFavorite: () -> Unit
-) = MovieCard(modifier = modifier.height(280.dp), movie = movie) {
-    IconButton(
-        onClick = onRemoveFavorite,
-        modifier = Modifier
-            .align(Alignment.TopEnd)
-            .padding(8.dp)
-    ) {
-        Icon(
-            imageVector = Icons.Default.Favorite,
-            contentDescription = "Remove from favorites",
-            tint = Color.Red,
-            modifier = Modifier.size(28.dp)
-        )
+) {
+    //  بقى بيستدعي الcard المشترك
+    MovieCard(modifier = modifier.height(280.dp), movie = movie) {
+        //  ده المحتوى الإضافي (القلب)
+        IconButton(
+            onClick = onRemoveFavorite,
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(8.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Favorite,
+                contentDescription = "Remove from favorites",
+                tint = Color.Red,
+                modifier = Modifier.size(28.dp)
+            )
+        }
     }
 }
 
@@ -161,17 +170,16 @@ fun FavoritesEmptyPreview() {
 @Preview(showSystemUi = true, name = "Favorites - With Movies")
 @Composable
 fun FavoritesWithMoviesPreview() {
+    //  استخدمنا رابط صورة حقيقي
     val mockMovies = listOf(
-        Movie(1, "Cosmic Echoes", "2025", "2h 15m", R.drawable.poster_test),
-        Movie(2, "Time Warp", "2024", "1h 50m", R.drawable.poster_test),
-        Movie(3, "Space Journey", "2025", "2h 30m", R.drawable.poster_test),
-        Movie(4, "Dark Universe", "2024", "2h 5m", R.drawable.poster_test)
+        Movie(1, "Cosmic Echoes", "2025", "2h 15m", "https://image.tmdb.org/t/p/w500/qA9b2xSJ8nCK2z3yIuVnAwmWsum.jpg"),
+        Movie(2, "Time Warp", "2024", "1h 50m", "https://image.tmdb.org/t/p/w500/d5NXSklXo0qyIYkgV94XAgMIckC.jpg"),
     )
 
     MovitoTheme(darkTheme = true) {
         FavoritesScreen(
             favoriteMovies = mockMovies,
-            onRemoveFavorite = { /* remove codeً */ }
+            onRemoveFavorite = { }
         )
     }
 }
@@ -179,12 +187,12 @@ fun FavoritesWithMoviesPreview() {
 @Preview(name = "Favorite Movie Card Preview")
 @Composable
 fun FavoriteMovieCardPreview() {
-    val mockMovie = Movie(1, "Cosmic Echoes", "2025", "2h 15m", R.drawable.poster_test)
+    val mockMovie = Movie(1, "Cosmic Echoes", "2025", "2h 15m", "https://image.tmdb.org/t/p/w500/qA9b2xSJ8nCK2z3yIuVnAwmWsum.jpg")
     MovitoTheme(darkTheme = true) {
         FavoriteMovieCard(
             modifier = Modifier.padding(16.dp),
             movie = mockMovie,
-            onRemoveFavorite = { /* remove code */ }
+            onRemoveFavorite = { }
         )
     }
 }

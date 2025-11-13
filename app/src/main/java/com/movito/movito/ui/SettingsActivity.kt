@@ -8,16 +8,16 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+//  إضافة: imports للـ Scroll
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
@@ -38,6 +38,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.movito.movito.theme.MovitoTheme
+import com.movito.movito.ui.common.SettingsCards
 
 class SettingsActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,9 +50,9 @@ class SettingsActivity : ComponentActivity() {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     containerColor = MaterialTheme.colorScheme.background,
+                    // شيلنا الـ state بتاع selectedItem واستدعينا الـ NavBar الجديد
                     bottomBar = {
-                        var selectedItem by remember { mutableStateOf("profile") }
-                        MovitoNavBar(selectedItem = selectedItem) { selectedItem = it }
+                        MovitoNavBar(selectedItem = "profile")
                     }
                 ) { paddingValues ->
                     SettingsScreen(
@@ -77,10 +78,11 @@ fun SettingsScreen(
 
 
     Column(
-        modifier = Modifier
+        modifier = modifier //  ضفنا الـ Scroll
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-            .padding(16.dp)
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 16.dp) //  خليت الـ Padding أفقي بس
     ) {
         Row(
             modifier = Modifier
@@ -104,6 +106,7 @@ fun SettingsScreen(
         Spacer(Modifier.height(20.dp))
 
 
+        //  بقى بيستدعي الcard المشترك
         SettingsCards {
             Text(
                 text = "Account",
@@ -154,7 +157,6 @@ fun SettingsScreen(
                     )
                     .clickable {},
                 contentAlignment = Alignment.Center
-
             ) {
                 Text(
                     "Sign Out",
@@ -163,8 +165,6 @@ fun SettingsScreen(
                     fontWeight = FontWeight.Medium
                 )
             }
-
-
         }
         Spacer(Modifier.height(20.dp))
         SettingsCards {
@@ -254,7 +254,6 @@ fun SettingsScreen(
                         uncheckedTrackColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
                     )
                 )
-
             }
         }
         Spacer(Modifier.height(20.dp))
@@ -282,39 +281,26 @@ fun SettingsScreen(
                 modifier = Modifier.clickable {/*code*/ }
             )
         }
+        //  مسافة تحت عشان الـ Scroll تعديل للشكل
+        Spacer(Modifier.height(16.dp))
     }
 
 }
 
-@Composable
-fun SettingsCards(content: @Composable ColumnScope.() -> Unit) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface), // بيستخدم الثيم (ممتاز)
-        elevation = CardDefaults.cardElevation(4.dp)
-    ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            content()
-        }
-    }
-}
+//هنا انا شلت الfunction  بتاعت SettingsCards
 
+//  الـ Preview مبقاش فيه Scaffold
+// (عشان نعرض الشاشة بس، والـ BottomBar بقى في الـ Activity)
 @Preview(showSystemUi = true, name = "Dark Mode")
 @Composable
 fun SettingsPreviewDark() {
     var isDark by remember { mutableStateOf(true) }
     MovitoTheme(darkTheme = isDark) {
-        Scaffold(
-            modifier = Modifier.fillMaxSize(),
-            containerColor = MaterialTheme.colorScheme.background
-        ) { paddingValues ->
-            SettingsScreen(
-                modifier = Modifier.padding(paddingValues),
-                onThemeToggle = { isDark = it },
-                currentThemeIsDark = isDark
-            )
-        }
+        //  شيلت الـ Scaffold من هنا
+        SettingsScreen(
+            onThemeToggle = { isDark = it },
+            currentThemeIsDark = isDark
+        )
     }
 }
 
@@ -323,15 +309,9 @@ fun SettingsPreviewDark() {
 fun SettingsPreviewLight() {
     var isDark by remember { mutableStateOf(false) }
     MovitoTheme(darkTheme = isDark) {
-        Scaffold(
-            modifier = Modifier.fillMaxSize(),
-            containerColor = MaterialTheme.colorScheme.background
-        ) { paddingValues ->
-            SettingsScreen(
-                modifier = Modifier.padding(paddingValues),
-                onThemeToggle = { isDark = it },
-                currentThemeIsDark = isDark
-            )
-        }
+        SettingsScreen(
+            onThemeToggle = { isDark = it },
+            currentThemeIsDark = isDark
+        )
     }
 }
