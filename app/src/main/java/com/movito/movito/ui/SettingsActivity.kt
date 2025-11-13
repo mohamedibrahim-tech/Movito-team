@@ -1,11 +1,14 @@
 package com.movito.movito.ui
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,7 +17,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-//  إضافة: imports للـ Scroll
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -32,11 +34,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.movito.movito.BuildConfig
 import com.movito.movito.theme.MovitoTheme
 import com.movito.movito.ui.common.MovitoNavBar
 import com.movito.movito.ui.common.SettingsCards
@@ -46,20 +50,19 @@ class SettingsActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            var isDarkMode by remember { mutableStateOf(false) }
-            MovitoTheme(darkTheme = isDarkMode) {
+            val systemIsDark = isSystemInDarkTheme()
+            MovitoTheme(darkTheme = systemIsDark) {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     containerColor = MaterialTheme.colorScheme.background,
-                    // شيلنا الـ state بتاع selectedItem واستدعينا الـ NavBar الجديد
                     bottomBar = {
                         MovitoNavBar(selectedItem = "profile")
                     }
                 ) { paddingValues ->
                     SettingsScreen(
                         modifier = Modifier.padding(paddingValues),
-                        onThemeToggle = { isDarkMode = it },
-                        currentThemeIsDark = isDarkMode
+                        onThemeToggle = {},
+                        currentThemeIsDark = systemIsDark
                     )
                 }
             }
@@ -76,14 +79,16 @@ fun SettingsScreen(
 ) {
     var notifications by remember { mutableStateOf(false) }
     var downloadsWifiOnly by remember { mutableStateOf(true) }
+    val context = LocalContext.current
+    val githubUrl = "https://github.com/mohamedibrahim-tech/Movito-team/"
 
 
     Column(
-        modifier = modifier //  ضفنا الـ Scroll
+        modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
             .verticalScroll(rememberScrollState())
-            .padding(horizontal = 16.dp) //  خليت الـ Padding أفقي بس
+            .padding(horizontal = 16.dp)
     ) {
         Row(
             modifier = Modifier
@@ -107,7 +112,6 @@ fun SettingsScreen(
         Spacer(Modifier.height(20.dp))
 
 
-        //  بقى بيستدعي الcard المشترك
         SettingsCards {
             Text(
                 text = "Account",
@@ -268,7 +272,7 @@ fun SettingsScreen(
 
             Spacer(Modifier.height(8.dp))
             Text(
-                "Version: 1.0.0",
+                "Version: ${BuildConfig.VERSION_NAME}",
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 fontSize = 20.sp
             )
@@ -279,25 +283,22 @@ fun SettingsScreen(
                 color = MaterialTheme.colorScheme.primary,
                 fontSize = 20.sp,
                 textDecoration = TextDecoration.Underline,
-                modifier = Modifier.clickable {/*code*/ }
+                modifier = Modifier.clickable {
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(githubUrl))
+                    context.startActivity(intent)
+                }
             )
         }
-        //  مسافة تحت عشان الـ Scroll تعديل للشكل
         Spacer(Modifier.height(16.dp))
     }
 
 }
 
-//هنا انا شلت الfunction  بتاعت SettingsCards
-
-//  الـ Preview مبقاش فيه Scaffold
-// (عشان نعرض الشاشة بس، والـ BottomBar بقى في الـ Activity)
 @Preview(showSystemUi = true, name = "Dark Mode")
 @Composable
 fun SettingsPreviewDark() {
     var isDark by remember { mutableStateOf(true) }
     MovitoTheme(darkTheme = isDark) {
-        //  شيلت الـ Scaffold من هنا
         SettingsScreen(
             onThemeToggle = { isDark = it },
             currentThemeIsDark = isDark

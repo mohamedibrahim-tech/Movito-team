@@ -1,36 +1,32 @@
 package com.movito.movito.data.model
 
+import com.google.gson.annotations.SerializedName
+
 /**
  *  نقلنا الـ data class هنا عشان يبقى مشترك
  */
 data class Movie(
-    val id: Int = 0,
-    val title: String = "...",
-    val year: String = "9999",
-    val time: String = "99h 59m 59s",
-    val posterUrl: String = "",
-    val vote_avg: Float = 9.9f,
-    val vote_count: Int = Int.MAX_VALUE,
-    val production_countries: List<ProductionCountry> = listOf(),
-    val spoken_languages: List<SpokenLanguage> = listOf(),
-    val overview: String = "...",
-    val genres: List<Genre> = listOf(),
-    val homePage: String = "",
-
-    )
-
-data class ProductionCountry(
-    val iso_3166_1: String,
-    val name: String
-)
-
-data class SpokenLanguage(
-    val iso_639_1: String,
-    val name: String
+    @SerializedName("id")
+    val id: Int,
+    @SerializedName("title")
+    val title: String,
+    @SerializedName("release_date")
+    val releaseDate: String,
+    @SerializedName("poster_path")
+    val posterPath: String?,
+    @SerializedName("vote_average")
+    val voteAverage: Double,
+    @SerializedName("overview")
+    val overview: String,
+    @SerializedName("genre_ids")
+    val genreIds: List<Int>? = emptyList(), //عيب:)
+    @SerializedName("genres")
+    val genres: List<Genre>? = emptyList()
 )
 
 data class Genre(
+    @SerializedName("id")
     val id: Int,
+    @SerializedName("name")
     val name: String
 )
-

@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">Movito</string>
-    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="default_web_client_id">YOUR_WEB_CLIENT_ID</string>
 </resources>

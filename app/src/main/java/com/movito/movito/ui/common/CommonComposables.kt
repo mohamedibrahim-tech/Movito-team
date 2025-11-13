@@ -1,7 +1,5 @@
 package com.movito.movito.ui.common
 
-// (1) --- إضافة: import مكتبة Coil (لازم تضيفها في build.gradle) ---
-// (2) --- تعديل: تغيير مسار الـ data class ---
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -29,12 +27,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.movito.movito.R
 import com.movito.movito.data.model.Movie
 import com.movito.movito.theme.DarkButtonColor1
@@ -50,18 +50,19 @@ fun MovieCard(
         modifier = modifier, shape = RoundedCornerShape(16.dp)
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
-            // (5) --- تعديل: استخدمنا AsyncImage (من مكتبة Coil) ---
-            // ده عشان نحمل الصورة من الـ API (أو الرابط المؤقت)
             AsyncImage(
-                model = movie.posterUrl, //  ده بقى بيستقبل String
+                //ضيفت زي انميشن عشان التقطيع
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data("https://image.tmdb.org/t/p/w500${movie.posterPath}")
+                    .crossfade(true)
+                    .crossfade(400) // مدة الأنيميشن بالمللي ثانية
+                    .build(),
                 contentDescription = movie.title,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize(),
-                //  صورة مؤقتة لحد ما الـ API يحمل
                 placeholder = painterResource(id = R.drawable.poster_test)
             )
 
-            // التدرج اللوني الأسود الشفاف
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -71,12 +72,9 @@ fun MovieCard(
                         )
                     ), contentAlignment = Alignment.BottomStart
             ) {
-                // أي حاجة انت ضفتها من برة زي زرار القلب
                 content()
 
-                // (الاسم والسنة والوقت
                 Column(
-                    //  تعديل: ضفت align عشان نضمن المكان
                     modifier = Modifier
                         .padding(12.dp)
                         .align(Alignment.BottomStart)
@@ -90,7 +88,7 @@ fun MovieCard(
                     Spacer(modifier = Modifier.height(4.dp))
                     Row {
                         Text(
-                            text = movie.year,
+                            text = movie.releaseDate.take(4), // لعرض السنة فقط
                             style = MaterialTheme.typography.bodySmall,
                             color = Color.White.copy(alpha = 0.6f)
                         )
@@ -100,7 +98,7 @@ fun MovieCard(
                             color = Color.White.copy(alpha = 0.6f)
                         )
                         Text(
-                            text = movie.time,
+                            text = "Rating: ${movie.voteAverage}",
                             style = MaterialTheme.typography.bodySmall,
                             color = Color.White.copy(alpha = 0.6f)
                         )
