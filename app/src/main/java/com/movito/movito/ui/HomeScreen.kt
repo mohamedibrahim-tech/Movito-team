@@ -3,7 +3,6 @@ package com.movito.movito.ui
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -24,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -50,6 +50,10 @@ fun HomeScreen(
     viewModel: HomeViewModel = viewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+
+    LaunchedEffect(key1 = Unit) {
+        viewModel.loadMovies(isLoading = true)
+    }
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -84,13 +88,11 @@ fun HomeScreen(
                 }
             )
         },
-        // شيلت الـ state بتاع selectedItem واستدعينا الـ NavBar الجديد
         bottomBar = {
             MovitoNavBar(selectedItem = "home")
         }
     ) { innerPadding ->
 
-        // محتوى الشاشة (الـ Grid)
         Box(
             modifier = Modifier
                 .padding(innerPadding)
@@ -119,7 +121,6 @@ fun HomeScreen(
                         horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         items(items = uiState.movies, key = { it.id }) { movie ->
-                            //  استدعاء ال card المشترك
                             MovieCard(modifier = Modifier.height(280.dp), movie = movie)
                         }
                     }
@@ -129,15 +130,10 @@ fun HomeScreen(
     }
 }
 
-//  الـ Previews زي ما هي، بس هتستخدم الكارت المشترك
-
 @Preview(showSystemUi = true, name = "Dark Mode")
 @Composable
 fun HomePreview() {
     val mockViewModel = HomeViewModel()
-    //  تعديل: الـ Preview مبقاش بيحتاج loadMovies()
-    // (لأن الـ ViewModel اتغير لـ String URL)
-    // mockViewModel.loadMovies() // ده هيعمل Crash لو مشغلناش النت
 
     MovitoTheme(darkTheme = true) {
         HomeScreen(viewModel = mockViewModel)
@@ -157,8 +153,7 @@ fun HomePreviewLight() {
 @Preview(name = "Movie Card Preview")
 @Composable
 fun MovieCardPreview() {
-    //  تعديل: استخدمنا رابط صورة حقيقي
-    val mockMovie = Movie(1, "Cosmic Echoes", "2025", "2h 15m", "https://image.tmdb.org/t/p/w500/qA9b2xSJ8nCK2z3yIuVnAwmWsum.jpg")
+    val mockMovie = Movie(1, "Cosmic Echoes", "2025-03-15", "/qA9b2xSJ8nCK2z3yIuVnAwmWsum.jpg", 8.5, "An epic space opera.", listOf(878))
     MovitoTheme(darkTheme = true) {
         MovieCard(
             modifier = Modifier
