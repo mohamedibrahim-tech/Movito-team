@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.movito.movito.BuildConfig
 import com.movito.movito.theme.MovitoTheme
+import com.movito.movito.ui.common.MovitoNavBar
 import com.movito.movito.ui.common.SettingsCards
 
 class SettingsActivity : ComponentActivity() {

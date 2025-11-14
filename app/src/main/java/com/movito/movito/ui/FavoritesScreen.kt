@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.sp
 import com.movito.movito.theme.MovitoTheme
 import com.movito.movito.ui.common.MovieCard
 import com.movito.movito.data.model.Movie
+import com.movito.movito.ui.common.MovitoNavBar
 
 /**
  * شاشة المفضلة
@@ -137,7 +138,7 @@ fun FavoriteMovieCard(
     movie: Movie,
     onRemoveFavorite: () -> Unit
 ) {
-    MovieCard(modifier = modifier.height(280.dp), movie = movie) {
+    MovieCard(modifier = modifier.height(280.dp), movie = movie, isItInFavorites = false) {
         IconButton(
             onClick = onRemoveFavorite,
             modifier = Modifier

@@ -5,9 +5,8 @@
 
     <style name="Theme.App.Starting" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">#021e30</item>
-
         <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
-
         <item name="postSplashScreenTheme">@style/Theme.Movito</item>
     </style>
+
 </resources>

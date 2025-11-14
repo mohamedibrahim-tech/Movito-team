@@ -55,6 +55,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.movito.movito.R
 import com.movito.movito.theme.MovitoTheme
+import com.movito.movito.viewmodel.AuthViewModel
+import androidx.compose.foundation.layout.statusBarsPadding
 
 
 @Composable
@@ -115,44 +117,13 @@ fun CustomAuthTextField(
     )
 }
 
+
 @Composable
-fun GradientButton(
-    text: String,
-    onClick: () -> Unit,
-    gradient: Brush,
+fun SignInScreen(
     modifier: Modifier = Modifier,
-) {
-    Button(
-        onClick = onClick,
-        colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
-        contentPadding = PaddingValues(),
-        modifier = modifier
-            .fillMaxWidth()
-            .height(56.dp)
-            .clip(RoundedCornerShape(50.dp))
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(gradient, shape = RoundedCornerShape(50.dp))
-                .padding(horizontal = 16.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = text,
-                color = Color.White,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.SemiBold
-            )
-        }
-    }
-}
-
-
-@Composable
-fun SignUpScreen(
     authViewModel: AuthViewModel = viewModel(),
-    onSignInSuccess: () -> Unit
+    onSignInSuccess: () -> Unit,
+    onSignUpClicked: () -> Unit
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -183,14 +154,14 @@ fun SignUpScreen(
 
     val googleSignInClient = GoogleSignIn.getClient(context, gso)
 
-    LaunchedEffect(authState) {
-        if (authState.user != null) {
+    LaunchedEffect(Unit) {
+        authViewModel.navigationFlow.collect {
             onSignInSuccess()
         }
     }
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.TopCenter
@@ -324,7 +295,7 @@ fun SignUpScreen(
                 )
 
                 TextButton(
-                    onClick = { /* TODO: Navigate to Sign Up */ },
+                    onClick = onSignUpClicked,
                     contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
                     colors = ButtonDefaults.textButtonColors(
                         contentColor = MaterialTheme.colorScheme.primary
@@ -344,25 +315,25 @@ fun SignUpScreen(
 
 
 @Preview(
-    showBackground = false,
+    showBackground = true,
     showSystemUi = true,
     name = "Dark Mode Preview"
 )
 @Composable
-fun FinalSignUpScreenPreviewDark() {
+fun FinalSignInScreenPreviewDark() {
     MovitoTheme(darkTheme = true) {
-        SignUpScreen(onSignInSuccess = {})
+        SignInScreen(onSignInSuccess = {}, onSignUpClicked = {})
     }
 }
 
 @Preview(
-    showBackground = false,
+    showBackground = true,
     showSystemUi = true,
     name = "Light Mode Preview"
 )
 @Composable
-fun FinalSignUpScreenPreviewLight() {
+fun FinalSignInScreenPreviewLight() {
     MovitoTheme(darkTheme = false) {
-        SignUpScreen(onSignInSuccess = {})
+        SignInScreen(onSignInSuccess = {}, onSignUpClicked = {})
     }
 }

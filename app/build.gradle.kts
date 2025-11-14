@@ -6,7 +6,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     id("com.google.gms.google-services")
-
+    id("kotlin-parcelize")
 }
 
 android {
@@ -64,6 +64,8 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.material3)
+    implementation(libs.androidx.compose.runtime)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -84,6 +86,7 @@ dependencies {
     // Splash Screen API
     implementation("androidx.core:core-splashscreen:1.0.1")
 
+    implementation("androidx.compose.material:material-icons-extended")
     //   مكتبة Coil لتحميل الصور من الإنترنت
     implementation("io.coil-kt:coil-compose:2.6.0")
     implementation("com.google.firebase:firebase-auth")
@@ -98,4 +101,6 @@ dependencies {
     implementation("com.github.bumptech.glide:glide:5.0.5")
 
 
+// لإصلاح أخطاء Icons و filled:
+    implementation("androidx.compose.material:material-icons-extended")
 }
