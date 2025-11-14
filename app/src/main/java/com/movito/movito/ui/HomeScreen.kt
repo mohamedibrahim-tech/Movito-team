@@ -9,8 +9,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.CircularProgressIndicator
@@ -25,6 +27,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -39,6 +42,7 @@ import com.movito.movito.ui.common.MovieCard
 import com.movito.movito.viewmodel.HomeUiState
 import com.movito.movito.viewmodel.HomeViewModel
 import com.movito.movito.ui.common.MovitoNavBar
+import kotlinx.coroutines.launch
 
 // Stateful Composable: Handles logic and state
 @Composable
@@ -47,11 +51,19 @@ fun HomeScreen(
     viewModel: HomeViewModel = viewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val gridState = rememberLazyGridState()
+    val coroutineScope = rememberCoroutineScope()
 
     HomeScreenContent(
         modifier = modifier,
         uiState = uiState,
-        onRefresh = { viewModel.loadMovies(isRefreshing = true) }
+        gridState = gridState,
+        onRefresh = {
+            viewModel.loadMovies(isRefreshing = true)
+            coroutineScope.launch {
+                gridState.animateScrollToItem(0)
+            }
+        }
     )
 }
 
@@ -61,6 +73,7 @@ fun HomeScreen(
 fun HomeScreenContent(
     modifier: Modifier = Modifier,
     uiState: HomeUiState,
+    gridState: LazyGridState,
     onRefresh: () -> Unit
 ) {
     Scaffold(
@@ -123,6 +136,7 @@ fun HomeScreenContent(
 
                 else -> {
                     LazyVerticalGrid(
+                        state = gridState,
                         columns = GridCells.Fixed(2),
                         modifier = Modifier.fillMaxSize(),
                         contentPadding = PaddingValues(16.dp),
@@ -151,7 +165,7 @@ fun HomePreviewSuccessDark() {
     val mockMovie = Movie(1, "Cosmic Echoes", "2025-03-15", "/qA9b2xSJ8nCK2z3yIuVnAwmWsum.jpg", 8.5, "An epic space opera.", listOf(878))
     val mockState = HomeUiState(movies = List(10) { mockMovie })
     MovitoTheme(darkTheme = true) {
-        HomeScreenContent(uiState = mockState, onRefresh = {})
+        HomeScreenContent(uiState = mockState, gridState = rememberLazyGridState(), onRefresh = {})
     }
 }
 
@@ -161,7 +175,7 @@ fun HomePreviewSuccessLight() {
     val mockMovie = Movie(1, "Cosmic Echoes", "2025-03-15", "/qA9b2xSJ8nCK2z3yIuVnAwmWsum.jpg", 8.5, "An epic space opera.", listOf(878))
     val mockState = HomeUiState(movies = List(10) { mockMovie })
     MovitoTheme(darkTheme = false) {
-        HomeScreenContent(uiState = mockState, onRefresh = {})
+        HomeScreenContent(uiState = mockState, gridState = rememberLazyGridState(), onRefresh = {})
     }
 }
 
@@ -170,7 +184,7 @@ fun HomePreviewSuccessLight() {
 fun HomePreviewLoading() {
     val mockState = HomeUiState(isLoading = true)
     MovitoTheme(darkTheme = true) {
-        HomeScreenContent(uiState = mockState, onRefresh = {})
+        HomeScreenContent(uiState = mockState, gridState = rememberLazyGridState(), onRefresh = {})
     }
 }
 
@@ -179,7 +193,7 @@ fun HomePreviewLoading() {
 fun HomePreviewError() {
     val mockState = HomeUiState(error = "Failed to load movies")
     MovitoTheme(darkTheme = true) {
-        HomeScreenContent(uiState = mockState, onRefresh = {})
+        HomeScreenContent(uiState = mockState, gridState = rememberLazyGridState(), onRefresh = {})
     }
 }
 
