@@ -1,5 +1,6 @@
 package com.movito.movito.ui.common
 
+import android.content.Intent
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -41,13 +42,28 @@ import com.movito.movito.theme.DarkButtonColor1
 import com.movito.movito.theme.DarkButtonColor2
 import com.movito.movito.theme.LightButtonColor1
 import com.movito.movito.theme.LightButtonColor2
+import com.movito.movito.ui.DetailsActivity
+import com.movito.movito.ui.FavoritesActivity
 
 @Composable
 fun MovieCard(
-    modifier: Modifier = Modifier, movie: Movie, content: @Composable BoxScope.() -> Unit = {}
+    modifier: Modifier = Modifier,
+    movie: Movie,
+    intentToDetails: Boolean = true,
+    isItInFavorites: Boolean,
+    content: @Composable BoxScope.() -> Unit = {}
 ) {
+    val context = LocalContext.current
     Card(
-        modifier = modifier, shape = RoundedCornerShape(16.dp)
+        modifier = modifier, shape = RoundedCornerShape(16.dp), onClick = {
+            if(intentToDetails) {
+                val intent = Intent(context, DetailsActivity::class.java)
+                intent.putExtra("isItInFav", isItInFavorites)
+                intent.putExtra("movie", movie)
+                intent.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
+                context.startActivity(intent)
+            }
+        }
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             AsyncImage(
