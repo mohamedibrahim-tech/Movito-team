@@ -117,39 +117,6 @@ fun CustomAuthTextField(
     )
 }
 
-@Composable
-fun GradientButton(
-    text: String,
-    onClick: () -> Unit,
-    gradient: Brush,
-    modifier: Modifier = Modifier,
-) {
-    Button(
-        onClick = onClick,
-        colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
-        contentPadding = PaddingValues(),
-        modifier = modifier
-            .fillMaxWidth()
-            .height(56.dp)
-            .clip(RoundedCornerShape(50.dp))
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(gradient, shape = RoundedCornerShape(50.dp))
-                .padding(horizontal = 16.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = text,
-                color = Color.White,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.SemiBold
-            )
-        }
-    }
-}
-
 
 @Composable
 fun SignInScreen(
@@ -186,8 +153,8 @@ fun SignInScreen(
 
     val googleSignInClient = GoogleSignIn.getClient(context, gso)
 
-    LaunchedEffect(authState) {
-        if (authState.user != null) {
+    LaunchedEffect(Unit) {
+        authViewModel.navigationFlow.collect {
             onSignInSuccess()
         }
     }
