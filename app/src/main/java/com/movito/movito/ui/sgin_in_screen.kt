@@ -56,6 +56,7 @@ import com.google.android.gms.common.api.ApiException
 import com.movito.movito.R
 import com.movito.movito.theme.MovitoTheme
 import com.movito.movito.viewmodel.AuthViewModel
+import androidx.compose.foundation.layout.statusBarsPadding
 
 
 @Composable
@@ -200,6 +201,7 @@ fun SignInScreen(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .statusBarsPadding()
                 .padding(horizontal = 20.dp, vertical = 60.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -320,7 +322,7 @@ fun SignInScreen(
 
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    text = "Don\'t have an account?",
+                    text = "Don't have an account?",
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 14.sp
                 )
