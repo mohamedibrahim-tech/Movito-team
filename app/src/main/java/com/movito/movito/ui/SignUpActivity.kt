@@ -12,7 +12,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import com.movito.movito.MainActivity
 import com.movito.movito.theme.MovitoTheme
 import com.movito.movito.viewmodel.AuthViewModel
 
@@ -34,7 +33,7 @@ class SignUpActivity : ComponentActivity() {
 
                 LaunchedEffect(authState.user) {
                     if (authState.user != null) {
-                        startActivity(Intent(this@SignUpActivity, MainActivity::class.java))
+                        startActivity(Intent(this@SignUpActivity, CategoriesActivity::class.java))
                         finish()
                     }
                 }
