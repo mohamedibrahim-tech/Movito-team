@@ -39,10 +39,10 @@
             android:theme="@style/Theme.Movito" />
 
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.MoviesByGenreActivity"
             android:exported="false"
             android:label="@string/app_name"
-            android.theme="@style/Theme.App.Starting" />
+            android:theme="@style/Theme.Movito" />
 
         <activity
             android:name=".ui.SettingsActivity"
@@ -58,6 +58,11 @@
             android:name=".ui.FavoritesActivity"
             android:exported="false"
             android:label="Favorites"
+            android:theme="@style/Theme.Movito" />
+        <activity
+            android:name=".ui.CategoriesActivity"
+            android:exported="false"
+            android:label="Categories"
             android:theme="@style/Theme.Movito" />
     </application>
 

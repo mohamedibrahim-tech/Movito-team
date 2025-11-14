@@ -13,7 +13,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.google.firebase.auth.FirebaseAuth
-import com.movito.movito.MainActivity
 import com.movito.movito.theme.MovitoTheme
 
 class SignInActivity : ComponentActivity() {
@@ -26,8 +25,8 @@ class SignInActivity : ComponentActivity() {
 
         // Check if user is already logged in
         if (FirebaseAuth.getInstance().currentUser != null) {
-            // User is logged in, navigate to MainActivity
-            val intent = Intent(this, MainActivity::class.java)
+            // User is logged in, navigate to CategoriesActivity
+            val intent = Intent(this, CategoriesActivity::class.java)
             startActivity(intent)
             finish() // Finish SignInActivity so user can't go back to it
             return // Stop further execution of onCreate
@@ -40,7 +39,7 @@ class SignInActivity : ComponentActivity() {
                     SignInScreen(
                         modifier = Modifier.padding(it),
                         onSignInSuccess = {
-                            val intent = Intent(this, MainActivity::class.java)
+                            val intent = Intent(this, CategoriesActivity::class.java)
                             startActivity(intent)
                             finish()
                         },

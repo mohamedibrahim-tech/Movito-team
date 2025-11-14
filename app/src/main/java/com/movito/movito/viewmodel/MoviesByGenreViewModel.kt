@@ -1,5 +1,6 @@
 package com.movito.movito.viewmodel
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.movito.movito.BuildConfig
@@ -12,22 +13,14 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.IOException
 
-
-data class HomeUiState(
-    val isLoading: Boolean = false,
-    val isRefreshing: Boolean = false,
-    val isLoadingMore: Boolean = false,
-    val movies: List<Movie> = emptyList(),
-    val error: String? = null
-)
-
-class HomeViewModel : ViewModel() {
+class MoviesByGenreViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
     private val apiKey = BuildConfig.TMDB_API_KEY
     private var currentPage = 1
+    private val genreId: Int = savedStateHandle.get<Int>("genreId")!!
 
     init {
         loadMovies(isLoading = true)
@@ -48,7 +41,7 @@ class HomeViewModel : ViewModel() {
             }
 
             try {
-                val response = RetrofitInstance.api.getPopularMovies(apiKey, currentPage)
+                val response = RetrofitInstance.api.discoverMoviesByGenre(apiKey, currentPage, genreId)
                 _uiState.update {
                     val currentMovies = if (isRefreshing) emptyList() else it.movies
                     it.copy(
@@ -87,7 +80,7 @@ class HomeViewModel : ViewModel() {
             _uiState.update { it.copy(isLoadingMore = true, error = null) }
 
             try {
-                val response = RetrofitInstance.api.getPopularMovies(apiKey, currentPage)
+                val response = RetrofitInstance.api.discoverMoviesByGenre(apiKey, currentPage, genreId)
                 _uiState.update {
                     it.copy(
                         isLoadingMore = false,
@@ -101,14 +94,14 @@ class HomeViewModel : ViewModel() {
                 _uiState.update {
                     it.copy(
                         isLoadingMore = false,
-                        error = "Failed to load more movies"
+                        error = "Failed to load more movies: ${e.message}"
                     )
                 }
             } catch (e: Exception) {
                 _uiState.update {
                     it.copy(
                         isLoadingMore = false,
-                        error = "An unexpected error occurred"
+                        error = "An unexpected error occurred: ${e.message}"
                     )
                 }
             }

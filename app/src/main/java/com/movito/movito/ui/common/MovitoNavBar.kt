@@ -14,13 +14,13 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext // (2) --- إضافة import ---
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.movito.movito.MainActivity
 import com.movito.movito.R
 import com.movito.movito.theme.MovitoTheme
+import com.movito.movito.ui.CategoriesActivity
 import com.movito.movito.ui.SearchActivity
 import com.movito.movito.ui.FavoritesActivity
 import com.movito.movito.ui.SettingsActivity
@@ -43,7 +43,7 @@ fun MovitoNavBar(selectedItem: String) {
             // (8) --- تعديل: الـ onClick بقى بيستخدم Intent ---
             onClick = {
                 if (selectedItem != "home") {
-                    navigateToActivity(context, MainActivity::class.java)
+                    navigateToActivity(context, CategoriesActivity::class.java)
                 }
             },
             icon = {

@@ -5,15 +5,18 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -25,8 +28,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,53 +45,61 @@ import com.movito.movito.R
 import com.movito.movito.data.model.Movie
 import com.movito.movito.theme.MovitoTheme
 import com.movito.movito.ui.common.MovieCard
-import com.movito.movito.viewmodel.HomeUiState
-import com.movito.movito.viewmodel.HomeViewModel
 import com.movito.movito.ui.common.MovitoNavBar
+import com.movito.movito.viewmodel.HomeUiState
+import com.movito.movito.viewmodel.MoviesByGenreViewModel
 import kotlinx.coroutines.launch
 
-// Stateful Composable: Handles logic and state
 @Composable
-fun HomeScreen(
+fun MoviesByGenreScreen(
     modifier: Modifier = Modifier,
-    viewModel: HomeViewModel = viewModel()
+    viewModel: MoviesByGenreViewModel = viewModel(),
+    genreName: String,
+    onBackPressed: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val gridState = rememberLazyGridState()
     val coroutineScope = rememberCoroutineScope()
 
-    HomeScreenContent(
+    MoviesByGenreContent(
         modifier = modifier,
         uiState = uiState,
         gridState = gridState,
+        genreName = genreName,
         onRefresh = {
             viewModel.loadMovies(isRefreshing = true)
             coroutineScope.launch {
                 gridState.animateScrollToItem(0)
             }
-        }
+        },
+        onLoadMore = { viewModel.loadMoreMovies() },
+        onBackPressed = onBackPressed
     )
 }
 
-// Stateless Composable: Only displays UI, perfect for previews
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreenContent(
+fun MoviesByGenreContent(
     modifier: Modifier = Modifier,
     uiState: HomeUiState,
     gridState: LazyGridState,
-    onRefresh: () -> Unit
+    genreName: String,
+    onRefresh: () -> Unit,
+    onLoadMore: () -> Unit,
+    onBackPressed: () -> Unit
 ) {
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
-                title = {
-                    Image(
-                        painter = painterResource(id = R.drawable.movito_logo),
-                        contentDescription = "Movito Logo",
-                        modifier = Modifier.height(32.dp)
-                    )
+                title = { Text(genreName) },
+                navigationIcon = {
+                    IconButton(onClick = onBackPressed) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back"
+                        )
+                    }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.background,
@@ -109,7 +123,7 @@ fun HomeScreenContent(
             )
         },
         bottomBar = {
-            MovitoNavBar(selectedItem = "home")
+            MovitoNavBar(selectedItem = "") // No item is selected
         }
     ) { innerPadding ->
 
@@ -123,7 +137,7 @@ fun HomeScreenContent(
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                 }
 
-                uiState.error != null -> {
+                uiState.error != null && !uiState.isLoadingMore -> {
                     Text(
                         text = "Failed to load movies",
                         color = MaterialTheme.colorScheme.error,
@@ -150,6 +164,29 @@ fun HomeScreenContent(
                         ) { movie ->
                             MovieCard(modifier = Modifier.height(280.dp), movie = movie, isItInFavorites = false)
                         }
+
+                        if (uiState.isLoadingMore) {
+                            item(span = { GridItemSpan(2) }) {
+                                Box(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+                                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                                }
+                            }
+                        }
+                    }
+
+                    val buffer = 4 // Start loading when 4 items are left
+                    val shouldLoadMore by remember {
+                        derivedStateOf {
+                            val lastVisibleItemIndex = gridState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
+                            val totalItemCount = gridState.layoutInfo.totalItemsCount
+                            lastVisibleItemIndex >= totalItemCount - 1 - buffer
+                        }
+                    }
+
+                    LaunchedEffect(shouldLoadMore) {
+                        if (shouldLoadMore) {
+                            onLoadMore()
+                        }
                     }
                 }
             }
@@ -161,51 +198,48 @@ fun HomeScreenContent(
 
 @Preview(showSystemUi = true, name = "Dark Mode - Success")
 @Composable
-fun HomePreviewSuccessDark() {
+fun MoviesByGenrePreviewSuccessDark() {
     val mockMovie = Movie(1, "Cosmic Echoes", "2025-03-15", "/qA9b2xSJ8nCK2z3yIuVnAwmWsum.jpg", 8.5, "An epic space opera.", listOf(878))
     val mockState = HomeUiState(movies = List(10) { mockMovie })
     MovitoTheme(darkTheme = true) {
-        HomeScreenContent(uiState = mockState, gridState = rememberLazyGridState(), onRefresh = {})
+        MoviesByGenreContent(uiState = mockState, gridState = rememberLazyGridState(), genreName = "Action", onRefresh = {}, onLoadMore = {}, onBackPressed = {})
     }
 }
 
 @Preview(showSystemUi = true, name = "Light Mode - Success")
 @Composable
-fun HomePreviewSuccessLight() {
+fun MoviesByGenrePreviewSuccessLight() {
     val mockMovie = Movie(1, "Cosmic Echoes", "2025-03-15", "/qA9b2xSJ8nCK2z3yIuVnAwmWsum.jpg", 8.5, "An epic space opera.", listOf(878))
     val mockState = HomeUiState(movies = List(10) { mockMovie })
     MovitoTheme(darkTheme = false) {
-        HomeScreenContent(uiState = mockState, gridState = rememberLazyGridState(), onRefresh = {})
+        MoviesByGenreContent(uiState = mockState, gridState = rememberLazyGridState(), genreName = "Action", onRefresh = {}, onLoadMore = {}, onBackPressed = {})
     }
 }
 
 @Preview(showSystemUi = true, name = "Dark Mode - Loading")
 @Composable
-fun HomePreviewLoading() {
+fun MoviesByGenrePreviewLoading() {
     val mockState = HomeUiState(isLoading = true)
     MovitoTheme(darkTheme = true) {
-        HomeScreenContent(uiState = mockState, gridState = rememberLazyGridState(), onRefresh = {})
+        MoviesByGenreContent(uiState = mockState, gridState = rememberLazyGridState(), genreName = "Action", onRefresh = {}, onLoadMore = {}, onBackPressed = {})
     }
 }
 
 @Preview(showSystemUi = true, name = "Dark Mode - Error")
 @Composable
-fun HomePreviewError() {
+fun MoviesByGenrePreviewError() {
     val mockState = HomeUiState(error = "Failed to load movies")
     MovitoTheme(darkTheme = true) {
-        HomeScreenContent(uiState = mockState, gridState = rememberLazyGridState(), onRefresh = {})
+        MoviesByGenreContent(uiState = mockState, gridState = rememberLazyGridState(), genreName = "Action", onRefresh = {}, onLoadMore = {}, onBackPressed = {})
     }
 }
 
-@Preview(name = "Movie Card Preview")
+@Preview(showSystemUi = true, name = "Dark Mode - Loading More")
 @Composable
-fun MovieCardPreview() {
+fun MoviesByGenrePreviewLoadingMore() {
     val mockMovie = Movie(1, "Cosmic Echoes", "2025-03-15", "/qA9b2xSJ8nCK2z3yIuVnAwmWsum.jpg", 8.5, "An epic space opera.", listOf(878))
+    val mockState = HomeUiState(movies = List(10) { mockMovie }, isLoadingMore = true)
     MovitoTheme(darkTheme = true) {
-        MovieCard(
-            modifier = Modifier
-                .padding(16.dp)
-                .height(280.dp), movie = mockMovie, isItInFavorites = false
-        )
+        MoviesByGenreContent(uiState = mockState, gridState = rememberLazyGridState(), genreName = "Action", onRefresh = {}, onLoadMore = {}, onBackPressed = {})
     }
 }
