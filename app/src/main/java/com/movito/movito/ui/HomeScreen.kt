@@ -33,16 +33,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.movito.movito.R
+import com.movito.movito.data.model.Movie
 import com.movito.movito.theme.MovitoTheme
 import com.movito.movito.ui.common.MovieCard
+import com.movito.movito.viewmodel.HomeUiState
 import com.movito.movito.viewmodel.HomeViewModel
-import com.movito.movito.data.model.Movie
 
-/**
- * شاشة الهوم
- * (تم تعديل الـ BottomBar)
- */
-@OptIn(ExperimentalMaterial3Api::class)
+// Stateful Composable: Handles logic and state
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
@@ -50,6 +47,21 @@ fun HomeScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
+    HomeScreenContent(
+        modifier = modifier,
+        uiState = uiState,
+        onRefresh = { viewModel.loadMovies(isRefreshing = true) }
+    )
+}
+
+// Stateless Composable: Only displays UI, perfect for previews
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun HomeScreenContent(
+    modifier: Modifier = Modifier,
+    uiState: HomeUiState,
+    onRefresh: () -> Unit
+) {
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
@@ -65,10 +77,9 @@ fun HomeScreen(
                     containerColor = MaterialTheme.colorScheme.background,
                 ),
                 actions = {
-                    // أيقونة الـ Refresh
                     IconButton(onClick = {
                         if (!uiState.isRefreshing && !uiState.isLoading) {
-                            viewModel.loadMovies(isRefreshing = true)
+                            onRefresh()
                         }
                     }) {
                         if (uiState.isRefreshing) {
@@ -97,6 +108,7 @@ fun HomeScreen(
                 uiState.isLoading -> {
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                 }
+
                 uiState.error != null -> {
                     Text(
                         text = "Failed to load movies",
@@ -107,6 +119,7 @@ fun HomeScreen(
                             .padding(16.dp)
                     )
                 }
+
                 else -> {
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(2),
@@ -118,7 +131,7 @@ fun HomeScreen(
                         items(
                             items = uiState.movies,
                             key = { it.id },
-                            contentType = { "movie" } // هذا هو السطر المهم
+                            contentType = { "movie" }
                         ) { movie ->
                             MovieCard(modifier = Modifier.height(280.dp), movie = movie)
                         }
@@ -129,23 +142,43 @@ fun HomeScreen(
     }
 }
 
-@Preview(showSystemUi = true, name = "Dark Mode")
-@Composable
-fun HomePreview() {
-    val mockViewModel = HomeViewModel()
+// --- Previews ---
 
+@Preview(showSystemUi = true, name = "Dark Mode - Success")
+@Composable
+fun HomePreviewSuccessDark() {
+    val mockMovie = Movie(1, "Cosmic Echoes", "2025-03-15", "/qA9b2xSJ8nCK2z3yIuVnAwmWsum.jpg", 8.5, "An epic space opera.", listOf(878))
+    val mockState = HomeUiState(movies = List(10) { mockMovie })
     MovitoTheme(darkTheme = true) {
-        HomeScreen(viewModel = mockViewModel)
+        HomeScreenContent(uiState = mockState, onRefresh = {})
     }
 }
 
-@Preview(showSystemUi = true, name = "Light Mode")
+@Preview(showSystemUi = true, name = "Light Mode - Success")
 @Composable
-fun HomePreviewLight() {
-    val mockViewModel = HomeViewModel()
-
+fun HomePreviewSuccessLight() {
+    val mockMovie = Movie(1, "Cosmic Echoes", "2025-03-15", "/qA9b2xSJ8nCK2z3yIuVnAwmWsum.jpg", 8.5, "An epic space opera.", listOf(878))
+    val mockState = HomeUiState(movies = List(10) { mockMovie })
     MovitoTheme(darkTheme = false) {
-        HomeScreen(viewModel = mockViewModel)
+        HomeScreenContent(uiState = mockState, onRefresh = {})
+    }
+}
+
+@Preview(showSystemUi = true, name = "Dark Mode - Loading")
+@Composable
+fun HomePreviewLoading() {
+    val mockState = HomeUiState(isLoading = true)
+    MovitoTheme(darkTheme = true) {
+        HomeScreenContent(uiState = mockState, onRefresh = {})
+    }
+}
+
+@Preview(showSystemUi = true, name = "Dark Mode - Error")
+@Composable
+fun HomePreviewError() {
+    val mockState = HomeUiState(error = "Failed to load movies")
+    MovitoTheme(darkTheme = true) {
+        HomeScreenContent(uiState = mockState, onRefresh = {})
     }
 }
 
