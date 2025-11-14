@@ -45,6 +45,9 @@ class SignInActivity : ComponentActivity() {
                         },
                         onSignUpClicked = {
                             startActivity(Intent(this, SignUpActivity::class.java))
+                        },
+                        onForgotPasswordClicked = {
+                            startActivity(Intent(this, ForgotPasswordActivity::class.java))
                         }
                     )
                 }
