@@ -1,11 +1,12 @@
 package com.movito.movito.ui
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -104,7 +105,8 @@ fun DetailsScreen(
             MovieCard(
                 modifier = Modifier
                     .weight(0.30f)
-                    .fillMaxWidth(), movie = movie,
+                    .fillMaxWidth(),
+                movie = movie,
                 intentToDetails = false,
                 isItInFavorites = initiallyFavorite
             )
@@ -146,7 +148,11 @@ fun DetailsScreen(
                         tint = contentColor,
                         modifier = Modifier.weight(0.2f)
                     )
-                    Spacer(modifier = Modifier.width(4.dp).weight(0.1f))
+                    Spacer(
+                        modifier = Modifier
+                            .width(4.dp)
+                            .weight(0.1f)
+                    )
                     Text(
                         text = "Share",
                         color = contentColor,
@@ -227,7 +233,6 @@ fun DetailsScreen(
                 ) {
 
                 }
-
             }
 
         }
@@ -332,20 +337,58 @@ fun PartialStar(fillFraction: Float, modifier: Modifier) {
     }
 }
 
+@SuppressLint("ViewModelConstructorInComposable")
 @Preview("Dark Details Screen preview", showSystemUi = true)
 @Composable
 fun DetailsScreenPreviewDark() {
-    val mockMovie = Movie(1, "Cosmic Echoes", "2025-03-15", "/qA9b2xSJ8nCK2z3yIuVnAwmWsum.jpg", 8.5, "An epic space opera.", listOf(878))
+    val mockMovie = Movie(
+        1,
+        "Cosmic Echoes",
+        "2025-03-15",
+        "/qA9b2xSJ8nCK2z3yIuVnAwmWsum.jpg",
+        8.5,
+        "An epic space opera.",
+        listOf(878)
+    )
+
+    val fakeVM = DetailsViewModel()
+
     MovitoTheme(true) {
-        // DetailsScreen(movie = mockMovie) { TODO() } // Updated DetailsScreen signature
+        DetailsScreen(
+            movie = mockMovie,
+            viewModel = fakeVM,
+            modifier = Modifier,
+            initiallyFavorite = false,
+            onFavoriteChanged = {},
+            onClickBackButton = {},
+        )
     }
 }
 
+@SuppressLint("ViewModelConstructorInComposable")
 @Preview("light Details Screen preview", showSystemUi = true)
 @Composable
 fun DetailsScreenPreviewLight() {
-    val mockMovie = Movie(1, "Cosmic Echoes", "2025-03-15", "/qA9b2xSJ8nCK2z3yIuVnAwmWsum.jpg", 8.5, "An epic space opera.", listOf(878))
+    val mockMovie = Movie(
+        1,
+        "Cosmic Echoes",
+        "2025-03-15",
+        "/qA9b2xSJ8nCK2z3yIuVnAwmWsum.jpg",
+        8.5,
+        "An epic space opera.",
+        listOf(878)
+    )
+
+    val fakeVM = DetailsViewModel()
+
     MovitoTheme(false) {
-        // DetailsScreen(movie = mockMovie) { TODO() } // Updated DetailsScreen signature
+        DetailsScreen(
+            movie = mockMovie,
+            viewModel = fakeVM,
+            modifier = Modifier,
+            initiallyFavorite = false,
+            onFavoriteChanged = {},
+            onClickBackButton = {},
+        )
     }
 }
