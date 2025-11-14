@@ -120,6 +120,7 @@ fun CustomAuthTextField(
 
 @Composable
 fun SignInScreen(
+    modifier: Modifier = Modifier,
     authViewModel: AuthViewModel = viewModel(),
     onSignInSuccess: () -> Unit,
     onSignUpClicked: () -> Unit
@@ -160,7 +161,7 @@ fun SignInScreen(
     }
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.TopCenter
@@ -168,7 +169,6 @@ fun SignInScreen(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .statusBarsPadding()
                 .padding(horizontal = 20.dp, vertical = 60.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
