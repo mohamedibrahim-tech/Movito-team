@@ -18,7 +18,7 @@
         android:theme="@style/Theme.App.Starting">
 
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.SignInActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.App.Starting">
@@ -27,6 +27,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".ui.SignUpActivity"
+            android:exported="false"
+            android:label="Sign Up"
+            android:theme="@style/Theme.Movito" />
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="false"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.App.Starting" />
 
         <activity
             android:name=".ui.SettingsActivity"

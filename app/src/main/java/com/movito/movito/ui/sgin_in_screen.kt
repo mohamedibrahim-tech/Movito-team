@@ -1,4 +1,4 @@
-package com.movito.movito.ui.common
+package com.movito.movito.ui
 
 import android.app.Activity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -55,7 +55,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.movito.movito.R
 import com.movito.movito.theme.MovitoTheme
-import com.movito.movito.ui.AuthViewModel
+import com.movito.movito.viewmodel.AuthViewModel
 
 
 @Composable
@@ -151,9 +151,10 @@ fun GradientButton(
 
 
 @Composable
-fun SignUpScreen(
+fun SignInScreen(
     authViewModel: AuthViewModel = viewModel(),
-    onSignInSuccess: () -> Unit
+    onSignInSuccess: () -> Unit,
+    onSignUpClicked: () -> Unit
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -319,13 +320,13 @@ fun SignUpScreen(
 
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    text = "Don't have an account?",
+                    text = "Don\'t have an account?",
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 14.sp
                 )
 
                 TextButton(
-                    onClick = { /* TODO: Navigate to Sign Up */ },
+                    onClick = onSignUpClicked,
                     contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
                     colors = ButtonDefaults.textButtonColors(
                         contentColor = MaterialTheme.colorScheme.primary
@@ -350,9 +351,9 @@ fun SignUpScreen(
     name = "Dark Mode Preview"
 )
 @Composable
-fun FinalSignUpScreenPreviewDark() {
+fun FinalSignInScreenPreviewDark() {
     MovitoTheme(darkTheme = true) {
-        SignUpScreen(onSignInSuccess = {})
+        SignInScreen(onSignInSuccess = {}, onSignUpClicked = {})
     }
 }
 
@@ -362,8 +363,8 @@ fun FinalSignUpScreenPreviewDark() {
     name = "Light Mode Preview"
 )
 @Composable
-fun FinalSignUpScreenPreviewLight() {
+fun FinalSignInScreenPreviewLight() {
     MovitoTheme(darkTheme = false) {
-        SignUpScreen(onSignInSuccess = {})
+        SignInScreen(onSignInSuccess = {}, onSignUpClicked = {})
     }
 }
