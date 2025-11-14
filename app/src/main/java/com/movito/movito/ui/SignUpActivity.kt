@@ -41,15 +41,12 @@ class SignUpActivity : ComponentActivity() {
                 Scaffold { padding ->
                     SignUpScreen(
                         modifier = Modifier.padding(padding),
-
-                        )
-
-                    {
-                        startActivity(Intent(this@SignUpActivity, SignInActivity::class.java))
-                        finish()
-                    }
-
-
+                        onSignInClicked = {
+                            startActivity(Intent(this@SignUpActivity, SignInActivity::class.java))
+                            finish()
+                        },
+                        onGoogleSignUpClicked = {}
+                    )
                 }
             }
         }
