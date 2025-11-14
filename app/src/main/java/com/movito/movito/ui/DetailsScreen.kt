@@ -15,7 +15,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.Favorite
@@ -87,7 +89,9 @@ fun DetailsScreen(
             MovieCard(
                 modifier = Modifier
                     .weight(0.30f)
-                    .fillMaxWidth(), movie = movie
+                    .fillMaxWidth(), movie = movie,
+                intentToDetails = false,
+                isItInFavorites = initiallyFavorite
             )
 
             // Info + actions section (15%)
@@ -104,7 +108,7 @@ fun DetailsScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        "${movie.vote_avg}",
+                        "%.1f".format(movie.voteAverage),
                         fontWeight = FontWeight.Bold,
                         fontSize = 32.sp,
                         color = contentColor
@@ -113,7 +117,7 @@ fun DetailsScreen(
                     Spacer(modifier = Modifier.height(2.dp))
 
                     RatingBar(
-                        rating = movie.vote_avg, modifier = Modifier.fillMaxWidth(0.9f)
+                        rating = movie.voteAverage.toFloat(), modifier = Modifier.fillMaxWidth(0.9f)
                     )
                 }
 
@@ -121,14 +125,20 @@ fun DetailsScreen(
                 // Share button (25%)
                 TextButton(
                     modifier = Modifier.weight(0.25f),
-                    onClick = { shareUrl(context, movie.homePage) }) {
+                    onClick = { shareUrl(context, movie.homepage) }) {
                     Icon(
                         imageVector = Icons.Outlined.Share,
                         contentDescription = "Share",
-                        tint = contentColor
+                        tint = contentColor,
+                        modifier = Modifier.weight(0.2f)
                     )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(text = "Share", color = contentColor)
+                    Spacer(modifier = Modifier.width(4.dp).weight(0.1f))
+                    Text(
+                        text = "Share",
+                        color = contentColor,
+                        fontSize = 16.sp,
+                        modifier = Modifier.weight(0.7f)
+                    )
                 }
 
                 // Play Trailer (35%)
@@ -170,11 +180,19 @@ fun DetailsScreen(
                     color = contentColor
                 )
 
-                Text(
-                    "overview: ${movie.overview}",
-                    style = MaterialTheme.typography.bodyMedium,
-                    softWrap = true
-                )
+                val scrollState = rememberScrollState()
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(scrollState)
+                ) {
+                    Text(
+                        text = "Overview: ${movie.overview}",
+                        style = MaterialTheme.typography.bodyMedium,
+                        softWrap = true
+                    )
+                }
+
 
             }
 
@@ -288,7 +306,8 @@ fun PartialStar(fillFraction: Float, modifier: Modifier) {
             modifier = Modifier
                 .fillMaxSize()
                 .drawWithContent {
-                    clipRect(right = size.width * fillFraction) {
+                    clipRect(
+                        right = size.width * fillFraction) {
                         this@drawWithContent.drawContent()
                     }
                 },
@@ -303,11 +322,13 @@ fun DetailsScreenPreviewDark() {
     val mockMovie = Movie(
         1,
         "Cosmic Echoes",
-        "2025",
-        "2h 15m",
-        "https://image.tmdb.org/t/p/w500/qA9b2xSJ8nCK2z3yIuVnAwmWsum.jpg"
+        "2025-03-15",
+        "/qA9b2xSJ8nCK2z3yIuVnAwmWsum.jpg",
+        8.5,
+        "An epic space opera.",
+        listOf(878)
     )
-    MovitoTheme (true){
+    MovitoTheme(true) {
         DetailsScreen(movie = mockMovie) { TODO() }
     }
 }
@@ -318,11 +339,13 @@ fun DetailsScreenPreviewLight() {
     val mockMovie = Movie(
         1,
         "Cosmic Echoes",
-        "2025",
-        "2h 15m",
-        "https://image.tmdb.org/t/p/w500/qA9b2xSJ8nCK2z3yIuVnAwmWsum.jpg"
+        "2025-03-15",
+        "/qA9b2xSJ8nCK2z3yIuVnAwmWsum.jpg",
+        8.5,
+        "An epic space opera.",
+        listOf(878)
     )
-    MovitoTheme (false){
+    MovitoTheme(false) {
         DetailsScreen(movie = mockMovie) { TODO() }
     }
 }
