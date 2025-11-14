@@ -23,6 +23,7 @@ import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material.icons.rounded.StarBorder
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -74,10 +75,9 @@ fun MovieCard(
         }) {
         Box(modifier = Modifier.fillMaxSize()) {
             AsyncImage(
-                //ضيفت زي انميشن عشان التقطيع
                 model = ImageRequest.Builder(LocalContext.current)
                     .data("https://image.tmdb.org/t/p/w500${movie.posterPath}").crossfade(true)
-                    .crossfade(400) // مدة الأنيميشن بالمللي ثانية
+                    .crossfade(400)
                     .build(),
                 contentDescription = movie.title,
                 contentScale = ContentScale.Crop,
@@ -159,7 +159,6 @@ fun MovieCard(
 @Composable
 fun PartialStar(fillFraction: Float, modifier: Modifier) {
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
-        // Background star
         Icon(
             imageVector = Icons.Rounded.StarBorder,
             contentDescription = null,
@@ -175,7 +174,7 @@ fun PartialStar(fillFraction: Float, modifier: Modifier) {
                 .fillMaxSize()
                 .drawWithContent {
                     clipRect(
-                        right = size.width * fillFraction
+                        right = this.size.width * fillFraction
                     ) {
                         this@drawWithContent.drawContent()
                     }
@@ -208,7 +207,7 @@ fun MovitoButton(
     modifier: Modifier = Modifier,
     roundedCornerSize: Dp = 12.dp,
     isDarkMode: Boolean = false,
-    content: BoxScope.() -> Unit = {},
+    isLoading: Boolean = false,
     onClick: () -> Unit,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
@@ -225,14 +224,22 @@ fun MovitoButton(
                 )
             )
             .clickable(
+                enabled = !isLoading,
                 interactionSource = interactionSource,
-                indication = LocalIndication.current,  // new ripple API
+                indication = LocalIndication.current,
                 onClick = onClick
             ), contentAlignment = Alignment.Center
     ) {
-        Text(
-            text = text, color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.Medium
-        )
-        content()
+        if (isLoading) {
+            CircularProgressIndicator(
+                modifier = Modifier.size(24.dp),
+                color = Color.White,
+                strokeWidth = 2.dp
+            )
+        } else {
+            Text(
+                text = text, color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.Medium
+            )
+        }
     }
 }

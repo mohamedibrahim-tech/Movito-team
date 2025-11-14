@@ -2,6 +2,7 @@ package com.movito.movito.ui
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -34,6 +35,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -55,17 +58,29 @@ import com.movito.movito.theme.MovitoTheme
 import com.movito.movito.theme.StarColor
 import com.movito.movito.ui.common.MovieCard
 import com.movito.movito.ui.common.MovitoButton
+import com.movito.movito.viewmodel.DetailsViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailsScreen(
+    viewModel: DetailsViewModel,
     movie: Movie,
     modifier: Modifier = Modifier,
     initiallyFavorite: Boolean = false,
     onFavoriteChanged: (Boolean) -> Unit = {},
     onClickBackButton: () -> Unit,
 ) {
+    val uiState by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
+
+    LaunchedEffect(uiState.trailerUrl) {
+        uiState.trailerUrl?.let {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(it))
+            context.startActivity(intent)
+        }
+    }
+
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
@@ -121,7 +136,6 @@ fun DetailsScreen(
                     )
                 }
 
-                val context = LocalContext.current
                 // Share button (25%)
                 TextButton(
                     modifier = Modifier.weight(0.25f),
@@ -145,8 +159,10 @@ fun DetailsScreen(
                 MovitoButton(
                     text = "Play Trailer",
                     modifier = Modifier.weight(0.35f),
-                    roundedCornerSize = 100.dp
-                ) {}
+                    isLoading = uiState.isLoading,
+                    roundedCornerSize = 100.dp,
+                    onClick = { viewModel.findTrailer(movie.id) }
+                )
 
                 // Favorite button (15%)
                 var isFavorite by remember { mutableStateOf(initiallyFavorite) }
@@ -307,7 +323,7 @@ fun PartialStar(fillFraction: Float, modifier: Modifier) {
                 .fillMaxSize()
                 .drawWithContent {
                     clipRect(
-                        right = size.width * fillFraction) {
+                        right = this.size.width * fillFraction) {
                         this@drawWithContent.drawContent()
                     }
                 },
@@ -319,33 +335,17 @@ fun PartialStar(fillFraction: Float, modifier: Modifier) {
 @Preview("Dark Details Screen preview", showSystemUi = true)
 @Composable
 fun DetailsScreenPreviewDark() {
-    val mockMovie = Movie(
-        1,
-        "Cosmic Echoes",
-        "2025-03-15",
-        "/qA9b2xSJ8nCK2z3yIuVnAwmWsum.jpg",
-        8.5,
-        "An epic space opera.",
-        listOf(878)
-    )
+    val mockMovie = Movie(1, "Cosmic Echoes", "2025-03-15", "/qA9b2xSJ8nCK2z3yIuVnAwmWsum.jpg", 8.5, "An epic space opera.", listOf(878))
     MovitoTheme(true) {
-        DetailsScreen(movie = mockMovie) { TODO() }
+        // DetailsScreen(movie = mockMovie) { TODO() } // Updated DetailsScreen signature
     }
 }
 
 @Preview("light Details Screen preview", showSystemUi = true)
 @Composable
 fun DetailsScreenPreviewLight() {
-    val mockMovie = Movie(
-        1,
-        "Cosmic Echoes",
-        "2025-03-15",
-        "/qA9b2xSJ8nCK2z3yIuVnAwmWsum.jpg",
-        8.5,
-        "An epic space opera.",
-        listOf(878)
-    )
+    val mockMovie = Movie(1, "Cosmic Echoes", "2025-03-15", "/qA9b2xSJ8nCK2z3yIuVnAwmWsum.jpg", 8.5, "An epic space opera.", listOf(878))
     MovitoTheme(false) {
-        DetailsScreen(movie = mockMovie) { TODO() }
+        // DetailsScreen(movie = mockMovie) { TODO() } // Updated DetailsScreen signature
     }
 }
