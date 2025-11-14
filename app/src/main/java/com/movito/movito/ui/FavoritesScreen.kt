@@ -138,7 +138,7 @@ fun FavoriteMovieCard(
     movie: Movie,
     onRemoveFavorite: () -> Unit
 ) {
-    MovieCard(modifier = modifier.height(280.dp), movie = movie) {
+    MovieCard(modifier = modifier.height(280.dp), movie = movie, isItInFavorites = false) {
         IconButton(
             onClick = onRemoveFavorite,
             modifier = Modifier

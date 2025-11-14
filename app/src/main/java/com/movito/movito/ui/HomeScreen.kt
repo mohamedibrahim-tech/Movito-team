@@ -134,7 +134,7 @@ fun HomeScreenContent(
                             key = { it.id },
                             contentType = { "movie" }
                         ) { movie ->
-                            MovieCard(modifier = Modifier.height(280.dp), movie = movie)
+                            MovieCard(modifier = Modifier.height(280.dp), movie = movie, isItInFavorites = false)
                         }
                     }
                 }
@@ -191,7 +191,7 @@ fun MovieCardPreview() {
         MovieCard(
             modifier = Modifier
                 .padding(16.dp)
-                .height(280.dp), movie = mockMovie
+                .height(280.dp), movie = mockMovie, isItInFavorites = false
         )
     }
 }
