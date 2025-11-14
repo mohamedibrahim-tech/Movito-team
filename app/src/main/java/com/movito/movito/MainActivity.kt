@@ -17,17 +17,13 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val splashScreen = installSplashScreen()
+        installSplashScreen()
 
         enableEdgeToEdge()
         setContent {
             MovitoTheme {
                 HomeScreen(viewModel = viewModel)
             }
-        }
-
-        splashScreen.setKeepOnScreenCondition {
-            viewModel.uiState.value.isLoading
         }
     }
 }
