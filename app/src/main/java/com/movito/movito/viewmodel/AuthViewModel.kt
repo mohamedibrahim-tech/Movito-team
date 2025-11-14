@@ -95,3 +95,5 @@ class AuthViewModel : ViewModel() {
         _authState.value = _authState.value.copy(isLoading = false, error = null)
     }
 }
+
+
