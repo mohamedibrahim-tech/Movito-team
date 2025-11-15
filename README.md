@@ -85,35 +85,33 @@ UI:
 
 Logic:  
 - Splash Screen Logic  
-- Home Logic (ViewModel)  
-- Theme Mode Logic (Dark/Light Mode persistence)  
+- Home Logic (ViewModel, Pagination, API integration)  
+- Theme Mode Logic (Dark/Light Mode)  
 - Navigation Logic (Navigation Graph + Bottom Navigation Bar)  
 - Project Setup (Git Repository, Dependencies)  
-- Code Review  
-
+- Code Review & Merging Pull Requests
+- Authentication Logic (Logout)
+- Watch Movie Trailer Logic
+  
 ### Basmala Wahid
 UI:  
 - Favorites Screen  
 - Settings Screen  
 
 Logic:  
-- Favorites Logic (Add/Remove + Room DB)  
+- Favorites Logic (Add/Remove + Firestore DB)  
 - Notifications Logic (Handling settings toggles)  
 
 ### Alyaa Osama
 UI:  
 - Sign Up Screen  
-- Movie Details Screen   
-
 Logic:  
-- Sign Up Logic  
-- Movie Details Logic (ViewModel)  
-
+- Sign Up Logic
+  
 ### Youssef Sayed
 UI:  
-- Sign In Screen  
-- Profile Screen  
-
+- Sign In Screen
+  
 Logic:  
 - Authentication Logic (Sign In, Continue with Google)  
 - Session Management  
@@ -123,18 +121,17 @@ Logic:
 ### Yehia Mohamed
 UI:  
 - Search Results UI  
-- Home Screen Enhancements (Filter, Sort UI components)  
 
 Logic:  
 - API Service Setup  
 - Search & Filter Logic (ViewModel)  
-- Search Logic (ViewModel)  
 
 ### Ahmed Essam
 UI:  
-- Settings Enhancements (Notification Toggles UI)  
-- Favorites List UI Integration  
+- Movie Details Screen (DetailsActivity.kt)  
+- Categories Screen (UI Enhancements)n  
 
 Logic:  
 - Database Integration (Favorites DB operations)  
-- Theme Persistence Logic  
+- Movie Details Logic (Scrollable Overview)
+- Share Movie Trailer Logic
