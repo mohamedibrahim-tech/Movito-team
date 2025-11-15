@@ -43,7 +43,7 @@ import com.movito.movito.data.model.Movie
 import com.movito.movito.theme.MovitoTheme
 import com.movito.movito.ui.common.MovieCard
 import com.movito.movito.ui.common.MovitoNavBar
-import com.movito.movito.viewmodel.HomeUiState
+import com.movito.movito.viewmodel.MoviesUiState
 import com.movito.movito.viewmodel.MoviesByGenreViewModel
 import kotlinx.coroutines.launch
 
@@ -78,7 +78,7 @@ fun MoviesByGenreScreen(
 @Composable
 fun MoviesByGenreContent(
     modifier: Modifier = Modifier,
-    uiState: HomeUiState,
+    uiState: MoviesUiState,
     gridState: LazyGridState,
     genreName: String,
     onRefresh: () -> Unit,
@@ -197,7 +197,7 @@ fun MoviesByGenreContent(
 @Composable
 fun MoviesByGenrePreviewSuccessDark() {
     val mockMovie = Movie(1, "Cosmic Echoes", "2025-03-15", "/qA9b2xSJ8nCK2z3yIuVnAwmWsum.jpg", 8.5, "An epic space opera.", listOf(878))
-    val mockState = HomeUiState(movies = List(10) { mockMovie })
+    val mockState = MoviesUiState(movies = List(10) { mockMovie })
     MovitoTheme(darkTheme = true) {
         MoviesByGenreContent(uiState = mockState, gridState = rememberLazyGridState(), genreName = "Action", onRefresh = {}, onLoadMore = {}, onBackPressed = {})
     }
@@ -207,7 +207,7 @@ fun MoviesByGenrePreviewSuccessDark() {
 @Composable
 fun MoviesByGenrePreviewSuccessLight() {
     val mockMovie = Movie(1, "Cosmic Echoes", "2025-03-15", "/qA9b2xSJ8nCK2z3yIuVnAwmWsum.jpg", 8.5, "An epic space opera.", listOf(878))
-    val mockState = HomeUiState(movies = List(10) { mockMovie })
+    val mockState = MoviesUiState(movies = List(10) { mockMovie })
     MovitoTheme(darkTheme = false) {
         MoviesByGenreContent(uiState = mockState, gridState = rememberLazyGridState(), genreName = "Action", onRefresh = {}, onLoadMore = {}, onBackPressed = {})
     }
@@ -216,7 +216,7 @@ fun MoviesByGenrePreviewSuccessLight() {
 @Preview(showSystemUi = true, name = "Dark Mode - Loading")
 @Composable
 fun MoviesByGenrePreviewLoading() {
-    val mockState = HomeUiState(isLoading = true)
+    val mockState = MoviesUiState(isLoading = true)
     MovitoTheme(darkTheme = true) {
         MoviesByGenreContent(uiState = mockState, gridState = rememberLazyGridState(), genreName = "Action", onRefresh = {}, onLoadMore = {}, onBackPressed = {})
     }
@@ -225,7 +225,7 @@ fun MoviesByGenrePreviewLoading() {
 @Preview(showSystemUi = true, name = "Dark Mode - Error")
 @Composable
 fun MoviesByGenrePreviewError() {
-    val mockState = HomeUiState(error = "Failed to load movies")
+    val mockState = MoviesUiState(error = "Failed to load movies")
     MovitoTheme(darkTheme = true) {
         MoviesByGenreContent(uiState = mockState, gridState = rememberLazyGridState(), genreName = "Action", onRefresh = {}, onLoadMore = {}, onBackPressed = {})
     }
@@ -235,7 +235,7 @@ fun MoviesByGenrePreviewError() {
 @Composable
 fun MoviesByGenrePreviewLoadingMore() {
     val mockMovie = Movie(1, "Cosmic Echoes", "2025-03-15", "/qA9b2xSJ8nCK2z3yIuVnAwmWsum.jpg", 8.5, "An epic space opera.", listOf(878))
-    val mockState = HomeUiState(movies = List(10) { mockMovie }, isLoadingMore = true)
+    val mockState = MoviesUiState(movies = List(10) { mockMovie }, isLoadingMore = true)
     MovitoTheme(darkTheme = true) {
         MoviesByGenreContent(uiState = mockState, gridState = rememberLazyGridState(), genreName = "Action", onRefresh = {}, onLoadMore = {}, onBackPressed = {})
     }
