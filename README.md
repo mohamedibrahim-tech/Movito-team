@@ -41,7 +41,7 @@ The app should allow users to:
 ---
 
 ## Technologies
-- Language: Kotlin & XML  
+- Language: Kotlin  
 - UI Toolkit: Jetpack Compose  
 - Networking: Retrofit  
 - Image Loading: Coil  
