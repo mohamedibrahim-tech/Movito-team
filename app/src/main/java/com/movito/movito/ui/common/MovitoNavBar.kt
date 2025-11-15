@@ -1,10 +1,10 @@
 package com.movito.movito.ui.common
 
 // (1) --- إضافة: imports جديدة عشان الـ Intent ---
+// ------------------------------------------
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-// ------------------------------------------
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
@@ -21,8 +21,8 @@ import androidx.compose.ui.unit.dp
 import com.movito.movito.R
 import com.movito.movito.theme.MovitoTheme
 import com.movito.movito.ui.CategoriesActivity
-import com.movito.movito.ui.SearchActivity
 import com.movito.movito.ui.FavoritesActivity
+import com.movito.movito.ui.SearchActivity
 import com.movito.movito.ui.SettingsActivity
 
 /**

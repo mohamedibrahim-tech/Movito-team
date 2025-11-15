@@ -62,9 +62,6 @@ import com.movito.movito.R
 import com.movito.movito.theme.MovitoTheme
 import com.movito.movito.viewmodel.AuthViewModel
 
-import androidx.compose.foundation.layout.statusBarsPadding
-
-
 
 @Composable
 fun MovitoLogo() {

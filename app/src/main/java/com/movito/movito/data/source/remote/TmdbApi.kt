@@ -1,7 +1,7 @@
 package com.movito.movito.data.source.remote
 
-import com.movito.movito.data.model.Movie
 import com.movito.movito.data.model.Genre
+import com.movito.movito.data.model.Movie
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
