@@ -1,5 +1,6 @@
 package com.movito.movito.viewmodel
 
+import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
@@ -15,6 +16,7 @@ import kotlinx.coroutines.tasks.await
 data class AuthState(
     val isLoading: Boolean = false,
     val error: String? = null,
+    val message: String? = null,
     val user: FirebaseUser? = null
 )
 
@@ -42,7 +44,15 @@ class AuthViewModel : ViewModel() {
         auth.removeAuthStateListener(authStateListener)
     }
 
+    private fun isValidEmail(email: String): Boolean {
+        return Patterns.EMAIL_ADDRESS.matcher(email).matches()
+    }
+
     fun signUpWithEmailPassword(email: String, password: String) {
+        if (!isValidEmail(email)) {
+            _authState.value = _authState.value.copy(error = "Invalid email format.")
+            return
+        }
         viewModelScope.launch {
             _authState.value = _authState.value.copy(isLoading = true, error = null)
             try {
@@ -59,6 +69,10 @@ class AuthViewModel : ViewModel() {
     }
 
     fun signInWithEmailPassword(email: String, password: String) {
+        if (!isValidEmail(email)) {
+            _authState.value = _authState.value.copy(error = "Invalid email format.")
+            return
+        }
         viewModelScope.launch {
             _authState.value = _authState.value.copy(isLoading = true, error = null)
             try {
@@ -91,9 +105,23 @@ class AuthViewModel : ViewModel() {
         }
     }
 
+    fun sendPasswordResetEmail(email: String) {
+        if (!isValidEmail(email)) {
+            _authState.value = _authState.value.copy(error = "Invalid email format.")
+            return
+        }
+        viewModelScope.launch {
+            _authState.value = _authState.value.copy(isLoading = true, error = null, message = null)
+            try {
+                auth.sendPasswordResetEmail(email).await()
+                _authState.value = _authState.value.copy(isLoading = false, message = "Password reset email sent successfully.")
+            } catch (e: Exception) {
+                _authState.value = _authState.value.copy(isLoading = false, error = e.message)
+            }
+        }
+    }
+
     fun resetState() {
-        _authState.value = _authState.value.copy(isLoading = false, error = null)
+        _authState.value = AuthState(user = auth.currentUser)
     }
 }
-
-
