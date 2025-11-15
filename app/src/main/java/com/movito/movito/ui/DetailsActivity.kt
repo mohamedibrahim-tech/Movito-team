@@ -5,13 +5,18 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.movito.movito.data.model.Movie
 import com.movito.movito.theme.MovitoTheme
+import com.movito.movito.viewmodel.DetailsViewModel
 
 class DetailsActivity : ComponentActivity() {
+
+    private val viewModel: DetailsViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -25,6 +30,7 @@ class DetailsActivity : ComponentActivity() {
             MovitoTheme(darkTheme = systemIsDark) {
                 //TODO: implement the on Favorite Changed
                 DetailsScreen(
+                    viewModel = viewModel,
                     movie = movie ?: Movie(),
                     initiallyFavorite = intent.getBooleanExtra("isItInFav", false),
                     onFavoriteChanged = { TODO() }) {
