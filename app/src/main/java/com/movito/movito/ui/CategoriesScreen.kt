@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -41,6 +42,7 @@ import com.movito.movito.theme.MovitoTheme
 import com.movito.movito.ui.common.MovitoNavBar
 import com.movito.movito.viewmodel.CategoriesUiState
 import com.movito.movito.viewmodel.CategoriesViewModel
+import kotlin.math.floor
 
 @Composable
 fun CategoriesScreen(viewModel: CategoriesViewModel = viewModel()) {
@@ -88,6 +90,7 @@ fun CategoriesScreenContent(
                 uiState.isLoading -> {
                     CircularProgressIndicator()
                 }
+
                 uiState.error != null -> {
                     Text(
                         text = uiState.error ?: "An unknown error occurred",
@@ -96,6 +99,7 @@ fun CategoriesScreenContent(
                         modifier = Modifier.padding(16.dp)
                     )
                 }
+
                 else -> {
                     CategoriesGrid(genres = uiState.genres, onGenreClick = onGenreClick)
                 }
@@ -121,16 +125,17 @@ fun CategoriesGrid(genres: List<Genre>, onGenreClick: (Genre) -> Unit) {
 
 @Composable
 fun GenreCard(genre: Genre, onClick: () -> Unit) {
+    val printer = painterResource(id = mapGenreNameToDrawable(genre.name))
     Card(
         modifier = Modifier
-            .fillMaxWidth()
-            .height(140.dp) // Adjusted height
+            .width(floor(printer.intrinsicSize.width / 4.0f).dp)
+            .height(floor(printer.intrinsicSize.height / 4.0f).dp)
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
         Image(
-            painter = painterResource(id = mapGenreNameToDrawable(genre.name)),
+            painter = printer,
             contentDescription = genre.name, // For accessibility
             contentScale = ContentScale.FillBounds,
             modifier = Modifier.fillMaxSize()

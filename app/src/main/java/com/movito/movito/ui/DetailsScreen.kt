@@ -1,6 +1,5 @@
 package com.movito.movito.ui
 
-import android.R.id.shareText
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
