@@ -40,6 +40,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -59,10 +60,7 @@ import com.movito.movito.ui.common.MovieCard
 import com.movito.movito.ui.common.MovitoButton
 import com.movito.movito.ui.common.PartialStar
 import com.movito.movito.viewmodel.DetailsViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 
 @SuppressLint("UseKtx")
@@ -78,6 +76,7 @@ fun DetailsScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
     var isFavorite by remember { mutableStateOf(initiallyFavorite) }
 
 
@@ -85,6 +84,14 @@ fun DetailsScreen(
         uiState.trailerUrl?.let {
             val intent = Intent(Intent.ACTION_VIEW, it.toUri())
             context.startActivity(intent)
+            viewModel.onTrailerLaunched()
+        }
+    }
+
+    LaunchedEffect(uiState.error) {
+        uiState.error?.let {
+            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+            viewModel.onErrorShown()
         }
     }
 
@@ -148,15 +155,12 @@ fun DetailsScreen(
                 TextButton(
                     modifier = Modifier.weight(0.25f),
                     onClick = {
-                        // Launch a coroutine to call the suspend function
-                        CoroutineScope(Dispatchers.IO).launch {
+                        coroutineScope.launch {
                             val url = viewModel.getTrailerUrl(movieId = movie.id)
-                            if (url == null)
-                                Toast.makeText(context, "No Trailer Found.", Toast.LENGTH_SHORT)
-                                    .show()
-                            else url.let {
-                                // Switch to main thread to show share dialog
-                                withContext(Dispatchers.Main) { shareUrl(context, it) }
+                            if (url != null) {
+                                shareUrl(context, url)
+                            } else {
+                                Toast.makeText(context, "No Trailer Found.", Toast.LENGTH_SHORT).show()
                             }
                         }
                     }) {
