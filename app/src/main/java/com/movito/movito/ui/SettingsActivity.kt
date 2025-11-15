@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -26,6 +27,8 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,13 +47,27 @@ import com.movito.movito.BuildConfig
 import com.movito.movito.theme.MovitoTheme
 import com.movito.movito.ui.common.MovitoNavBar
 import com.movito.movito.ui.common.SettingsCards
+import com.movito.movito.viewmodel.AuthViewModel
 
 class SettingsActivity : ComponentActivity() {
+
+    private val authViewModel: AuthViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             val systemIsDark = isSystemInDarkTheme()
+            val authState by authViewModel.authState.collectAsState()
+
+            LaunchedEffect(authState.user) {
+                if (authState.user == null && authState.isInitialCheckDone) { // To avoid navigation on initial load
+                    val intent = Intent(this@SettingsActivity, SignInActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intent)
+                }
+            }
+
             MovitoTheme(darkTheme = systemIsDark) {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
@@ -62,11 +79,11 @@ class SettingsActivity : ComponentActivity() {
                     SettingsScreen(
                         modifier = Modifier.padding(paddingValues),
                         onThemeToggle = {},
-                        currentThemeIsDark = systemIsDark
+                        currentThemeIsDark = systemIsDark,
+                        onSignOut = { authViewModel.signOut() }
                     )
                 }
             }
-
         }
     }
 }
@@ -75,7 +92,8 @@ class SettingsActivity : ComponentActivity() {
 fun SettingsScreen(
     modifier: Modifier = Modifier,
     onThemeToggle: (Boolean) -> Unit,
-    currentThemeIsDark: Boolean
+    currentThemeIsDark: Boolean,
+    onSignOut: () -> Unit
 ) {
     var notifications by remember { mutableStateOf(false) }
     var downloadsWifiOnly by remember { mutableStateOf(true) }
@@ -160,7 +178,7 @@ fun SettingsScreen(
                         ),
                         shape = RoundedCornerShape(12.dp)
                     )
-                    .clickable {},
+                    .clickable { onSignOut() },
                 contentAlignment = Alignment.Center
             ) {
                 Text(
@@ -301,7 +319,8 @@ fun SettingsPreviewDark() {
     MovitoTheme(darkTheme = isDark) {
         SettingsScreen(
             onThemeToggle = { isDark = it },
-            currentThemeIsDark = isDark
+            currentThemeIsDark = isDark,
+            onSignOut = {}
         )
     }
 }
@@ -313,7 +332,8 @@ fun SettingsPreviewLight() {
     MovitoTheme(darkTheme = isDark) {
         SettingsScreen(
             onThemeToggle = { isDark = it },
-            currentThemeIsDark = isDark
+            currentThemeIsDark = isDark,
+            onSignOut = {}
         )
     }
 }
