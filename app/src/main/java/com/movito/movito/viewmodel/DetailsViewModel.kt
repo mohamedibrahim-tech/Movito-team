@@ -30,9 +30,7 @@ class DetailsViewModel : ViewModel() {
             _uiState.update { it.copy(isLoading = true, error = null) }
 
             try {
-                val response = RetrofitInstance.api.getMovieVideos(movieId, apiKey)
-                val trailer = findBestTrailer(response.results)
-                val trailerUrl = trailer?.let { "https://www.youtube.com/watch?v=${it.key}" }
+                val trailerUrl = getTrailerUrl(movieId)
 
                 _uiState.update {
                     it.copy(
@@ -61,5 +59,26 @@ class DetailsViewModel : ViewModel() {
     private fun findBestTrailer(videos: List<Video>): Video? {
         return videos.firstOrNull { it.site == "YouTube" && it.type == "Trailer" && it.official } 
             ?: videos.firstOrNull { it.site == "YouTube" && it.type == "Trailer" }
+    }
+
+    /**
+     * Fetches the best available YouTube trailer URL for the given movie.
+     *
+     * This function makes a network request to TMDB to retrieve the list of videos
+     * associated with the movie, then selects the most suitable trailer based on:
+     *  - `site == "YouTube"`
+     *  - `type == "Trailer"`
+     *  - Prefers trailers marked as `official`
+     *
+     * @param movieId The TMDB ID of the movie whose trailer should be fetched.
+     * @return A fully formatted YouTube watch URL, or `null` if no valid trailer exists.
+     *
+     * @throws IOException If a network error occurs during the API request.
+     *
+     */
+    suspend fun getTrailerUrl(movieId : Int) : String? {
+        val response = RetrofitInstance.api.getMovieVideos(movieId, apiKey)
+        val trailer = findBestTrailer(response.results)
+        return  trailer?.key?.let { "https://www.youtube.com/watch?v=$it" }
     }
 }
