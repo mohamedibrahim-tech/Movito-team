@@ -106,4 +106,7 @@ dependencies {
 
 // لإصلاح أخطاء Icons و filled:
     implementation("androidx.compose.material:material-icons-extended")
+
+    implementation("com.google.firebase:firebase-firestore")
+
 }

@@ -78,6 +78,8 @@ fun DetailsScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
+    var isFavorite by remember { mutableStateOf(initiallyFavorite) }
+
 
     LaunchedEffect(uiState.trailerUrl) {
         uiState.trailerUrl?.let {
@@ -186,19 +188,20 @@ fun DetailsScreen(
                     onClick = { viewModel.findTrailer(movie.id) })
 
                 // Favorite button (15%)
-                var isFavorite by remember { mutableStateOf(initiallyFavorite) }
                 IconButton(
                     modifier = Modifier
                         .padding(start = 8.dp)
                         .weight(0.15f)
-                        .background(LightBackground, RoundedCornerShape(100.dp)), onClick = {
+                        .background(LightBackground, RoundedCornerShape(100.dp)),
+                    onClick = {
                         isFavorite = !isFavorite
-                        onFavoriteChanged(isFavorite)
-                    }) {
+                        onFavoriteChanged(isFavorite)                    }
+                ) {
                     Icon(
                         imageVector = if (isFavorite) Icons.Filled.Favorite
                         else Icons.Outlined.FavoriteBorder,
-                        contentDescription = null,
+                        contentDescription = if (isFavorite) "Remove from favorites"
+                        else "Add to favorites",
                         tint = if (isFavorite) HeartColor else Color.Black
                     )
                 }
