@@ -58,6 +58,7 @@ class SettingsActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val systemIsDark = isSystemInDarkTheme()
+            //logout
             val authState by authViewModel.authState.collectAsState()
 
             LaunchedEffect(authState.user) {
@@ -67,6 +68,7 @@ class SettingsActivity : ComponentActivity() {
                     startActivity(intent)
                 }
             }
+            //--------
 
             MovitoTheme(darkTheme = systemIsDark) {
                 Scaffold(
@@ -79,8 +81,10 @@ class SettingsActivity : ComponentActivity() {
                     SettingsScreen(
                         modifier = Modifier.padding(paddingValues),
                         onThemeToggle = {},
+                        //logout
                         currentThemeIsDark = systemIsDark,
                         onSignOut = { authViewModel.signOut() }
+                        //-----
                     )
                 }
             }
@@ -92,8 +96,10 @@ class SettingsActivity : ComponentActivity() {
 fun SettingsScreen(
     modifier: Modifier = Modifier,
     onThemeToggle: (Boolean) -> Unit,
+    //logout
     currentThemeIsDark: Boolean,
     onSignOut: () -> Unit
+    //------
 ) {
     var notifications by remember { mutableStateOf(false) }
     var downloadsWifiOnly by remember { mutableStateOf(true) }
@@ -178,6 +184,7 @@ fun SettingsScreen(
                         ),
                         shape = RoundedCornerShape(12.dp)
                     )
+                    //logout
                     .clickable { onSignOut() },
                 contentAlignment = Alignment.Center
             ) {
