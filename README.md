@@ -46,7 +46,7 @@ The app should allow users to:
 - Networking: Retrofit  
 - Image Loading: Coil  
 - Architecture: MVVM / Clean Architecture  
-- Database: Room (for caching/offline mode)  
+- Database: Room (for caching/offline mode) and firestore
 - Version Control: Git & GitHub  
 - Testing: Unit Testing + Compose UI Testing  
 - Security: Secure API key storage using gradle.properties (no hardcoded keys)  
