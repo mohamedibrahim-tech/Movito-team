@@ -8,12 +8,6 @@ import retrofit2.http.Query
 
 interface TmdbApi {
 
-    @GET("movie/popular")
-    suspend fun getPopularMovies(
-        @Query("api_key") apiKey: String,
-        @Query("page") page: Int
-    ): MovieResponse
-
     @GET("genre/movie/list")
     suspend fun getGenres(@Query("api_key") apiKey: String): GenreResponse
 
@@ -21,7 +15,9 @@ interface TmdbApi {
     suspend fun discoverMoviesByGenre(
         @Query("api_key") apiKey: String,
         @Query("page") page: Int,
-        @Query("with_genres") genreId: Int
+        @Query("with_genres") genreId: Int,
+        @Query("sort_by") sortBy: String = "popularity.desc",
+        @Query("primary_release_year") primaryReleaseYear: Int
     ): MovieResponse
 
     @GET("movie/{movie_id}/videos")
