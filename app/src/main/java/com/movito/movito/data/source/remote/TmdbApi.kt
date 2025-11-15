@@ -17,7 +17,7 @@ interface TmdbApi {
         @Query("page") page: Int,
         @Query("with_genres") genreId: Int,
         @Query("sort_by") sortBy: String = "popularity.desc",
-        @Query("primary_release_year") primaryReleaseYear: Int
+        @Query("primary_release_date.lte") primaryReleaseDate: String
     ): MovieResponse
 
     @GET("movie/{movie_id}/videos")
