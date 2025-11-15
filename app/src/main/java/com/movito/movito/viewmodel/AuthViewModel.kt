@@ -17,14 +17,15 @@ data class AuthState(
     val isLoading: Boolean = false,
     val error: String? = null,
     val message: String? = null,
-    val user: FirebaseUser? = null
+    val user: FirebaseUser? = null,
+    val isInitialCheckDone: Boolean = false
 )
 
 class AuthViewModel : ViewModel() {
 
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
 
-    private val _authState = MutableStateFlow(AuthState(user = auth.currentUser))
+    private val _authState = MutableStateFlow(AuthState())
     val authState: StateFlow<AuthState> = _authState
 
     private val _navigationChannel = Channel<Unit>()
@@ -32,7 +33,10 @@ class AuthViewModel : ViewModel() {
 
     // The listener now only syncs the user state for external changes (e.g., token revoked).
     private val authStateListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
-        _authState.value = _authState.value.copy(user = firebaseAuth.currentUser)
+        _authState.value = _authState.value.copy(
+            user = firebaseAuth.currentUser,
+            isInitialCheckDone = true
+        )
     }
 
     init {
@@ -58,7 +62,6 @@ class AuthViewModel : ViewModel() {
             try {
                 val result = auth.createUserWithEmailAndPassword(email, password).await()
                 _authState.value = _authState.value.copy(isLoading = false, user = result.user)
-                // Directly send navigation event on success
                 if (result.user != null) {
                     _navigationChannel.send(Unit)
                 }
@@ -78,7 +81,6 @@ class AuthViewModel : ViewModel() {
             try {
                 val result = auth.signInWithEmailAndPassword(email, password).await()
                 _authState.value = _authState.value.copy(isLoading = false, user = result.user)
-                // Directly send navigation event on success
                 if (result.user != null) {
                     _navigationChannel.send(Unit)
                 }
@@ -95,7 +97,6 @@ class AuthViewModel : ViewModel() {
                 val credential = GoogleAuthProvider.getCredential(idToken, null)
                 val result = auth.signInWithCredential(credential).await()
                 _authState.value = _authState.value.copy(isLoading = false, user = result.user)
-                // Directly send navigation event on success
                 if (result.user != null) {
                     _navigationChannel.send(Unit)
                 }
@@ -120,8 +121,12 @@ class AuthViewModel : ViewModel() {
             }
         }
     }
+    
+    fun signOut() {
+        auth.signOut()
+    }
 
     fun resetState() {
-        _authState.value = AuthState(user = auth.currentUser)
+        _authState.value = AuthState(user = auth.currentUser, isInitialCheckDone = true)
     }
 }
