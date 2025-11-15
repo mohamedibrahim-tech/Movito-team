@@ -52,6 +52,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.movito.movito.data.model.Movie
+import com.movito.movito.favorites.FavoritesViewModel
 import com.movito.movito.theme.HeartColor
 import com.movito.movito.theme.LightBackground
 import com.movito.movito.theme.MovitoTheme
@@ -71,10 +72,37 @@ fun DetailsScreen(
     onFavoriteChanged: (Boolean) -> Unit = {},
     onClickBackButton: () -> Unit,
 ) {
+    val favoritesViewModel = remember { FavoritesViewModel.getInstance() }
+    val favoritesState by favoritesViewModel.uiState.collectAsState()
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
-    var isFavorite by remember { mutableStateOf(initiallyFavorite) }
+    val isFavorite = remember(favoritesState.favorites, movie.id) {
+        favoritesState.favorites.any { it.movieId == movie.id }
+    }
+    var showAddDialog by remember { mutableStateOf(false) }
+    var showRemoveDialog by remember { mutableStateOf(false) }
+    if (showAddDialog) {
+        AddToFavoritesDialog(
+            movieTitle = movie.title,
+            onConfirm = {
+                favoritesViewModel.addToFavorites(movie)
+                showAddDialog = false
+            },
+            onDismiss = { showAddDialog = false }
+        )
+    }
 
+    // Remove Dialog
+    if (showRemoveDialog) {
+        RemoveFromFavoritesDialog(
+            movieTitle = movie.title,
+            onConfirm = {
+                favoritesViewModel.removeFromFavorites(movie.id)
+                showRemoveDialog = false
+            },
+            onDismiss = { showRemoveDialog = false }
+        )
+    }
 
     LaunchedEffect(uiState.trailerUrl) {
         uiState.trailerUrl?.let {
@@ -173,8 +201,12 @@ fun DetailsScreen(
                         .weight(0.15f)
                         .background(LightBackground, RoundedCornerShape(100.dp)),
                     onClick = {
-                        isFavorite = !isFavorite
-                        onFavoriteChanged(isFavorite)                    }
+                        if (isFavorite) {
+                            showRemoveDialog = true
+                        } else {
+                            showAddDialog = true
+                        }
+                    }
                 ) {
                     Icon(
                         imageVector = if (isFavorite) Icons.Filled.Favorite
@@ -184,6 +216,7 @@ fun DetailsScreen(
                         tint = if (isFavorite) HeartColor else Color.Black
                     )
                 }
+
             }
 
             // Details text section (30%)

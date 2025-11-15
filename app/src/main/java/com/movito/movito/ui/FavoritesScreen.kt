@@ -38,7 +38,8 @@ import com.movito.movito.favorites.FavoritesViewModel
 @Composable
 fun FavoritesScreen(
     modifier: Modifier = Modifier,
-    viewModel: FavoritesViewModel = viewModel() // ViewModel للـ Firebase
+    viewModel: FavoritesViewModel = remember { FavoritesViewModel.getInstance() }
+
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -72,6 +73,9 @@ fun FavoritesScreen(
                 .fillMaxSize()
         ) {
             when {
+                uiState.isLoading && uiState.favorites.isEmpty() -> {
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                }
                 uiState.favorites.isEmpty() -> {
                     Column(
                         modifier = Modifier.align(Alignment.Center),
@@ -125,7 +129,7 @@ fun FavoritesScreen(
                             FavoriteMovieCard(
                                 movie = movie,
                                 onRemoveFavorite = {
-                                    viewModel.removeFromFavorites(favoriteMovie.movieId)  // ← الحل!
+                                    viewModel.removeFromFavorites(favoriteMovie.movieId)
                                 }
                             )
                         }

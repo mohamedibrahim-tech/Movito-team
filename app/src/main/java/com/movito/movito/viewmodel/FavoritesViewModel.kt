@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.movito.movito.data.model.Movie
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import java.util.Date
 
 data class FavoritesUiState(
     val favorites: List<FavoriteMovie> = emptyList(),
@@ -23,6 +24,8 @@ class FavoritesViewModel(
         startListening()
     }
 
+    private val _pendingOperations = MutableStateFlow<Set<Int>>(emptySet())
+
     private fun startListening() {
         viewModelScope.launch {
             val result = repository.signInAnonymously()
@@ -38,9 +41,20 @@ class FavoritesViewModel(
                         }
                     }
                     .collect { favorites ->
-                        _uiState.update {
-                            it.copy(
-                                favorites = favorites,
+                        // دمج البيانات من Firestore مع العمليات المعلقة
+                        _uiState.update { currentState ->
+                            // خلي الـ favorites اللي عندنا محلياً ولسه بتتضاف
+                            val localPendingFavorites = currentState.favorites.filter {
+                                _pendingOperations.value.contains(it.movieId)
+                            }
+
+                            // دمجهم مع البيانات من Firestore
+                            val mergedFavorites = (localPendingFavorites + favorites)
+                                .distinctBy { it.movieId }
+                                .sortedByDescending { it.addedAt }
+
+                            currentState.copy(
+                                favorites = mergedFavorites,
                                 isLoading = false,
                                 error = null
                             )
@@ -59,17 +73,79 @@ class FavoritesViewModel(
 
     fun addToFavorites(movie: Movie) {
         viewModelScope.launch {
-            repository.addToFavorites(movie)
+            val userId = repository.currentUserId()
+
+            // 1. حدّث الـ UI فوراً (Optimistic Update)
+            val newFavorite = FavoriteMovie(
+                id = "${userId}_${movie.id}",
+                movieId = movie.id,
+                title = movie.title,
+                releaseDate = movie.releaseDate,
+                posterPath = movie.posterPath,
+                voteAverage = movie.voteAverage,
+                overview = movie.overview,
+                userId = userId,
+                addedAt = Date()
+            )
+
+            _uiState.update { currentState ->
+                currentState.copy(
+                    favorites = listOf(newFavorite) + currentState.favorites
+                )
+            }
+
+            // 2. بعدين احفظ في Firestore
+            val result = repository.addToFavorites(movie)
+
+            // 3. لو فشل، ارجع للحالة القديمة
+            if (result.isFailure) {
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        favorites = currentState.favorites.filter { it.movieId != movie.id }
+                    )
+                }
+            }
         }
     }
 
     fun removeFromFavorites(movieId: Int) {
         viewModelScope.launch {
-            repository.removeFromFavorites(movieId)
+            // 1. حدّث الـ UI فوراً (Optimistic Update)
+            val removedFavorite = _uiState.value.favorites.find { it.movieId == movieId }
+
+            _uiState.update { currentState ->
+                currentState.copy(
+                    favorites = currentState.favorites.filter { it.movieId != movieId }
+                )
+            }
+
+            // 2. بعدين احذف من Firestore
+            val result = repository.removeFromFavorites(movieId)
+
+            // 3. لو فشل، ارجع الـ favorite تاني
+            if (result.isFailure && removedFavorite != null) {
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        favorites = listOf(removedFavorite) + currentState.favorites
+                    )
+                }
+            }
         }
     }
 
     suspend fun isFavorite(movieId: Int): Boolean {
-        return repository.isFavorite(movieId)
+        // تحقق من الـ state المحلي الأول (أسرع)
+        return _uiState.value.favorites.any { it.movieId == movieId }
+    }
+
+    companion object {
+        @Volatile
+        private var instance: FavoritesViewModel? = null
+
+        fun getInstance(): FavoritesViewModel {
+            return instance ?: synchronized(this) {
+                instance ?: FavoritesViewModel().also { instance = it }
+            }
+        }
     }
 }

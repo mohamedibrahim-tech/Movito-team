@@ -145,4 +145,8 @@ class FavoritesRepository {
             false
         }
     }
+    fun currentUserId(): String {
+        return FirebaseAuth.getInstance().currentUser?.uid ?: ""
+    }
+
 }
