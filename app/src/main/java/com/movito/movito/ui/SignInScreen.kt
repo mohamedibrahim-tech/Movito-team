@@ -1,6 +1,7 @@
 package com.movito.movito.ui
 
 import android.app.Activity
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -23,7 +24,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -32,7 +32,13 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -56,7 +62,6 @@ import com.google.android.gms.common.api.ApiException
 import com.movito.movito.R
 import com.movito.movito.theme.MovitoTheme
 import com.movito.movito.viewmodel.AuthViewModel
-import androidx.compose.foundation.layout.statusBarsPadding
 
 
 @Composable
@@ -123,7 +128,8 @@ fun SignInScreen(
     modifier: Modifier = Modifier,
     authViewModel: AuthViewModel = viewModel(),
     onSignInSuccess: () -> Unit,
-    onSignUpClicked: () -> Unit
+    onSignUpClicked: () -> Unit,
+    onForgotPasswordClicked: () -> Unit
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -132,15 +138,15 @@ fun SignInScreen(
 
     val googleSignInLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult(),
-        onResult = {
-            if (it.resultCode == Activity.RESULT_OK) {
-                val task = GoogleSignIn.getSignedInAccountFromIntent(it.data)
+        onResult = { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
                 try {
                     val account = task.getResult(ApiException::class.java)
-                    account?.idToken?.let {
-                        authViewModel.signInWithGoogle(it)
+                    account?.idToken?.let { idToken ->
+                        authViewModel.signInWithGoogle(idToken)
                     }
-                } catch (e: ApiException) {
+                } catch (_: ApiException) {
                     authViewModel.resetState()
                 }
             }
@@ -154,9 +160,14 @@ fun SignInScreen(
 
     val googleSignInClient = GoogleSignIn.getClient(context, gso)
 
-    LaunchedEffect(Unit) {
-        authViewModel.navigationFlow.collect {
+    LaunchedEffect(authState) {
+        if (authState.user != null) {
             onSignInSuccess()
+            authViewModel.resetState()
+        }
+        if (authState.error != null) {
+            Toast.makeText(context, authState.error, Toast.LENGTH_SHORT).show()
+            authViewModel.resetState()
         }
     }
 
@@ -204,11 +215,25 @@ fun SignInScreen(
                 )
             }
 
-            Spacer(Modifier.height(40.dp))
+            Spacer(Modifier.height(16.dp))
+            TextButton(
+                onClick = onForgotPasswordClicked,
+                modifier = Modifier.align(Alignment.End),
+                contentPadding = PaddingValues(0.dp)
+            ) {
+                Text(
+                    text = "Forgot Password?",
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.Bold,
+                    textDecoration = TextDecoration.Underline
+                )
+            }
+            Spacer(Modifier.height(24.dp))
 
             if (authState.isLoading) {
                 CircularProgressIndicator()
             } else {
+                val isButtonEnabled = email.isNotBlank() && password.isNotBlank()
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -222,13 +247,13 @@ fun SignInScreen(
                             ),
                             shape = RoundedCornerShape(12.dp)
                         )
-                        .clickable { authViewModel.signInWithEmailPassword(email, password) },
+                        .clickable(enabled = isButtonEnabled) { authViewModel.signInWithEmailPassword(email.trim(), password) },
                     contentAlignment = Alignment.Center
 
                 ) {
                     Text(
                         "Sign In",
-                        color = Color.White,
+                        color = if (isButtonEnabled) Color.White else Color.White.copy(alpha = 0.5f),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Medium
                     )
@@ -277,14 +302,6 @@ fun SignInScreen(
                 }
             }
 
-            authState.error?.let {
-                Text(
-                    text = it,
-                    color = MaterialTheme.colorScheme.error,
-                    modifier = Modifier.padding(top = 8.dp)
-                )
-            }
-
             Spacer(Modifier.height(32.dp))
 
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -322,7 +339,7 @@ fun SignInScreen(
 @Composable
 fun FinalSignInScreenPreviewDark() {
     MovitoTheme(darkTheme = true) {
-        SignInScreen(onSignInSuccess = {}, onSignUpClicked = {})
+        SignInScreen(onSignInSuccess = {}, onSignUpClicked = {}, onForgotPasswordClicked = {})
     }
 }
 
@@ -334,6 +351,6 @@ fun FinalSignInScreenPreviewDark() {
 @Composable
 fun FinalSignInScreenPreviewLight() {
     MovitoTheme(darkTheme = false) {
-        SignInScreen(onSignInSuccess = {}, onSignUpClicked = {})
+        SignInScreen(onSignInSuccess = {}, onSignUpClicked = {}, onForgotPasswordClicked = {})
     }
 }

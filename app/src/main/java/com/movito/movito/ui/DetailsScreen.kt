@@ -1,10 +1,11 @@
 package com.movito.movito.ui
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -34,20 +35,21 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.net.toUri
 import com.movito.movito.data.model.Movie
 import com.movito.movito.theme.HeartColor
 import com.movito.movito.theme.LightBackground
@@ -55,17 +57,37 @@ import com.movito.movito.theme.MovitoTheme
 import com.movito.movito.theme.StarColor
 import com.movito.movito.ui.common.MovieCard
 import com.movito.movito.ui.common.MovitoButton
+import com.movito.movito.ui.common.PartialStar
+import com.movito.movito.viewmodel.DetailsViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
+@SuppressLint("UseKtx")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailsScreen(
+    viewModel: DetailsViewModel,
     movie: Movie,
     modifier: Modifier = Modifier,
     initiallyFavorite: Boolean = false,
     onFavoriteChanged: (Boolean) -> Unit = {},
     onClickBackButton: () -> Unit,
 ) {
+    val uiState by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
+    var isFavorite by remember { mutableStateOf(initiallyFavorite) }
+
+
+    LaunchedEffect(uiState.trailerUrl) {
+        uiState.trailerUrl?.let {
+            val intent = Intent(Intent.ACTION_VIEW, it.toUri())
+            context.startActivity(intent)
+        }
+    }
+
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
@@ -89,7 +111,8 @@ fun DetailsScreen(
             MovieCard(
                 modifier = Modifier
                     .weight(0.30f)
-                    .fillMaxWidth(), movie = movie,
+                    .fillMaxWidth(),
+                movie = movie,
                 intentToDetails = false,
                 isItInFavorites = initiallyFavorite
             )
@@ -121,18 +144,33 @@ fun DetailsScreen(
                     )
                 }
 
-                val context = LocalContext.current
                 // Share button (25%)
                 TextButton(
                     modifier = Modifier.weight(0.25f),
-                    onClick = { shareUrl(context, movie.homepage) }) {
+                    onClick = {
+                        // Launch a coroutine to call the suspend function
+                        CoroutineScope(Dispatchers.IO).launch {
+                            val url = viewModel.getTrailerUrl(movieId = movie.id)
+                            if (url == null)
+                                Toast.makeText(context, "No Trailer Found.", Toast.LENGTH_SHORT)
+                                    .show()
+                            else url.let {
+                                // Switch to main thread to show share dialog
+                                withContext(Dispatchers.Main) { shareUrl(context, it) }
+                            }
+                        }
+                    }) {
                     Icon(
                         imageVector = Icons.Outlined.Share,
                         contentDescription = "Share",
                         tint = contentColor,
                         modifier = Modifier.weight(0.2f)
                     )
-                    Spacer(modifier = Modifier.width(4.dp).weight(0.1f))
+                    Spacer(
+                        modifier = Modifier
+                            .width(4.dp)
+                            .weight(0.1f)
+                    )
                     Text(
                         text = "Share",
                         color = contentColor,
@@ -145,23 +183,25 @@ fun DetailsScreen(
                 MovitoButton(
                     text = "Play Trailer",
                     modifier = Modifier.weight(0.35f),
-                    roundedCornerSize = 100.dp
-                ) {}
+                    isLoading = uiState.isLoading,
+                    roundedCornerSize = 100.dp,
+                    onClick = { viewModel.findTrailer(movie.id) })
 
                 // Favorite button (15%)
-                var isFavorite by remember { mutableStateOf(initiallyFavorite) }
                 IconButton(
                     modifier = Modifier
                         .padding(start = 8.dp)
                         .weight(0.15f)
-                        .background(LightBackground, RoundedCornerShape(100.dp)), onClick = {
+                        .background(LightBackground, RoundedCornerShape(100.dp)),
+                    onClick = {
                         isFavorite = !isFavorite
-                        onFavoriteChanged(isFavorite)
-                    }) {
+                        onFavoriteChanged(isFavorite)                    }
+                ) {
                     Icon(
                         imageVector = if (isFavorite) Icons.Filled.Favorite
                         else Icons.Outlined.FavoriteBorder,
-                        contentDescription = null,
+                        contentDescription = if (isFavorite) "Remove from favorites"
+                        else "Add to favorites",
                         tint = if (isFavorite) HeartColor else Color.Black
                     )
                 }
@@ -211,7 +251,6 @@ fun DetailsScreen(
                 ) {
 
                 }
-
             }
 
         }
@@ -224,7 +263,7 @@ fun shareUrl(context: Context, url: String) {
         type = "text/plain"
         putExtra(Intent.EXTRA_TEXT, url)
     }
-    val chooser = Intent.createChooser(intent, "Share via")
+    val chooser = Intent.createChooser(intent, "Share the trailer link")
     context.startActivity(chooser)
 }
 
@@ -288,34 +327,8 @@ fun EmptyStar(modifier: Modifier) {
     )
 }
 
-@Composable
-fun PartialStar(fillFraction: Float, modifier: Modifier) {
-    Box(modifier = modifier, contentAlignment = Alignment.Center) {
-        // Background star
-        Icon(
-            imageVector = Icons.Rounded.StarBorder,
-            contentDescription = null,
-            modifier = Modifier.fillMaxSize(),
-            tint = StarColor
-        )
 
-        // Foreground filled star (clipped)
-        Icon(
-            imageVector = Icons.Rounded.Star,
-            contentDescription = null,
-            modifier = Modifier
-                .fillMaxSize()
-                .drawWithContent {
-                    clipRect(
-                        right = size.width * fillFraction) {
-                        this@drawWithContent.drawContent()
-                    }
-                },
-            tint = StarColor
-        )
-    }
-}
-
+@SuppressLint("ViewModelConstructorInComposable")
 @Preview("Dark Details Screen preview", showSystemUi = true)
 @Composable
 fun DetailsScreenPreviewDark() {
@@ -328,11 +341,22 @@ fun DetailsScreenPreviewDark() {
         "An epic space opera.",
         listOf(878)
     )
+
+    val fakeVM = DetailsViewModel()
+
     MovitoTheme(true) {
-        DetailsScreen(movie = mockMovie) { TODO() }
+        DetailsScreen(
+            movie = mockMovie,
+            viewModel = fakeVM,
+            modifier = Modifier,
+            initiallyFavorite = false,
+            onFavoriteChanged = {},
+            onClickBackButton = {},
+        )
     }
 }
 
+@SuppressLint("ViewModelConstructorInComposable")
 @Preview("light Details Screen preview", showSystemUi = true)
 @Composable
 fun DetailsScreenPreviewLight() {
@@ -345,7 +369,17 @@ fun DetailsScreenPreviewLight() {
         "An epic space opera.",
         listOf(878)
     )
+
+    val fakeVM = DetailsViewModel()
+
     MovitoTheme(false) {
-        DetailsScreen(movie = mockMovie) { TODO() }
+        DetailsScreen(
+            movie = mockMovie,
+            viewModel = fakeVM,
+            modifier = Modifier,
+            initiallyFavorite = false,
+            onFavoriteChanged = {},
+            onClickBackButton = {},
+        )
     }
 }
