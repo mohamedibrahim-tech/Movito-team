@@ -40,7 +40,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -60,7 +59,6 @@ import com.movito.movito.ui.common.MovieCard
 import com.movito.movito.ui.common.MovitoButton
 import com.movito.movito.ui.common.PartialStar
 import com.movito.movito.viewmodel.DetailsViewModel
-import kotlinx.coroutines.launch
 
 
 @SuppressLint("UseKtx")
@@ -76,7 +74,6 @@ fun DetailsScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
-    val coroutineScope = rememberCoroutineScope()
     var isFavorite by remember { mutableStateOf(initiallyFavorite) }
 
 
@@ -88,10 +85,17 @@ fun DetailsScreen(
         }
     }
 
+    LaunchedEffect(uiState.urlToShare) {
+        uiState.urlToShare?.let {
+            shareUrl(context, it)
+            viewModel.onUrlShared()
+        }
+    }
+
     LaunchedEffect(uiState.error) {
         uiState.error?.let {
             Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
-            viewModel.onErrorShown()
+            viewModel.onToastShown()
         }
     }
 
@@ -154,16 +158,8 @@ fun DetailsScreen(
                 // Share button (25%)
                 TextButton(
                     modifier = Modifier.weight(0.25f),
-                    onClick = {
-                        coroutineScope.launch {
-                            val url = viewModel.getTrailerUrl(movieId = movie.id)
-                            if (url != null) {
-                                shareUrl(context, url)
-                            } else {
-                                Toast.makeText(context, "No Trailer Found.", Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                    }) {
+                    onClick = { viewModel.prepareShareUrl(movieId = movie.id) }
+                ) {
                     Icon(
                         imageVector = Icons.Outlined.Share,
                         contentDescription = "Share",

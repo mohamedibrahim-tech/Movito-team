@@ -13,7 +13,7 @@ class MoviesByGenreActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val genreId = intent.getIntExtra("genreId", -1)
+        val genreId = intent.getIntExtra("genreId", -1)//-1 to handle errors from the intent
         val genreName = intent.getStringExtra("genreName") ?: "Movies"
 
         enableEdgeToEdge()

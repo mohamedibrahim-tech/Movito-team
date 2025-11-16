@@ -15,9 +15,7 @@ interface TmdbApi {
     suspend fun discoverMoviesByGenre(
         @Query("api_key") apiKey: String,
         @Query("page") page: Int,
-        @Query("with_genres") genreId: Int,
-        @Query("sort_by") sortBy: String = "popularity.desc",
-        @Query("primary_release_date.lte") primaryReleaseDate: String
+        @Query("with_genres") genreId: Int
     ): MovieResponse
 
     @GET("movie/{movie_id}/videos")

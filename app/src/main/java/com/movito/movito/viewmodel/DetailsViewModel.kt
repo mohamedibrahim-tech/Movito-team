@@ -14,7 +14,8 @@ import java.io.IOException
 
 data class DetailsUiState(
     val isLoading: Boolean = false,
-    val trailerUrl: String? = null,
+    val trailerUrl: String? = null, // For playing the trailer
+    val urlToShare: String? = null, // For the share intent
     val error: String? = null
 )
 
@@ -36,44 +37,42 @@ class DetailsViewModel : ViewModel() {
 
                 if (url != null) {
                     _uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            trailerUrl = url
-                        )
+                        it.copy(isLoading = false, trailerUrl = url)
                     }
                 } else {
                     _uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            error = "No Trailer Found."
-                        )
+                        it.copy(isLoading = false, error = "No Trailer Found.")
                     }
                 }
             } catch (e: IOException) {
                 _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        error = "Failed to load trailer: ${e.message}"
-                    )
+                    it.copy(isLoading = false, error = "Failed to load trailer: ${e.message}")
                 }
             } catch (e: Exception) {
                 _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        error = "An unexpected error occurred: ${e.message}"
-                    )
+                    it.copy(isLoading = false, error = "An unexpected error occurred: ${e.message}")
                 }
             }
         }
     }
 
-    suspend fun getTrailerUrl(movieId: Int): String? {
-        return try {
-            val response = RetrofitInstance.api.getMovieVideos(movieId, apiKey)
-            val trailer = findBestTrailer(response.results)
-            trailer?.key?.let { "https://www.youtube.com/watch?v=$it" }
-        } catch (e: Exception) {
-            null
+    fun prepareShareUrl(movieId: Int) {
+        viewModelScope.launch {
+            try {
+                val response = RetrofitInstance.api.getMovieVideos(movieId, apiKey)
+                val trailer = findBestTrailer(response.results)
+                val url = trailer?.key?.let { "https://www.youtube.com/watch?v=$it" }
+
+                if (url != null) {
+                    _uiState.update { it.copy(urlToShare = url) }
+                } else {
+                    _uiState.update { it.copy(error = "No Trailer Found.") }
+                }
+            } catch (e: IOException) {
+                _uiState.update { it.copy(error = "Failed to load trailer: ${e.message}") }
+            } catch (e: Exception) {
+                _uiState.update { it.copy(error = "An unexpected error occurred: ${e.message}") }
+            }
         }
     }
 
@@ -81,13 +80,17 @@ class DetailsViewModel : ViewModel() {
         _uiState.update { it.copy(trailerUrl = null) }
     }
 
-    fun onErrorShown() {
+    fun onUrlShared() {
+        _uiState.update { it.copy(urlToShare = null) }
+    }
+
+    fun onToastShown() {
         _uiState.update { it.copy(error = null) }
     }
 
     private fun findBestTrailer(videos: List<Video>): Video? {
         val youtubeVideos = videos.filter { it.site == "YouTube" }
-        
+
         return youtubeVideos.firstOrNull { it.type == "Trailer" && it.official }
             ?: youtubeVideos.firstOrNull { it.type == "Trailer" }
             ?: youtubeVideos.firstOrNull { it.type == "Teaser" && it.official }
