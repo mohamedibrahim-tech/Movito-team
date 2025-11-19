@@ -1,5 +1,6 @@
 package com.movito.movito.ui
 
+import android.app.Activity
 import android.content.Intent
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
@@ -57,6 +58,10 @@ fun CategoriesScreen(viewModel: CategoriesViewModel = viewModel()) {
             putExtra("genreName", genre.name)
         }
         context.startActivity(intent)
+        (context as? Activity)?.overridePendingTransition(
+            R.anim.slide_in_right,
+            R.anim.slide_out_left
+        )
     }
 }
 
