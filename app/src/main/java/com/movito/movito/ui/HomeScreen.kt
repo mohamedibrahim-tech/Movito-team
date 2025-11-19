@@ -173,8 +173,8 @@ fun MoviesByGenreContent(
 
                     val buffer = 4 // Start loading when 4 items are left
                     val shouldLoadMore by remember {
-                        derivedStateOf {
-                            val lastVisibleItemIndex = gridState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
+                        derivedStateOf { // to detect when the list is scrolled to the end
+                            val lastVisibleItemIndex = gridState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0 //current index of the last visible item
                             val totalItemCount = gridState.layoutInfo.totalItemsCount
                             lastVisibleItemIndex >= totalItemCount - 1 - buffer
                         }

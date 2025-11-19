@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.movito.movito.R
 import com.movito.movito.theme.MovitoTheme
 import com.movito.movito.viewmodel.MoviesByGenreViewModel
 
@@ -13,7 +14,7 @@ class MoviesByGenreActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val genreId = intent.getIntExtra("genreId", -1)
+        val genreId = intent.getIntExtra("genreId", -1)//-1 to handle errors from the intent
         val genreName = intent.getStringExtra("genreName") ?: "Movies"
 
         enableEdgeToEdge()
@@ -25,9 +26,14 @@ class MoviesByGenreActivity : ComponentActivity() {
                 MoviesByGenreScreen(
                     viewModel = viewModel,
                     genreName = genreName,
-                    onBackPressed = { onBackPressedDispatcher.onBackPressed() }
+                    onBackPressed = { finish() }
                 )
             }
         }
+    }
+
+    override fun finish() {
+        super.finish()
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 }

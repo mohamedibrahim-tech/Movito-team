@@ -118,10 +118,8 @@ fun MovitoNavBar(selectedItem: String) {
  */
 @Composable
 private fun navBarColors() = NavigationBarItemDefaults.colors(
-    selectedIconColor = MaterialTheme.colorScheme.primary,
-    unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-    indicatorColor = Color.Transparent
-)
+    selectedIconColor = MaterialTheme.colorScheme.onPrimaryContainer,    unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+    indicatorColor = MaterialTheme.colorScheme.primaryContainer)
 
 /*
     إضافة دالة التنقل بتستخدم Intent عادي عشان تفتح Activity جديدة

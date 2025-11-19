@@ -22,7 +22,7 @@ data class Movie(
     @SerializedName("overview")
     val overview: String = "An epic space opera.",
     @SerializedName("genre_ids")
-    val genreIds: List<Int>? = emptyList(), //عيب:)
+    val genreIds: List<Int>? = emptyList(),
     @SerializedName("genres")
     val genres: List<Genre>? = emptyList(),
     @SerializedName("homepage")
