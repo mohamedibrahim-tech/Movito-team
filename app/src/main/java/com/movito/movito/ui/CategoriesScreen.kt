@@ -56,6 +56,7 @@ fun CategoriesScreen(viewModel: CategoriesViewModel = viewModel()) {
         val intent = Intent(context, MoviesByGenreActivity::class.java).apply {
             putExtra("genreId", genre.id)
             putExtra("genreName", genre.name)
+            flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
         }
         context.startActivity(intent)
         (context as? Activity)?.overridePendingTransition(
