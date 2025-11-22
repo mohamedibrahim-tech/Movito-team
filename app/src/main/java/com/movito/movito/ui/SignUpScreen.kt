@@ -53,7 +53,6 @@ import com.movito.movito.R
 import com.movito.movito.theme.MovitoTheme
 import com.movito.movito.viewmodel.AuthViewModel
 
-
 @Composable
 fun SignUpScreen(
     modifier: Modifier = Modifier,
@@ -133,7 +132,6 @@ fun SignUpScreen(
                 return
             }
         }
-
 
         authViewModel.signUpWithEmailPassword(email, password)
     }
@@ -290,8 +288,18 @@ fun SignUpScreen(
             authState.error?.let {
                 Text(
                     text = it,
-                    color = MaterialTheme.colorScheme.error,
+                    color = Color(0xFF673AB7),
                     fontSize = 13.sp,
+                    modifier = Modifier.padding(top = 8.dp)
+                )
+            }
+
+            authState.message?.let {
+                Text(
+                    text = it,
+                    color = Color(0xFF673AB7),
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Medium,
                     modifier = Modifier.padding(top = 8.dp)
                 )
             }
