@@ -38,7 +38,9 @@ import com.movito.movito.favorites.FavoritesViewModel
 @Composable
 fun FavoritesScreen(
     modifier: Modifier = Modifier,
-    viewModel: FavoritesViewModel = viewModel() // ViewModel للـ Firebase
+   // viewModel: FavoritesViewModel = viewModel() // ViewModel للـ Firebase
+    viewModel: FavoritesViewModel = remember { FavoritesViewModel.getInstance() }
+
 ) {
     val uiState by viewModel.uiState.collectAsState()
 

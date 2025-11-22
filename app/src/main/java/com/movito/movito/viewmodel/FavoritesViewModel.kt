@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.movito.movito.data.model.Movie
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import java.util.Date
 
 data class FavoritesUiState(
     val favorites: List<FavoriteMovie> = emptyList(),
@@ -59,17 +60,64 @@ class FavoritesViewModel(
 
     fun addToFavorites(movie: Movie) {
         viewModelScope.launch {
+            val userId = repository.currentUserId()
+            if (userId.isEmpty()) return@launch
+
+            // 1. Optimistic Update - حدث الـ UI فوراً
+            val newFavorite = FavoriteMovie(
+                id = "${userId}_${movie.id}",
+                movieId = movie.id,
+                title = movie.title,
+                releaseDate = movie.releaseDate,
+                posterPath = movie.posterPath,
+                voteAverage = movie.voteAverage,
+                overview = movie.overview,
+                userId = userId,
+                addedAt = Date()
+            )
+
+            _uiState.update { currentState ->
+                val alreadyExists = currentState.favorites.any { it.movieId == movie.id }
+                if (alreadyExists) {
+                    currentState
+                } else {
+                    currentState.copy(
+                        favorites = listOf(newFavorite) + currentState.favorites
+                    )
+                }
+            }
+
+            // 2. احفظ في Firestore
             repository.addToFavorites(movie)
         }
     }
 
     fun removeFromFavorites(movieId: Int) {
         viewModelScope.launch {
+            // 1. Optimistic Update - احذف من الـ UI فوراً
+            _uiState.update { currentState ->
+                currentState.copy(
+                    favorites = currentState.favorites.filter { it.movieId != movieId }
+                )
+            }
+
+            // 2. احذف من Firestore
             repository.removeFromFavorites(movieId)
         }
     }
 
     suspend fun isFavorite(movieId: Int): Boolean {
-        return repository.isFavorite(movieId)
+        return _uiState.value.favorites.any { it.movieId == movieId }
+    }
+
+    companion object {
+        @Volatile
+        private var instance: FavoritesViewModel? = null
+
+        fun getInstance(): FavoritesViewModel {
+            return instance ?: synchronized(this) {
+                instance ?: FavoritesViewModel().also { instance = it }
+            }
+        }
     }
 }

@@ -145,4 +145,7 @@ class FavoritesRepository {
             false
         }
     }
+    fun currentUserId(): String {
+        return auth.currentUser?.uid ?: ""
+    }
 }

@@ -31,6 +31,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -40,6 +44,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -51,6 +56,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
 import com.movito.movito.data.model.Movie
+import com.movito.movito.favorites.FavoritesViewModel
 import com.movito.movito.theme.HeartColor
 import com.movito.movito.theme.LightBackground
 import com.movito.movito.theme.MovitoTheme
@@ -59,6 +65,8 @@ import com.movito.movito.ui.common.MovieCard
 import com.movito.movito.ui.common.MovitoButton
 import com.movito.movito.ui.common.PartialStar
 import com.movito.movito.viewmodel.DetailsViewModel
+import kotlinx.coroutines.launch
+
 
 
 @SuppressLint("UseKtx")
@@ -74,8 +82,49 @@ fun DetailsScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
-    var isFavorite by remember { mutableStateOf(initiallyFavorite) }
+    val favoritesViewModel = remember { FavoritesViewModel.getInstance() }
+    val favoritesState by favoritesViewModel.uiState.collectAsState()
+    val isFavorite = remember(favoritesState.favorites, movie.id) {
+        favoritesState.favorites.any { it.movieId == movie.id }
+    }
+    var showAddDialog by remember { mutableStateOf(false) }
+    var showRemoveDialog by remember { mutableStateOf(false) }
 
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+
+    // Add Dialog
+    if (showAddDialog) {
+        AddToFavoritesDialog(
+            movieTitle = movie.title,
+            onConfirm = {
+                favoritesViewModel.addToFavorites(movie)
+                scope.launch {
+                    val result = snackbarHostState.showSnackbar(
+                        message = "${movie.title} added to favorites",
+                        actionLabel = "Favorites"
+                    )
+                    if (result.toString() == "ActionPerformed") {
+                        val intent = Intent(context, FavoritesActivity::class.java)
+                        context.startActivity(intent)
+                    }
+                }
+            },
+            onDismiss = { showAddDialog = false }
+        )
+    }
+
+// Remove Dialog
+    if (showRemoveDialog) {
+        RemoveFromFavoritesDialog(
+            movieTitle = movie.title,
+            onConfirm = {
+                favoritesViewModel.removeFromFavorites(movie.id)
+
+            },
+            onDismiss = { showRemoveDialog = false }
+        )
+    }
 
     LaunchedEffect(uiState.trailerUrl) {
         uiState.trailerUrl?.let {
@@ -101,6 +150,7 @@ fun DetailsScreen(
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopAppBar(title = { Text("Details") }, navigationIcon = {
                 IconButton(onClick = onClickBackButton) {
@@ -194,8 +244,12 @@ fun DetailsScreen(
                         .weight(0.15f)
                         .background(LightBackground, RoundedCornerShape(100.dp)),
                     onClick = {
-                        isFavorite = !isFavorite
-                        onFavoriteChanged(isFavorite)                    }
+                        if (isFavorite) {
+                            showRemoveDialog = true
+                        } else {
+                            showAddDialog = true
+                        }
+                    }
                 ) {
                     Icon(
                         imageVector = if (isFavorite) Icons.Filled.Favorite
