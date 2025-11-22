@@ -18,6 +18,12 @@ interface TmdbApi {
         @Query("with_genres") genreId: Int
     ): MovieResponse
 
+    @GET("search/movie")
+    suspend fun searchMovies(
+        @Query("api_key") apiKey: String,
+        @Query("query") query: String,
+    ): MovieResponse
+
     @GET("movie/{movie_id}/videos")
     suspend fun getMovieVideos(
         @Path("movie_id") movieId: Int,
