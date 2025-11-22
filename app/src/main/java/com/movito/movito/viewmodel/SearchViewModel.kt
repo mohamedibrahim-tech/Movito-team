@@ -1,12 +1,9 @@
 package com.movito.movito.viewmodel
 
-import android.R.attr.apiKey
-import android.R.attr.query
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.movito.movito.data.model.Movie
-import com.movito.movito.data.model.MovieRepository
 import com.movito.movito.data.source.remote.RetrofitInstance
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,6 +12,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import androidx.lifecycle.SavedStateHandle
 import com.movito.movito.BuildConfig
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 
 @Immutable
 data class SearchUiState(
@@ -22,67 +22,91 @@ data class SearchUiState(
     val movies: List<Movie> = emptyList(),
     val isLoading: Boolean = false,
     val error: String? = null,
-    val hasSearched: Boolean = false // Track if a search has been attempted
+    val hasSearched: Boolean = false
 )
 
-class SearchViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
+// Keys for SavedStateHandle
+private const val SEARCH_QUERY_KEY = "search_query"
 
+class SearchViewModel(
+    private val savedStateHandle: SavedStateHandle // Renamed for clarity
+) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(SearchUiState())
+    // Initialize state, reading the last saved query if available.
+    private val _uiState = MutableStateFlow(
+        SearchUiState(
+            searchQuery = savedStateHandle.get<String>(SEARCH_QUERY_KEY) ?: ""
+        )
+    )
     val uiState: StateFlow<SearchUiState> = _uiState.asStateFlow()
 
-    // The ViewModel creates and holds its own repository instance.
-    private val movieRepository = MovieRepository()
-
-
+    // Using BuildConfig directly is fine for simple keys, but consider a Repository/DataSource for better abstraction.
     private val apiKey = BuildConfig.TMDB_API_KEY
 
-    private val query: String = savedStateHandle.get<String>("query")!!
 
-
-    // Updates the search query text in the UI state.
+    // Updates the search query text in the UI state AND saves it to handle.
     fun updateSearchQuery(query: String) {
         _uiState.update { it.copy(searchQuery = query) }
+        // Save the current query to be restored after process death
+        savedStateHandle[SEARCH_QUERY_KEY] = query
     }
 
-    // Main function to trigger the movie search.
-    fun searchMovies(query: String) {
+    val searchQueryState: StateFlow<String> = _uiState
+        .map { it.searchQuery }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000), // Start collection when a subscriber is present
+            initialValue = uiState.value.searchQuery // Use the current value from the main state
+        )
+    // Main function to trigger the movie search, now using the query stored in the state.
+    fun searchMovies() {
+        val query = _uiState.value.searchQuery.trim() // Get current query from state
+
         // Don't search if the query is empty.
         if (query.isBlank()) {
-            // Clear previous results
-            _uiState.update { it.copy(movies = emptyList(), hasSearched = false) }
+            // Clear previous results and error
+            _uiState.update {
+                it.copy(
+                    movies = emptyList(),
+                    error = null,
+                    hasSearched = false // Reset search flag if query is cleared
+                )
+            }
             return
         }
 
-        // Use viewModelScope to launch a coroutine that is automatically cancelled
-        // when the ViewModel is cleared.
+        // Use viewModelScope to launch a coroutine.
         viewModelScope.launch {
             // Set loading state to true and mark that a search has been attempted.
-            _uiState.update { it.copy(isLoading = true, hasSearched = true) }
+            _uiState.update { it.copy(isLoading = true, error = null, hasSearched = true) }
+
             try {
-                // Call the repository to get movies from the API.
+                // Call the API.
                 val response = RetrofitInstance.api.searchMovies(
                     apiKey = apiKey,
-                    query = query
+                    query = query // Use the current, trimmed query
                 )
-                val movies = response.results
-                // On success, update the state with the movie list and set loading to false.
+                val movies = response.results.orEmpty() // Use orEmpty() to handle null results safely
+
+                // On success, update the state with the movie list.
                 _uiState.update { it.copy(isLoading = false, movies = movies) }
+
             } catch (e: Exception) {
-                // On failure, update the state with an error message and set loading to false.
+                // On failure, update the state with an error message.
                 _uiState.update {
-                    it.copy(isLoading = false, error = "Failed to fetch movies: ${e.message}")
+                    it.copy(
+                        isLoading = false,
+                        movies = emptyList(), // Clear results on error
+                        error = "Failed to fetch movies: ${e.message ?: "Unknown error"}"
+                    )
                 }
             }
         }
+    }
 
-
-
-        // A function to clear any displayed error messages from the UI.
-        fun errorShown() {
-            _uiState.update { it.copy(error = null) }
-        }
-
-
+    // Function to clear any displayed error messages from the UI.
+    // NOTE: This is now a member function of the class, accessible from the UI.
+    fun errorShown() {
+        _uiState.update { it.copy(error = null) }
     }
 }

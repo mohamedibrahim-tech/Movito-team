@@ -1,5 +1,6 @@
 package com.movito.movito.ui
 
+import android.content.Intent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -53,10 +54,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.movito.movito.R
 import com.movito.movito.data.model.Movie
-import com.movito.movito.data.source.remote.RetrofitInstance
 import com.movito.movito.theme.MovitoTheme
 import com.movito.movito.ui.common.MovitoNavBar
 import com.movito.movito.viewmodel.SearchViewModel
+import kotlin.jvm.java
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -64,15 +65,19 @@ import com.movito.movito.viewmodel.SearchViewModel
 fun SearchScreen(
     modifier: Modifier = Modifier, viewModel: SearchViewModel = viewModel()
 ) {
+    // 1. COLLECT THE STATE
+    // The uiState contains the latest searchQuery.
     val uiState by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
     var active by remember { mutableStateOf(false) }
+
+
 
     // Show a snackbar when an error occurs
     LaunchedEffect(uiState.error) {
         uiState.error?.let {
             snackbarHostState.showSnackbar(message = it, duration = SnackbarDuration.Short)
-           // viewModel.errorShown() // Notify ViewModel that the error has been shown
+            // viewModel.errorShown() // Notify ViewModel that the error has been shown
         }
     }
 
@@ -83,18 +88,23 @@ fun SearchScreen(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
             SearchBar(
+
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = if (active) 0.dp else 16.dp),
+
                 query = uiState.searchQuery,
-                onQueryChange = {
-                    viewModel.updateSearchQuery(uiState.searchQuery)
 
-
-                                },
-             onSearch = {                  active = false
-                    viewModel.searchMovies(it)
+                // 3. EVENT INPUT: Call the ViewModel function every time the text changes.
+                onQueryChange = { newText ->
+                    // This is the critical line!
+                    viewModel.updateSearchQuery(newText)
                 },
+                onSearch = {
+                    active = false
+                    viewModel.searchMovies()
+                },
+
                 active = active,
                 onActiveChange = { active = it },
                 placeholder = { Text("Search for movies...") },
@@ -131,7 +141,7 @@ fun SearchScreen(
                             onClick = {
                                 active = false // Close the active search view
                                 viewModel.updateSearchQuery(movie.title) // Update the text field
-                                viewModel.searchMovies(movie.title) // Trigger the search
+                                viewModel.searchMovies() // Trigger the search
                             }
                         )
                     }
@@ -194,7 +204,12 @@ fun SearchScreen(
                         items(items = uiState.movies, key = { it.id }) { movie ->
                             MovieListItem(
                                 movie = movie,
-                                onClick = { /* TODO: Handle click, e.g., navigate to movie detail screen */ }
+                                onClick = {
+                                    active = false // Close the active search view
+                                    viewModel.updateSearchQuery(movie.title) // Update the text field
+                                    viewModel.searchMovies() // Trigger the search
+
+                                }
                             )
                         }
                     }
@@ -203,7 +218,6 @@ fun SearchScreen(
         }
     }
 }
-
 
 
 @Composable
@@ -217,7 +231,7 @@ fun MovieListItem(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(8.dp))
-            .clickable {  onClick}
+            .clickable { onClick }
             .padding(4.dp),
         verticalAlignment = Alignment.CenterVertically) {
         Card(
