@@ -14,7 +14,8 @@ import java.io.IOException
 
 data class DetailsUiState(
     val isLoading: Boolean = false,
-    val trailerUrl: String? = null,
+    val trailerUrl: String? = null, // For playing the trailer
+    val urlToShare: String? = null, // For the share intent
     val error: String? = null
 )
 
@@ -30,55 +31,71 @@ class DetailsViewModel : ViewModel() {
             _uiState.update { it.copy(isLoading = true, error = null) }
 
             try {
-                val trailerUrl = getTrailerUrl(movieId)
+                val response = RetrofitInstance.api.getMovieVideos(movieId, apiKey)
+                val trailer = findBestTrailer(response.results)
+                val url = trailer?.key?.let { "https://www.youtube.com/watch?v=$it" }
 
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        trailerUrl = trailerUrl
-                    )
+                if (url != null) {
+                    _uiState.update {
+                        it.copy(isLoading = false, trailerUrl = url)
+                    }
+                } else {
+                    _uiState.update {
+                        it.copy(isLoading = false, error = "No Trailer Found.")
+                    }
                 }
             } catch (e: IOException) {
                 _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        error = "Failed to load trailer: ${e.message}"
-                    )
+                    it.copy(isLoading = false, error = "Failed to load trailer: ${e.message}")
                 }
             } catch (e: Exception) {
                 _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        error = "An unexpected error occurred: ${e.message}"
-                    )
+                    it.copy(isLoading = false, error = "An unexpected error occurred: ${e.message}")
                 }
             }
         }
     }
 
-    private fun findBestTrailer(videos: List<Video>): Video? {
-        return videos.firstOrNull { it.site == "YouTube" && it.type == "Trailer" && it.official } 
-            ?: videos.firstOrNull { it.site == "YouTube" && it.type == "Trailer" }
+    fun prepareShareUrl(movieId: Int) {
+        viewModelScope.launch {
+            try {
+                val response = RetrofitInstance.api.getMovieVideos(movieId, apiKey)
+                val trailer = findBestTrailer(response.results)
+                val url = trailer?.key?.let { "https://www.youtube.com/watch?v=$it" }
+
+                if (url != null) {
+                    _uiState.update { it.copy(urlToShare = url) }
+                } else {
+                    _uiState.update { it.copy(error = "No Trailer Found.") }
+                }
+            } catch (e: IOException) {
+                _uiState.update { it.copy(error = "Failed to load trailer: ${e.message}") }
+            } catch (e: Exception) {
+                _uiState.update { it.copy(error = "An unexpected error occurred: ${e.message}") }
+            }
+        }
     }
 
-    /**
-     * Fetches the best available YouTube trailer URL for the given movie.
-     *
-     * This function makes a network request to TMDB to retrieve the list of videos
-     * associated with the movie, then selects the most suitable trailer based on:
-     *  - `site == "YouTube"`
-     *  - `type == "Trailer"`
-     *  - Prefers trailers marked as `official`
-     *
-     * @param movieId The TMDB ID of the movie whose trailer should be fetched.
-     * @return A fully formatted YouTube watch URL, or `null` if no valid trailer exists.
-     *
-     * @throws IOException If a network error occurs during the API request.
-     *
-     */
-    suspend fun getTrailerUrl(movieId : Int) : String? {
-        val response = RetrofitInstance.api.getMovieVideos(movieId, apiKey)
-        val trailer = findBestTrailer(response.results)
-        return  trailer?.key?.let { "https://www.youtube.com/watch?v=$it" }
+    fun onTrailerLaunched() {
+        _uiState.update { it.copy(trailerUrl = null) }
+    }
+
+    fun onUrlShared() {
+        _uiState.update { it.copy(urlToShare = null) }
+    }
+
+    fun onToastShown() {
+        _uiState.update { it.copy(error = null) }
+    }
+
+    private fun findBestTrailer(videos: List<Video>): Video? {
+        val youtubeVideos = videos.filter { it.site == "YouTube" }
+
+        return youtubeVideos.firstOrNull { it.type == "Trailer" && it.official }
+            ?: youtubeVideos.firstOrNull { it.type == "Trailer" }
+            ?: youtubeVideos.firstOrNull { it.type == "Teaser" && it.official }
+            ?: youtubeVideos.firstOrNull { it.type == "Teaser" }
+            ?: youtubeVideos.firstOrNull { it.official }
+            ?: youtubeVideos.firstOrNull()
     }
 }

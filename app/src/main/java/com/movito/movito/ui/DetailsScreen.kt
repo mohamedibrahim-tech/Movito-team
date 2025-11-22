@@ -59,10 +59,6 @@ import com.movito.movito.ui.common.MovieCard
 import com.movito.movito.ui.common.MovitoButton
 import com.movito.movito.ui.common.PartialStar
 import com.movito.movito.viewmodel.DetailsViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 
 @SuppressLint("UseKtx")
@@ -85,6 +81,21 @@ fun DetailsScreen(
         uiState.trailerUrl?.let {
             val intent = Intent(Intent.ACTION_VIEW, it.toUri())
             context.startActivity(intent)
+            viewModel.onTrailerLaunched()
+        }
+    }
+
+    LaunchedEffect(uiState.urlToShare) {
+        uiState.urlToShare?.let {
+            shareUrl(context, it)
+            viewModel.onUrlShared()
+        }
+    }
+
+    LaunchedEffect(uiState.error) {
+        uiState.error?.let {
+            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+            viewModel.onToastShown()
         }
     }
 
@@ -147,19 +158,8 @@ fun DetailsScreen(
                 // Share button (25%)
                 TextButton(
                     modifier = Modifier.weight(0.25f),
-                    onClick = {
-                        // Launch a coroutine to call the suspend function
-                        CoroutineScope(Dispatchers.IO).launch {
-                            val url = viewModel.getTrailerUrl(movieId = movie.id)
-                            if (url == null)
-                                Toast.makeText(context, "No Trailer Found.", Toast.LENGTH_SHORT)
-                                    .show()
-                            else url.let {
-                                // Switch to main thread to show share dialog
-                                withContext(Dispatchers.Main) { shareUrl(context, it) }
-                            }
-                        }
-                    }) {
+                    onClick = { viewModel.prepareShareUrl(movieId = movie.id) }
+                ) {
                     Icon(
                         imageVector = Icons.Outlined.Share,
                         contentDescription = "Share",
