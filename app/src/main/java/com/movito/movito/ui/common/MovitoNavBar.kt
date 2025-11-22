@@ -6,6 +6,8 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -13,7 +15,6 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -84,7 +85,7 @@ fun MovitoNavBar(selectedItem: String) {
             },
             icon = {
                 Icon(
-                    painter = painterResource(id = R.drawable.like),
+                    imageVector = Icons.Outlined.FavoriteBorder,
                     contentDescription = "Favorite",
                     modifier = Modifier.size(24.dp)
                 )
@@ -118,10 +119,8 @@ fun MovitoNavBar(selectedItem: String) {
  */
 @Composable
 private fun navBarColors() = NavigationBarItemDefaults.colors(
-    selectedIconColor = MaterialTheme.colorScheme.primary,
-    unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-    indicatorColor = Color.Transparent
-)
+    selectedIconColor = MaterialTheme.colorScheme.onPrimaryContainer,    unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+    indicatorColor = MaterialTheme.colorScheme.primaryContainer)
 
 /*
     إضافة دالة التنقل بتستخدم Intent عادي عشان تفتح Activity جديدة

@@ -45,12 +45,18 @@ class MoviesByGenreViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
                     page = currentPage,
                     genreId = genreId
                 )
-                _uiState.update {
-                    val currentMovies = if (isRefreshing) emptyList() else it.movies
-                    it.copy(
+                _uiState.update { currentState ->
+                    val currentMovies = if (isRefreshing) emptyList() else currentState.movies
+                    
+                    // لمنع انهيار التطبيق بسبب وجود أفلام مكررة، نقوم بفلترة النتائج الجديدة
+                    // ونتأكد من عدم إضافة أي فيلم موجود بالفعل في القائمة الحالية.
+                    val existingMovieIds = currentMovies.map { it.id }.toSet()
+                    val newMovies = response.results.filter { it.id !in existingMovieIds }
+                    
+                    currentState.copy(
                         isLoading = false,
                         isRefreshing = false,
-                        movies = currentMovies + response.results
+                        movies = currentMovies + newMovies
                     )
                 }
                 if (response.results.isNotEmpty()) {
@@ -88,10 +94,15 @@ class MoviesByGenreViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
                     page = currentPage,
                     genreId = genreId
                 )
-                _uiState.update {
-                    it.copy(
+                _uiState.update { currentState ->
+                    // لمنع انهيار التطبيق بسبب وجود أفلام مكررة، نقوم بفلترة النتائج الجديدة
+                    // ونتأكد من عدم إضافة أي فيلم موجود بالفعل في القائمة الحالية.
+                    val existingMovieIds = currentState.movies.map { it.id }.toSet()
+                    val newMovies = response.results.filter { it.id !in existingMovieIds }
+                    
+                    currentState.copy(
                         isLoadingMore = false,
-                        movies = it.movies + response.results
+                        movies = currentState.movies + newMovies
                     )
                 }
                 if (response.results.isNotEmpty()) {
