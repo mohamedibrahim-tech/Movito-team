@@ -81,10 +81,9 @@ class SettingsActivity : ComponentActivity() {
                     SettingsScreen(
                         modifier = Modifier.padding(paddingValues),
                         onThemeToggle = {},
-                        //logout
                         currentThemeIsDark = systemIsDark,
-                        onSignOut = { authViewModel.signOut() }
-                        //-----
+                        onSignOut = { authViewModel.signOut() },
+                        userEmail = authState.user?.email
                     )
                 }
             }
@@ -96,10 +95,9 @@ class SettingsActivity : ComponentActivity() {
 fun SettingsScreen(
     modifier: Modifier = Modifier,
     onThemeToggle: (Boolean) -> Unit,
-    //logout
     currentThemeIsDark: Boolean,
-    onSignOut: () -> Unit
-    //------
+    onSignOut: () -> Unit,
+    userEmail: String?
 ) {
     var notifications by remember { mutableStateOf(false) }
     var downloadsWifiOnly by remember { mutableStateOf(true) }
@@ -160,7 +158,7 @@ fun SettingsScreen(
                         fontSize = 20.sp,
                     )
                     Text(
-                        text = "user@gmail.com",
+                        text = userEmail ?: "Not signed in",
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontSize = 16.sp,
                     )
@@ -327,7 +325,8 @@ fun SettingsPreviewDark() {
         SettingsScreen(
             onThemeToggle = { isDark = it },
             currentThemeIsDark = isDark,
-            onSignOut = {}
+            onSignOut = {},
+            userEmail = "preview.user@gmail.com"
         )
     }
 }
@@ -340,7 +339,8 @@ fun SettingsPreviewLight() {
         SettingsScreen(
             onThemeToggle = { isDark = it },
             currentThemeIsDark = isDark,
-            onSignOut = {}
+            onSignOut = {},
+            userEmail = "preview.user@gmail.com"
         )
     }
 }

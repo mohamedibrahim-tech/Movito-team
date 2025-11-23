@@ -53,7 +53,6 @@ import com.movito.movito.R
 import com.movito.movito.theme.MovitoTheme
 import com.movito.movito.viewmodel.AuthViewModel
 
-
 @Composable
 fun SignUpScreen(
     modifier: Modifier = Modifier,
@@ -134,7 +133,6 @@ fun SignUpScreen(
             }
         }
 
-
         authViewModel.signUpWithEmailPassword(email, password)
     }
 
@@ -146,7 +144,7 @@ fun SignUpScreen(
     ) {
         Column(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
                 .padding(horizontal = 20.dp, vertical = 60.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -276,27 +274,34 @@ fun SignUpScreen(
                 }
             }
 
+            Spacer(modifier = Modifier.height(8.dp))
 
             validationError?.let {
                 Text(
                     text = it,
                     color = MaterialTheme.colorScheme.error,
-                    fontSize = 13.sp,
-                    modifier = Modifier.padding(top = 8.dp)
+                    fontSize = 13.sp
                 )
             }
-
 
             authState.error?.let {
                 Text(
                     text = it,
                     color = MaterialTheme.colorScheme.error,
-                    fontSize = 13.sp,
-                    modifier = Modifier.padding(top = 8.dp)
+                    fontSize = 13.sp
                 )
             }
 
-            Spacer(Modifier.height(32.dp))
+            authState.message?.let {
+                Text(
+                    text = it,
+                    color = Color(0xFF673AB7),
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Medium
+                )
+            }
+
+            Spacer(Modifier.weight(1f))
 
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
