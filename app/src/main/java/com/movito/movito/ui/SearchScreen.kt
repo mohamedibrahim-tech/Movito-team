@@ -1,5 +1,7 @@
 package com.movito.movito.ui
 
+import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -44,6 +46,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -70,7 +73,7 @@ fun SearchScreen(
     val uiState by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
     var active by remember { mutableStateOf(false) }
-
+    val context = LocalContext.current
 
 
     // Show a snackbar when an error occurs
@@ -142,6 +145,8 @@ fun SearchScreen(
                                 active = false // Close the active search view
                                 viewModel.updateSearchQuery(movie.title) // Update the text field
                                 viewModel.searchMovies() // Trigger the search
+
+
                             }
                         )
                     }
@@ -205,9 +210,14 @@ fun SearchScreen(
                             MovieListItem(
                                 movie = movie,
                                 onClick = {
+
                                     active = false // Close the active search view
                                     viewModel.updateSearchQuery(movie.title) // Update the text field
                                     viewModel.searchMovies() // Trigger the search
+                                    navigateToActivity(
+                                        context = context,
+                                        activityClass = DetailsActivity::class.java
+                                    )
 
                                 }
                             )
@@ -216,6 +226,19 @@ fun SearchScreen(
                 }
             }
         }
+    }
+}
+
+private fun navigateToActivity(context: Context, activityClass: Class<*>) {
+    val intent = Intent(context, activityClass)
+    // بيمنع التطبيق إنه يفتح 10 شاشات فوق بعض لو فضلت تدوس على الأيقونات
+    intent.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
+    context.startActivity(intent)
+
+    /*     أنيميشن التنقل
+         بيلغي الوميض (flicker) اللي بيحصل بين الـ Activities*/
+    if (context is Activity) {
+        context.overridePendingTransition(0, 0)
     }
 }
 
@@ -231,8 +254,7 @@ fun MovieListItem(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(8.dp))
-            .clickable { onClick }
-            .padding(4.dp),
+            .clickable { onClick() },
         verticalAlignment = Alignment.CenterVertically) {
         Card(
             modifier = Modifier.size(width = 80.dp, height = 120.dp),
