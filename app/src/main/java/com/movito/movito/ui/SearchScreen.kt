@@ -23,16 +23,17 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -41,7 +42,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -60,7 +60,6 @@ import com.movito.movito.data.model.Movie
 import com.movito.movito.theme.MovitoTheme
 import com.movito.movito.ui.common.MovitoNavBar
 import com.movito.movito.viewmodel.SearchViewModel
-import kotlin.jvm.java
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -216,7 +215,7 @@ fun SearchScreen(
                                     viewModel.searchMovies() // Trigger the search
                                     navigateToActivity(
                                         context = context,
-                                        activityClass = DetailsActivity::class.java
+                                        movie
                                     )
 
                                 }
@@ -229,9 +228,9 @@ fun SearchScreen(
     }
 }
 
-private fun navigateToActivity(context: Context, activityClass: Class<*>) {
-    val intent = Intent(context, activityClass)
-    // بيمنع التطبيق إنه يفتح 10 شاشات فوق بعض لو فضلت تدوس على الأيقونات
+private fun navigateToActivity(context: Context, movie: Movie) {
+    val intent = Intent(context, DetailsActivity::class.java)
+    intent.putExtra("movie", movie)
     intent.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
     context.startActivity(intent)
 
