@@ -10,12 +10,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -31,10 +33,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -51,6 +51,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -165,10 +166,10 @@ fun DetailsScreen(
                 .fillMaxSize()
         ) {
 
-            // Movie image section (30% of screen)
+            // Movie image section (25% of screen)
             MovieCard(
                 modifier = Modifier
-                    .weight(0.30f)
+                    .weight(0.25f)
                     .fillMaxWidth(),
                 movie = movie,
                 intentToDetails = false,
@@ -257,10 +258,10 @@ fun DetailsScreen(
                 }
             }
 
-            // Details text section (30%)
+            // Details text section (25%)
             Column(
                 modifier = Modifier
-                    .weight(0.30f)
+                    .weight(0.25f)
                     .fillMaxWidth()
             ) {
 
@@ -286,21 +287,50 @@ fun DetailsScreen(
 
             }
 
-            // Details text section (25%)
+            viewModel.loadRecommendations(movie.id)
+
+            // Details text section (35%)
             Column(
                 modifier = Modifier
-                    .weight(0.25f)
-                    .fillMaxWidth()
+                    .weight(0.35f)
+                    .fillMaxWidth(),
             ) {
                 Text(
-                    "More Movies", style = MaterialTheme.typography.titleLarge, color = contentColor
+                    modifier = Modifier.weight(0.15f).padding(vertical = 4.dp),
+                    text = "More Like This",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = contentColor
                 )
 
-                LazyRow(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
+                if (uiState.recommendedMovies.isNotEmpty())
+                    LazyRow(
+                        modifier = Modifier.weight(0.85f).fillMaxSize(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        items(
+                            items = uiState.recommendedMovies,
+                            key = { it.id },
+                            contentType = { "movie" }
+                        )
+                        { movie ->
+                            MovieCard(
+                                modifier = Modifier
+                                    .fillMaxHeight()
+                                    .width(144.dp),
+                                movie = movie
+                            )
+                        }
+                    }
+                else
+                    Text(
+                        modifier = Modifier.weight(0.15f).fillMaxSize(),
+                        text = "Sorry, there are no recommendations for this movie 😕",
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = contentColor
 
-                }
+                    )
             }
 
         }

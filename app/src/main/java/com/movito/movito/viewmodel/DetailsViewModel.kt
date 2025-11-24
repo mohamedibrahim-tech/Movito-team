@@ -3,6 +3,7 @@ package com.movito.movito.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.movito.movito.BuildConfig
+import com.movito.movito.data.model.Movie
 import com.movito.movito.data.source.remote.RetrofitInstance
 import com.movito.movito.data.source.remote.Video
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,6 +15,7 @@ import java.io.IOException
 
 data class DetailsUiState(
     val isLoading: Boolean = false,
+    val recommendedMovies: List<Movie> = emptyList(), // Recommendations for similar movies
     val trailerUrl: String? = null, // For playing the trailer
     val urlToShare: String? = null, // For the share intent
     val error: String? = null
@@ -25,6 +27,13 @@ class DetailsViewModel : ViewModel() {
     val uiState: StateFlow<DetailsUiState> = _uiState.asStateFlow()
 
     private val apiKey = BuildConfig.TMDB_API_KEY
+
+    fun loadRecommendations(movieId: Int){
+        viewModelScope.launch {
+            val response = RetrofitInstance.api.getMovieRecommendations(movieId, apiKey)
+            _uiState.update {it.copy(recommendedMovies = response.results) }
+        }
+    }
 
     fun findTrailer(movieId: Int) {
         viewModelScope.launch {
