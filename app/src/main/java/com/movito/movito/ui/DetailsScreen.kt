@@ -56,7 +56,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
 import com.movito.movito.data.model.Movie
-import com.movito.movito.favorites.FavoritesViewModel
 import com.movito.movito.theme.HeartColor
 import com.movito.movito.theme.LightBackground
 import com.movito.movito.theme.MovitoTheme
@@ -173,7 +172,6 @@ fun DetailsScreen(
                     .fillMaxWidth(),
                 movie = movie,
                 intentToDetails = false,
-                isItInFavorites = initiallyFavorite
             )
 
             // Info + actions section (15%)

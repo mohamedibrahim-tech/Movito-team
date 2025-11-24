@@ -86,6 +86,10 @@ fun FavoritesScreen(
                 .fillMaxSize()
         ) {
             when {
+                uiState.isLoading && uiState.favorites.isEmpty() -> {
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                }
+
                 uiState.favorites.isEmpty() -> {
                     Column(
                         modifier = Modifier.align(Alignment.Center),
@@ -139,7 +143,7 @@ fun FavoritesScreen(
                             FavoriteMovieCard(
                                 movie = movie,
                                 onRemoveFavorite = {
-                                    viewModel.removeFromFavorites(favoriteMovie.movieId)  // ← الحل!
+                                    viewModel.removeFromFavorites(favoriteMovie.movieId)
                                 }
                             )
                         }
