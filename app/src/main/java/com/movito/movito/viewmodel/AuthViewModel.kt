@@ -181,6 +181,7 @@ class AuthViewModel : ViewModel() {
             user = null,
             isInitialCheckDone = true
         )
+        FavoritesViewModel.getInstance().resetForNewUser() // reset FavoritesViewMode
     }
 
     fun resetState() {

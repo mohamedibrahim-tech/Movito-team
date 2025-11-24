@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.google.firebase.auth.FirebaseAuth
 import com.movito.movito.theme.MovitoTheme
+import com.movito.movito.viewmodel.FavoritesViewModel
 
 class SignInActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,6 +40,7 @@ class SignInActivity : ComponentActivity() {
                     SignInScreen(
                         modifier = Modifier.padding(it),
                         onSignInSuccess = {
+                            FavoritesViewModel.getInstance().resetForNewUser() // reset FavoritesViewMode
                             val intent = Intent(this, CategoriesActivity::class.java)
                             startActivity(intent)
                             finish()

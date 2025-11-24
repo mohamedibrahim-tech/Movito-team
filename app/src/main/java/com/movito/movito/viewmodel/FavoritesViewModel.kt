@@ -2,8 +2,16 @@ package com.movito.movito.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import com.movito.movito.data.model.Movie
-import kotlinx.coroutines.flow.*
+import com.movito.movito.favorites.FavoriteMovie
+import com.movito.movito.favorites.FavoritesRepository
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.Date
 
@@ -19,6 +27,7 @@ class FavoritesViewModel(
 
     private val _uiState = MutableStateFlow(FavoritesUiState())
     val uiState: StateFlow<FavoritesUiState> = _uiState.asStateFlow()
+    private var listener: ListenerRegistration? = null
 
     init {
         startListening()
@@ -26,36 +35,50 @@ class FavoritesViewModel(
 
     private fun startListening() {
         viewModelScope.launch {
-            val result = repository.signInAnonymously()
+            // Get current user ID, return if no user is logged in
+            val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return@launch
 
-            if (result.isSuccess) {
-                repository.observeFavorites()
-                    .catch { exception ->
+            // Create Firestore listener for real-time updates
+            listener = FirebaseFirestore.getInstance().collection("favorites")
+                .whereEqualTo("userId", userId).addSnapshotListener { snapshot, error ->
+                    // Handle errors
+                    if (error != null) {
                         _uiState.update {
                             it.copy(
                                 isLoading = false,
-                                error = exception.message ?: "Unknown error"
+                                error = error.message ?: "Unknown error"
                             )
                         }
+                        return@addSnapshotListener
                     }
-                    .collect { favorites ->
-                        _uiState.update {
-                            it.copy(
-                                favorites = favorites,
-                                isLoading = false,
-                                error = null
-                            )
-                        }
+
+                    // Convert documents to FavoriteMovie objects
+                    val list =
+                        snapshot?.documents?.mapNotNull { it.toObject(FavoriteMovie::class.java) }
+                            ?: emptyList()
+
+                    // Update UI state with new favorites list
+                    _uiState.update {
+                        it.copy(
+                            favorites = list,
+                            isLoading = false,
+                            error = null
+                        )
                     }
-            } else {
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        error = "Authentication failed"
-                    )
                 }
-            }
         }
+    }
+
+    fun resetForNewUser() {
+        // Remove old listener
+        listener?.remove()
+        listener = null
+
+        // Clear current state
+        _uiState.value = FavoritesUiState(isLoading = true)
+
+        // Restart listening for new user
+        startListening()
     }
 
     fun addToFavorites(movie: Movie) {
@@ -108,6 +131,12 @@ class FavoritesViewModel(
 
     suspend fun isFavorite(movieId: Int): Boolean {
         return _uiState.value.favorites.any { it.movieId == movieId }
+    }
+
+    override fun onCleared() {
+        // Remove Firestore listener to prevent memory leaks
+        listener?.remove()
+        super.onCleared()
     }
 
     companion object {

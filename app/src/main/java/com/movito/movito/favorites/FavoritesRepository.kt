@@ -1,14 +1,8 @@
 package com.movito.movito.favorites
 
-import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ListenerRegistration
-import com.google.firebase.firestore.Query
 import com.movito.movito.data.model.Movie
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 
 class FavoritesRepository {
@@ -22,65 +16,6 @@ class FavoritesRepository {
             firestore.firestoreSettings = com.google.firebase.firestore.FirebaseFirestoreSettings.Builder()
                 .build()
         } catch (e: Exception) {
-        }
-    }
-
-    suspend fun signInAnonymously(): Result<String> {
-        return try {
-            if (auth.currentUser == null) {
-                val result = auth.signInAnonymously().await()
-                Result.success(result.user?.uid ?: "")
-            } else {
-                Result.success(auth.currentUser?.uid ?: "")
-            }
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
-    }
-
-    fun observeFavorites(): Flow<List<FavoriteMovie>> = callbackFlow {
-        var listenerRegistration: ListenerRegistration? = null
-
-        try {
-            val userId = auth.currentUser?.uid
-
-            if (userId == null) {
-                trySend(emptyList())
-                close()
-                return@callbackFlow
-            }
-
-            listenerRegistration = favoritesCollection
-                .whereEqualTo("userId", userId)
-                .orderBy("addedAt", Query.Direction.DESCENDING)
-                .addSnapshotListener { snapshot, exception ->
-
-                    if (exception != null) {
-                        close(exception)
-                        return@addSnapshotListener
-                    }
-
-                    if (snapshot != null && !snapshot.isEmpty) {
-                        val favorites = snapshot.documents.mapNotNull { document ->
-                            try {
-                                val favorite = document.toObject(FavoriteMovie::class.java)
-                                favorite?.copy(id = document.id)
-                            } catch (e: Exception) {
-                                null
-                            }
-                        }
-                        trySend(favorites)
-                    } else {
-                        trySend(emptyList())
-                    }
-                }
-
-        } catch (e: Exception) {
-            close(e)
-        }
-
-        awaitClose {
-            listenerRegistration?.remove()
         }
     }
 
