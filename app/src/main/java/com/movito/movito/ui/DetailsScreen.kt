@@ -65,8 +65,8 @@ import com.movito.movito.ui.common.MovieCard
 import com.movito.movito.ui.common.MovitoButton
 import com.movito.movito.ui.common.PartialStar
 import com.movito.movito.viewmodel.DetailsViewModel
+import com.movito.movito.viewmodel.FavoritesViewModel
 import kotlinx.coroutines.launch
-
 
 
 @SuppressLint("UseKtx")
@@ -76,8 +76,6 @@ fun DetailsScreen(
     viewModel: DetailsViewModel,
     movie: Movie,
     modifier: Modifier = Modifier,
-    initiallyFavorite: Boolean = false,
-    onFavoriteChanged: (Boolean) -> Unit = {},
     onClickBackButton: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -403,8 +401,6 @@ fun DetailsScreenPreviewDark() {
             movie = mockMovie,
             viewModel = fakeVM,
             modifier = Modifier,
-            initiallyFavorite = false,
-            onFavoriteChanged = {},
             onClickBackButton = {},
         )
     }
@@ -431,8 +427,6 @@ fun DetailsScreenPreviewLight() {
             movie = mockMovie,
             viewModel = fakeVM,
             modifier = Modifier,
-            initiallyFavorite = false,
-            onFavoriteChanged = {},
             onClickBackButton = {},
         )
     }

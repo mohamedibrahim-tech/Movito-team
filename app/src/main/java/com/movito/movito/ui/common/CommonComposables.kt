@@ -59,7 +59,6 @@ fun MovieCard(
     modifier: Modifier = Modifier,
     movie: Movie,
     intentToDetails: Boolean = true,
-    isItInFavorites: Boolean,
     content: @Composable BoxScope.() -> Unit = {}
 ) {
     val context = LocalContext.current
@@ -67,7 +66,6 @@ fun MovieCard(
         modifier = modifier, shape = RoundedCornerShape(16.dp), onClick = {
             if (intentToDetails) {
                 val intent = Intent(context, DetailsActivity::class.java)
-                intent.putExtra("isItInFav", isItInFavorites)
                 intent.putExtra("movie", movie)
                 intent.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
                 context.startActivity(intent)

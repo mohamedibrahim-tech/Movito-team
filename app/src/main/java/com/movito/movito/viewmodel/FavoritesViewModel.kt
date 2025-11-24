@@ -1,4 +1,4 @@
-package com.movito.movito.favorites
+package com.movito.movito.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

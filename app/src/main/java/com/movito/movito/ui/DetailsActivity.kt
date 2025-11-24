@@ -7,8 +7,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
 import com.movito.movito.data.model.Movie
 import com.movito.movito.theme.MovitoTheme
 import com.movito.movito.viewmodel.DetailsViewModel
@@ -29,26 +27,14 @@ class DetailsActivity : ComponentActivity() {
                 @Suppress("DEPRECATION") intent.getParcelableExtra("movie")
             }
 
-
             MovitoTheme(darkTheme = systemIsDark) {
-                //TODO: implement the on Favorite Changed
                 DetailsScreen(
                     viewModel = viewModel,
                     movie = movie ?: Movie(),
-                    onClickBackButton = {
-                        onBackPressedDispatcher.onBackPressed()
-                    }
+                    onClickBackButton = { onBackPressedDispatcher.onBackPressed() }
                 )
             }
+
         }
-    }
-}
-
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    MovitoTheme {
-
     }
 }
