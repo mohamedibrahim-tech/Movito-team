@@ -1,5 +1,6 @@
 package com.movito.movito.ui
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -15,6 +16,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import com.movito.movito.ui.common.MovitoButton
 
 @Composable
 fun AddToFavoritesDialog(
@@ -22,6 +24,8 @@ fun AddToFavoritesDialog(
     onConfirm: () -> Unit,
     onDismiss: () -> Unit
 ) {
+    val isDarkMode = isSystemInDarkTheme()
+
     Dialog(onDismissRequest = onDismiss) {
         Card(
             modifier = Modifier
@@ -78,6 +82,7 @@ fun AddToFavoritesDialog(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
+                    // Cancel Button
                     OutlinedButton(
                         onClick = onDismiss,
                         modifier = Modifier.weight(1f),
@@ -90,21 +95,16 @@ fun AddToFavoritesDialog(
                         )
                     }
 
-                    Button(
-                        onClick = {
-                            onConfirm()
-                            onDismiss()
-                        },
-                        modifier = Modifier.weight(1f),
-                        shape = RoundedCornerShape(12.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.Red
-                        )
-                    ) {
-                        Text(
+                    // Add Button - MovitoButton
+                    Box(modifier = Modifier.weight(1f)) {
+                        MovitoButton(
                             text = "Add",
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold
+                            isDarkMode = isDarkMode,
+                            roundedCornerSize = 12.dp,
+                            onClick = {
+                                onConfirm()
+                                onDismiss()
+                            }
                         )
                     }
                 }
@@ -119,6 +119,8 @@ fun RemoveFromFavoritesDialog(
     onConfirm: () -> Unit,
     onDismiss: () -> Unit
 ) {
+    val isDarkMode = isSystemInDarkTheme()
+
     Dialog(onDismissRequest = onDismiss) {
         Card(
             modifier = Modifier
@@ -175,6 +177,7 @@ fun RemoveFromFavoritesDialog(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
+                    // Cancel Button
                     OutlinedButton(
                         onClick = onDismiss,
                         modifier = Modifier.weight(1f),
@@ -187,21 +190,16 @@ fun RemoveFromFavoritesDialog(
                         )
                     }
 
-                    Button(
-                        onClick = {
-                            onConfirm()
-                            onDismiss()
-                        },
-                        modifier = Modifier.weight(1f),
-                        shape = RoundedCornerShape(12.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.error
-                        )
-                    ) {
-                        Text(
+                    // Remove Button - MovitoButton
+                    Box(modifier = Modifier.weight(1f)) {
+                        MovitoButton(
                             text = "Remove",
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold
+                            isDarkMode = isDarkMode,
+                            roundedCornerSize = 12.dp,
+                            onClick = {
+                                onConfirm()
+                                onDismiss()
+                            }
                         )
                     }
                 }
