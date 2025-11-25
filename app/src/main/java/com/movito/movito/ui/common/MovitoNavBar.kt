@@ -104,7 +104,7 @@ fun MovitoNavBar(selectedItem: String) {
             },
             icon = {
                 Icon(
-                    painter = painterResource(id = R.drawable.user),
+                    painter = painterResource(id = R.drawable.settings),
                     contentDescription = "Profile",
                     modifier = Modifier.size(24.dp)
                 )

@@ -49,6 +49,7 @@ import com.movito.movito.ui.common.SettingsCards
 import com.movito.movito.viewmodel.AuthViewModel
 import com.movito.movito.viewmodel.ThemeViewModel
 import androidx.compose.runtime.key
+import com.movito.movito.ui.common.MovitoButton
 
 class SettingsActivity : ComponentActivity() {
 
@@ -124,7 +125,7 @@ fun SettingsScreen(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "Profile",
+                    text = "Settings",
                     fontSize = 28.sp,
                     color = MaterialTheme.colorScheme.onBackground
                 )
@@ -169,30 +170,14 @@ fun SettingsScreen(
 
             }
             Spacer(Modifier.height(16.dp))
-
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(48.dp)
-                    .background(
-                        brush = Brush.horizontalGradient(
-                            colors = listOf(
-                                Color(0xFF9D5BFF),
-                                Color(0xFF64DFDF)
-                            )
-                        ),
-                        shape = RoundedCornerShape(12.dp)
-                    )
-                    .clickable { onSignOut() },
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    "Sign Out",
-                    color = Color.White,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium
-                )
-            }
+            MovitoButton(
+                text = "Sign Out",
+                modifier = Modifier.fillMaxWidth(),
+                roundedCornerSize = 12.dp,
+                isDarkMode = false,
+                isLoading = false,
+                onClick = { onSignOut() }
+            )
         }
         Spacer(Modifier.height(20.dp))
         SettingsCards {
@@ -244,37 +229,6 @@ fun SettingsScreen(
                 Switch(
                     checked = notifications,
                     onCheckedChange = { notifications = it },
-                    colors = SwitchDefaults.colors(
-                        checkedThumbColor = MaterialTheme.colorScheme.onPrimary,
-                        checkedTrackColor = MaterialTheme.colorScheme.primary,
-                        uncheckedThumbColor = MaterialTheme.colorScheme.onSurface,
-                        uncheckedTrackColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
-                    )
-                )
-            }
-        }
-        Spacer(Modifier.height(20.dp))
-        SettingsCards {
-            Text(
-                "Downloads",
-                color = MaterialTheme.colorScheme.onSurface,
-                fontSize = 28.sp,
-                fontWeight = FontWeight.SemiBold
-            )
-            Spacer(Modifier.height(12.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    "WiFi only",
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontSize = 20.sp
-                )
-                Spacer(Modifier.weight(1f))
-                Switch(
-                    checked = downloadsWifiOnly,
-                    onCheckedChange = { downloadsWifiOnly = it },
                     colors = SwitchDefaults.colors(
                         checkedThumbColor = MaterialTheme.colorScheme.onPrimary,
                         checkedTrackColor = MaterialTheme.colorScheme.primary,
