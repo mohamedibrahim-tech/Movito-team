@@ -110,4 +110,7 @@ dependencies {
 
     implementation("com.google.firebase:firebase-firestore")
 
+    // DataStore Preferences
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
+
 }

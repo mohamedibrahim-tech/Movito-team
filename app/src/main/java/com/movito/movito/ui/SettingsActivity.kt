@@ -9,7 +9,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -48,43 +47,45 @@ import com.movito.movito.theme.MovitoTheme
 import com.movito.movito.ui.common.MovitoNavBar
 import com.movito.movito.ui.common.SettingsCards
 import com.movito.movito.viewmodel.AuthViewModel
+import com.movito.movito.viewmodel.ThemeViewModel
+import androidx.compose.runtime.key
 
 class SettingsActivity : ComponentActivity() {
 
     private val authViewModel: AuthViewModel by viewModels()
+    private val themeViewModel: ThemeViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val systemIsDark = isSystemInDarkTheme()
-            //logout
             val authState by authViewModel.authState.collectAsState()
+            val isDarkTheme by themeViewModel.isDarkTheme.collectAsState()
 
             LaunchedEffect(authState.user) {
-                if (authState.user == null && authState.isInitialCheckDone) { // To avoid navigation on initial load
+                if (authState.user == null && authState.isInitialCheckDone) {
                     val intent = Intent(this@SettingsActivity, SignInActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)
                 }
             }
-            //--------
-
-            MovitoTheme(darkTheme = systemIsDark) {
-                Scaffold(
-                    modifier = Modifier.fillMaxSize(),
-                    containerColor = MaterialTheme.colorScheme.background,
-                    bottomBar = {
-                        MovitoNavBar(selectedItem = "profile")
+            key(isDarkTheme) {
+                MovitoTheme(darkTheme = isDarkTheme) {
+                    Scaffold(
+                        modifier = Modifier.fillMaxSize(),
+                        containerColor = MaterialTheme.colorScheme.background,
+                        bottomBar = {
+                            MovitoNavBar(selectedItem = "profile")
+                        }
+                    ) { paddingValues ->
+                        SettingsScreen(
+                            modifier = Modifier.padding(paddingValues),
+                            onThemeToggle = { themeViewModel.toggleTheme(it) },
+                            currentThemeIsDark = isDarkTheme,
+                            onSignOut = { authViewModel.signOut() },
+                            userEmail = authState.user?.email
+                        )
                     }
-                ) { paddingValues ->
-                    SettingsScreen(
-                        modifier = Modifier.padding(paddingValues),
-                        onThemeToggle = {},
-                        currentThemeIsDark = systemIsDark,
-                        onSignOut = { authViewModel.signOut() },
-                        userEmail = authState.user?.email
-                    )
                 }
             }
         }
@@ -182,7 +183,6 @@ fun SettingsScreen(
                         ),
                         shape = RoundedCornerShape(12.dp)
                     )
-                    //logout
                     .clickable { onSignOut() },
                 contentAlignment = Alignment.Center
             ) {
