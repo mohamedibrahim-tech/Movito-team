@@ -5,18 +5,30 @@ package com.movito.movito.ui.common
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.movito.movito.R
@@ -39,77 +51,41 @@ fun MovitoNavBar(selectedItem: String) {
     val context = LocalContext.current
 
     BottomAppBar(containerColor = MaterialTheme.colorScheme.background) {
-        NavigationBarItem(
-            selected = selectedItem == "home",
-            // (8) --- تعديل: الـ onClick بقى بيستخدم Intent ---
-            onClick = {
-                if (selectedItem != "home") {
-                    navigateToActivity(context, CategoriesActivity::class.java)
-                }
-            },
-            icon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.home),
-                    contentDescription = "Home",
-                    modifier = Modifier.size(24.dp)
-                )
-            },
-            colors = navBarColors()
-        )
+        @Composable
+        fun NavItem(
+            route: String,
+            selectedIcon: ImageVector,
+            unselectedIcon: ImageVector,
+            activity: Class<*>
+        ) {
+            NavigationBarItem(
+                selected = selectedItem == route,
+                onClick = { if (selectedItem != route) navigateToActivity(context, activity) },
+                icon = {
+                    Icon(
+                        imageVector = if (selectedItem == route)
+                            selectedIcon else unselectedIcon,
+                        contentDescription = route,
+                        modifier = Modifier.size((if (selectedItem == route) 32 else 24).dp)
+                    )
+                },
+                colors = navBarColors()
+            )
+        }
 
-        NavigationBarItem(
-            selected = selectedItem == "search",
-            onClick = {
-                if (selectedItem != "search") {
-                    // (10) --- هنا هنحط الـ Intent بتاع الـ SearchActivity ---
-                    navigateToActivity(context, SearchActivity::class.java)
-                }
-            },
-            icon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.search),
-                    contentDescription = "Search",
-                    modifier = Modifier.size(24.dp)
-                )
-            },
-            colors = navBarColors()
+        NavItem("home", Icons.Filled.Home, Icons.Outlined.Home, CategoriesActivity::class.java)
+        NavItem("search", Icons.Filled.Search, Icons.Outlined.Search, SearchActivity::class.java)
+        NavItem(
+            "favorite",
+            Icons.Filled.Favorite,
+            Icons.Outlined.FavoriteBorder,
+            FavoritesActivity::class.java
         )
-
-        NavigationBarItem(
-            selected = selectedItem == "favorite",
-            onClick = {
-                if (selectedItem != "favorite") {
-                    // (12) --- هنا هنحط الـ Intent بتاع الـ FavoritesActivity ---
-                    navigateToActivity(context, FavoritesActivity::class.java)
-                }
-            },
-            icon = {
-                Icon(
-                    imageVector = Icons.Outlined.FavoriteBorder,
-                    contentDescription = "Favorite",
-                    modifier = Modifier.size(24.dp)
-                )
-            },
-            colors = navBarColors()
-        )
-
-        //  ده زرار الـ Profile/Settings
-        NavigationBarItem(
-            selected = selectedItem == "profile",
-            onClick = {
-                if (selectedItem != "profile") {
-                    //   هنا هنحط الـ Intent بتاع الـ SettingsActivity
-                    navigateToActivity(context, SettingsActivity::class.java)
-                }
-            },
-            icon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.settings),
-                    contentDescription = "Profile",
-                    modifier = Modifier.size(24.dp)
-                )
-            },
-            colors = navBarColors()
+        NavItem(
+            "profile",
+            Icons.Filled.Settings,
+            Icons.Outlined.Settings,
+            SettingsActivity::class.java
         )
     }
 }
@@ -119,32 +95,76 @@ fun MovitoNavBar(selectedItem: String) {
  */
 @Composable
 private fun navBarColors() = NavigationBarItemDefaults.colors(
-    selectedIconColor = MaterialTheme.colorScheme.onPrimaryContainer,    unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-    indicatorColor = MaterialTheme.colorScheme.primaryContainer)
+    selectedIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
+    unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+    indicatorColor = MaterialTheme.colorScheme.primaryContainer
+)
 
 /*
     إضافة دالة التنقل بتستخدم Intent عادي عشان تفتح Activity جديدة
  */
+private val activityOrder = mapOf(
+    CategoriesActivity::class.java to 1,
+    SearchActivity::class.java to 2,
+    FavoritesActivity::class.java to 3,
+    SettingsActivity::class.java to 4
+)
+
 private fun navigateToActivity(context: Context, activityClass: Class<*>) {
-    val intent = Intent(context, activityClass)
-    // بيمنع التطبيق إنه يفتح 10 شاشات فوق بعض لو فضلت تدوس على الأيقونات
-    intent.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
-    context.startActivity(intent)
+    val currentActivity = context as? Activity ?: return
 
-/*     أنيميشن التنقل
-     بيلغي الوميض (flicker) اللي بيحصل بين الـ Activities*/
-    if (context is Activity) {
-        context.overridePendingTransition(0, 0)
+    // Don't reopen the same activity
+    if (currentActivity::class.java == activityClass) return
+
+    val intent = Intent(context, activityClass).apply {
+        addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
     }
+
+    currentActivity.startActivity(intent)
+
+    // Determine forward/back animation
+    val currentOrder = activityOrder[currentActivity::class.java] ?: 0
+    val targetOrder = activityOrder[activityClass] ?: 0
+    val forward = targetOrder > currentOrder
+
+    currentActivity.overridePendingTransition(
+        if (forward) R.anim.slide_in_right else R.anim.slide_in_left,
+        if (forward) R.anim.slide_out_left else R.anim.slide_out_right
+    )
 }
 
 
-@Preview(name = "Movito Nav Bar Preview")
+@Preview("NavBar - Light Theme - All Tabs", showBackground = true, widthDp = 360)
 @Composable
-fun MovitoNavBarPreview() {
-    MovitoTheme(darkTheme = true) {
-        MovitoNavBar("home")
+fun MovitoNavBarPreview_LightThemeAllTabs() {
+    Column {
+        listOf("home", "search", "favorite", "profile").forEach { tab ->
+            Text(
+                text = "Selected: $tab",
+                style = MaterialTheme.typography.labelMedium,
+                modifier = Modifier.padding(8.dp)
+            )
+            MovitoNavBar(selectedItem = tab)
+            Spacer(modifier = Modifier.height(16.dp))
+        }
     }
 }
 
-//  الـ Preview بتاع الـ MovieCard
+@Preview("NavBar - Dark Theme - All Tabs", showBackground = true, widthDp = 360)
+@Composable
+fun MovitoNavBarPreview_DarkThemeAllTabs() {
+    MovitoTheme(darkTheme = true) {
+        Column {
+            listOf("home", "search", "favorite", "profile").forEach { tab ->
+                Text(
+                    text = "Selected: $tab",
+                    style = MaterialTheme.typography.labelMedium,
+                    modifier = Modifier.padding(8.dp)
+                )
+                MovitoNavBar(selectedItem = tab)
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+        }
+    }
+}
