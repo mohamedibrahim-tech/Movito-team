@@ -39,25 +39,24 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.movito.movito.data.model.Movie
 import com.movito.movito.theme.MovitoTheme
 import com.movito.movito.ui.common.MovieCard
 import com.movito.movito.ui.common.MovitoNavBar
+import com.movito.movito.ui.navigation.Screen
 import com.movito.movito.viewmodel.FavoritesViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoritesScreen(
-    modifier: Modifier = Modifier,
-   // viewModel: FavoritesViewModel = viewModel() // ViewModel للـ Firebase
+    navController: NavController,
     viewModel: FavoritesViewModel = remember { FavoritesViewModel.getInstance() }
-
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
     Scaffold(
-        modifier = modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
                 title = {
@@ -76,7 +75,7 @@ fun FavoritesScreen(
             )
         },
         bottomBar = {
-            MovitoNavBar(selectedItem = "favorite")
+            MovitoNavBar(navController = navController, selectedItem = "favorite")
         }
     ) { innerPadding ->
 
@@ -132,7 +131,8 @@ fun FavoritesScreen(
                         ) { favoriteMovie ->
                             FavoriteMovieCard(
                                 movie = favoriteMovie,
-                                onRemoveFavorite = { viewModel.removeFromFavorites(favoriteMovie.id) }
+                                onRemoveFavorite = { viewModel.removeFromFavorites(favoriteMovie.id) },
+                                onClick = { navController.navigate(Screen.Details.createRoute(favoriteMovie.id)) }
                             )
                         }
                     }
@@ -146,7 +146,8 @@ fun FavoritesScreen(
 fun FavoriteMovieCard(
     modifier: Modifier = Modifier,
     movie: Movie,
-    onRemoveFavorite: () -> Unit
+    onRemoveFavorite: () -> Unit,
+    onClick: () -> Unit
 ) {
     var showRemoveDialog by remember { mutableStateOf(false) }
 
@@ -161,6 +162,7 @@ fun FavoriteMovieCard(
     MovieCard(
         modifier = modifier.height(280.dp),
         movie = movie,
+        onClick = onClick
     ) {
         IconButton(
             onClick = { showRemoveDialog = true },
@@ -368,7 +370,7 @@ private fun FavoritesScreenPreview(
             )
         },
         bottomBar = {
-            MovitoNavBar(selectedItem = "favorite")
+            //MovitoNavBar(selectedItem = "favorite")
         }
     ) { innerPadding ->
 

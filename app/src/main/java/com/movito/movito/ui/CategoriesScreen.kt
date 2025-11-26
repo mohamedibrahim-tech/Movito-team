@@ -1,7 +1,5 @@
 package com.movito.movito.ui
 
-import android.app.Activity
-import android.content.Intent
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -12,9 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
@@ -33,37 +28,36 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.movito.movito.R
 import com.movito.movito.data.model.Genre
 import com.movito.movito.theme.MovitoTheme
 import com.movito.movito.ui.common.MovitoNavBar
+import com.movito.movito.ui.navigation.Screen
 import com.movito.movito.viewmodel.CategoriesUiState
 import com.movito.movito.viewmodel.CategoriesViewModel
 import kotlin.math.floor
 
 @Composable
-fun CategoriesScreen(viewModel: CategoriesViewModel = viewModel()) {
+fun CategoriesScreen(
+    navController: NavController,
+    viewModel: CategoriesViewModel = viewModel()
+) {
     val uiState by viewModel.uiState.collectAsState()
-    val context = LocalContext.current
 
-    CategoriesScreenContent(uiState = uiState) { genre ->
-        val intent = Intent(context, MoviesByGenreActivity::class.java).apply {
-            putExtra("genreId", genre.id)
-            putExtra("genreName", genre.name)
-            flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
-        }
-        context.startActivity(intent)
-        (context as? Activity)?.overridePendingTransition(
-            R.anim.slide_in_right,
-            R.anim.slide_out_left
-        )
-    }
+    CategoriesScreenContent(
+        uiState = uiState,
+        onGenreClick = { genre ->
+            navController.navigate(Screen.MoviesByGenre.createRoute(genre.id, genre.name))
+        },
+        navController = navController
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -71,7 +65,8 @@ fun CategoriesScreen(viewModel: CategoriesViewModel = viewModel()) {
 fun CategoriesScreenContent(
     modifier: Modifier = Modifier,
     uiState: CategoriesUiState,
-    onGenreClick: (Genre) -> Unit
+    onGenreClick: (Genre) -> Unit,
+    navController: NavController
 ) {
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -85,7 +80,7 @@ fun CategoriesScreenContent(
             })
         },
         bottomBar = {
-            MovitoNavBar(selectedItem = "home")
+            MovitoNavBar(navController = navController, selectedItem = "home")
         }
     ) { innerPadding ->
         Box(
@@ -191,7 +186,11 @@ fun CategoriesScreenSuccessPreviewDark() {
     )
     val mockState = CategoriesUiState(genres = mockGenres)
     MovitoTheme(darkTheme = true) {
-        CategoriesScreenContent(uiState = mockState, onGenreClick = {})
+        CategoriesScreenContent(
+            uiState = mockState,
+            onGenreClick = {},
+            navController = rememberNavController()
+        )
     }
 }
 
@@ -206,7 +205,11 @@ fun CategoriesScreenSuccessPreviewLight() {
     )
     val mockState = CategoriesUiState(genres = mockGenres)
     MovitoTheme(darkTheme = false) {
-        CategoriesScreenContent(uiState = mockState, onGenreClick = {})
+        CategoriesScreenContent(
+            uiState = mockState,
+            onGenreClick = {},
+            navController = rememberNavController()
+        )
     }
 }
 
@@ -215,7 +218,11 @@ fun CategoriesScreenSuccessPreviewLight() {
 fun CategoriesScreenLoadingPreview() {
     val mockState = CategoriesUiState(isLoading = true)
     MovitoTheme(darkTheme = true) {
-        CategoriesScreenContent(uiState = mockState, onGenreClick = {})
+        CategoriesScreenContent(
+            uiState = mockState,
+            onGenreClick = {},
+            navController = rememberNavController()
+        )
     }
 }
 
@@ -224,6 +231,10 @@ fun CategoriesScreenLoadingPreview() {
 fun CategoriesScreenErrorPreview() {
     val mockState = CategoriesUiState(error = "Failed to load genres")
     MovitoTheme(darkTheme = true) {
-        CategoriesScreenContent(uiState = mockState, onGenreClick = {})
+        CategoriesScreenContent(
+            uiState = mockState,
+            onGenreClick = {},
+            navController = rememberNavController()
+        )
     }
 }

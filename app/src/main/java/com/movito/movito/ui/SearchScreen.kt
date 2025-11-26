@@ -1,8 +1,5 @@
 package com.movito.movito.ui
 
-import android.app.Activity
-import android.content.Context
-import android.content.Intent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -46,7 +43,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -54,39 +50,35 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.movito.movito.R
 import com.movito.movito.data.model.Movie
 import com.movito.movito.theme.MovitoTheme
 import com.movito.movito.ui.common.MovitoNavBar
+import com.movito.movito.ui.navigation.Screen
 import com.movito.movito.viewmodel.SearchViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(
-    modifier: Modifier = Modifier, viewModel: SearchViewModel = viewModel()
+    navController: NavController,
+    viewModel: SearchViewModel = viewModel()
 ) {
     // 1. COLLECT THE STATE
     // The uiState contains the latest searchQuery.
     val uiState by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
     var active by remember { mutableStateOf(false) }
-    val context = LocalContext.current
 
-
-    // Show a snackbar when an error occurs
     LaunchedEffect(uiState.error) {
         uiState.error?.let {
             snackbarHostState.showSnackbar(message = it, duration = SnackbarDuration.Short)
-            // viewModel.errorShown() // Notify ViewModel that the error has been shown
         }
     }
 
-
-
     Scaffold(
-        modifier = modifier.fillMaxSize(),
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
             SearchBar(
@@ -97,9 +89,7 @@ fun SearchScreen(
 
                 query = uiState.searchQuery,
 
-                // 3. EVENT INPUT: Call the ViewModel function every time the text changes.
                 onQueryChange = { newText ->
-                    // This is the critical line!
                     viewModel.updateSearchQuery(newText)
                 },
                 onSearch = {
@@ -141,11 +131,9 @@ fun SearchScreen(
                         MovieListItem(
                             movie = movie,
                             onClick = {
-                                active = false // Close the active search view
-                                viewModel.updateSearchQuery(movie.title) // Update the text field
-                                viewModel.searchMovies() // Trigger the search
-
-
+                                active = false
+                                viewModel.updateSearchQuery(movie.title)
+                                viewModel.searchMovies()
                             }
                         )
                     }
@@ -153,7 +141,7 @@ fun SearchScreen(
             }
         },
         bottomBar = {
-            MovitoNavBar(selectedItem = "search")
+            MovitoNavBar(navController = navController, selectedItem = "search")
         },
     ) { innerPadding ->
         Box(
@@ -208,17 +196,7 @@ fun SearchScreen(
                         items(items = uiState.movies, key = { it.id }) { movie ->
                             MovieListItem(
                                 movie = movie,
-                                onClick = {
-
-                                    active = false // Close the active search view
-                                    viewModel.updateSearchQuery(movie.title) // Update the text field
-                                    viewModel.searchMovies() // Trigger the search
-                                    navigateToActivity(
-                                        context = context,
-                                        movie
-                                    )
-
-                                }
+                                onClick = { navController.navigate(Screen.Details.createRoute(movie.id)) }
                             )
                         }
                     }
@@ -228,25 +206,11 @@ fun SearchScreen(
     }
 }
 
-private fun navigateToActivity(context: Context, movie: Movie) {
-    val intent = Intent(context, DetailsActivity::class.java)
-    intent.putExtra("movie", movie)
-    intent.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
-    context.startActivity(intent)
-
-    /*     أنيميشن التنقل
-         بيلغي الوميض (flicker) اللي بيحصل بين الـ Activities*/
-    if (context is Activity) {
-        context.overridePendingTransition(0, 0)
-    }
-}
-
-
 @Composable
 fun MovieListItem(
     modifier: Modifier = Modifier,
     movie: Movie,
-    onClick: () -> Unit // Hoist the click event
+    onClick: () -> Unit
 
 ) {
     Row(
@@ -279,7 +243,6 @@ fun MovieListItem(
                 overflow = TextOverflow.Ellipsis
             )
             Spacer(modifier = Modifier.height(4.dp))
-            // Add a check to prevent crashing if releaseDate is too short
             if (movie.releaseDate.length >= 4) {
                 Row {
                     Text(
@@ -306,7 +269,7 @@ fun MovieListItem(
 @Composable
 fun SearchPreview() {
     MovitoTheme(darkTheme = true) {
-        SearchScreen()
+        //SearchScreen()
     }
 }
 
@@ -314,6 +277,6 @@ fun SearchPreview() {
 @Composable
 fun SearchPreviewLight() {
     MovitoTheme(darkTheme = false) {
-        SearchScreen()
+        //SearchScreen()
     }
 }

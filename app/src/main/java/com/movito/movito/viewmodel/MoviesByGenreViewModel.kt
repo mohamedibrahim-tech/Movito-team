@@ -1,7 +1,7 @@
 package com.movito.movito.viewmodel
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.movito.movito.BuildConfig
 import com.movito.movito.data.source.remote.RetrofitInstance
@@ -12,14 +12,13 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.IOException
 
-class MoviesByGenreViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
+class MoviesByGenreViewModel(private val genreId: Int) : ViewModel() {
 
     private val _uiState = MutableStateFlow(MoviesUiState())
     val uiState: StateFlow<MoviesUiState> = _uiState.asStateFlow()
 
     private val apiKey = BuildConfig.TMDB_API_KEY
     private var currentPage = 1
-    private val genreId: Int = savedStateHandle.get<Int>("genreId")!!
 
     init {
         loadMovies(isLoading = true)
@@ -123,6 +122,12 @@ class MoviesByGenreViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
                     )
                 }
             }
+        }
+    }
+
+    class Factory(private val genreId: Int) : ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return MoviesByGenreViewModel(genreId) as T
         }
     }
 }

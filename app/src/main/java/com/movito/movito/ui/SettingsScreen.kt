@@ -2,11 +2,6 @@ package com.movito.movito.ui
 
 import android.content.Intent
 import android.net.Uri
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -18,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -34,67 +28,59 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.movito.movito.BuildConfig
 import com.movito.movito.theme.MovitoTheme
+import com.movito.movito.ui.common.MovitoButton
 import com.movito.movito.ui.common.MovitoNavBar
 import com.movito.movito.ui.common.SettingsCards
+import com.movito.movito.ui.navigation.Screen
 import com.movito.movito.viewmodel.AuthViewModel
 import com.movito.movito.viewmodel.ThemeViewModel
-import androidx.compose.runtime.key
-import com.movito.movito.ui.common.MovitoButton
 
-class SettingsActivity : ComponentActivity() {
+@Composable
+fun SettingsScreen(
+    navController: NavController,
+    authViewModel: AuthViewModel = viewModel(),
+    themeViewModel: ThemeViewModel = viewModel(),
+) {
+    val authState by authViewModel.authState.collectAsState()
+    val isDarkTheme by themeViewModel.isDarkTheme.collectAsState()
 
-    private val authViewModel: AuthViewModel by viewModels()
-    private val themeViewModel: ThemeViewModel by viewModels()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            val authState by authViewModel.authState.collectAsState()
-            val isDarkTheme by themeViewModel.isDarkTheme.collectAsState()
-
-            LaunchedEffect(authState.user) {
-                if (authState.user == null && authState.isInitialCheckDone) {
-                    val intent = Intent(this@SettingsActivity, SignInActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    startActivity(intent)
-                }
-            }
-            key(isDarkTheme) {
-                MovitoTheme(darkTheme = isDarkTheme) {
-                    Scaffold(
-                        modifier = Modifier.fillMaxSize(),
-                        containerColor = MaterialTheme.colorScheme.background,
-                        bottomBar = {
-                            MovitoNavBar(selectedItem = "profile")
-                        }
-                    ) { paddingValues ->
-                        SettingsScreen(
-                            modifier = Modifier.padding(paddingValues),
-                            onThemeToggle = { themeViewModel.toggleTheme(it) },
-                            currentThemeIsDark = isDarkTheme,
-                            onSignOut = { authViewModel.signOut() },
-                            userEmail = authState.user?.email
-                        )
-                    }
-                }
+    LaunchedEffect(authState.user) {
+        if (authState.user == null && authState.isInitialCheckDone) {
+            navController.navigate(Screen.SignIn.route) {
+                popUpTo(navController.graph.startDestinationId) { inclusive = true }
             }
         }
+    }
+
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        containerColor = MaterialTheme.colorScheme.background,
+        bottomBar = {
+            MovitoNavBar(navController = navController, selectedItem = "profile")
+        }
+    ) { paddingValues ->
+        SettingsScreenContent(
+            modifier = Modifier.padding(paddingValues),
+            onThemeToggle = { themeViewModel.toggleTheme(it) },
+            currentThemeIsDark = isDarkTheme,
+            onSignOut = { authViewModel.signOut() },
+            userEmail = authState.user?.email
+        )
     }
 }
 
 @Composable
-fun SettingsScreen(
+fun SettingsScreenContent(
     modifier: Modifier = Modifier,
     onThemeToggle: (Boolean) -> Unit,
     currentThemeIsDark: Boolean,
@@ -102,7 +88,6 @@ fun SettingsScreen(
     userEmail: String?
 ) {
     var notifications by remember { mutableStateOf(false) }
-    var downloadsWifiOnly by remember { mutableStateOf(true) }
     val context = LocalContext.current
     val githubUrl = "https://github.com/mohamedibrahim-tech/Movito-team/"
 
@@ -276,7 +261,7 @@ fun SettingsScreen(
 fun SettingsPreviewDark() {
     var isDark by remember { mutableStateOf(true) }
     MovitoTheme(darkTheme = isDark) {
-        SettingsScreen(
+        SettingsScreenContent(
             onThemeToggle = { isDark = it },
             currentThemeIsDark = isDark,
             onSignOut = {},
@@ -290,7 +275,7 @@ fun SettingsPreviewDark() {
 fun SettingsPreviewLight() {
     var isDark by remember { mutableStateOf(false) }
     MovitoTheme(darkTheme = isDark) {
-        SettingsScreen(
+        SettingsScreenContent(
             onThemeToggle = { isDark = it },
             currentThemeIsDark = isDark,
             onSignOut = {},

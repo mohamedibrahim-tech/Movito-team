@@ -1,6 +1,7 @@
 package com.movito.movito.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.movito.movito.BuildConfig
 import com.movito.movito.data.model.Movie
@@ -14,6 +15,7 @@ import kotlinx.coroutines.launch
 import java.io.IOException
 
 data class DetailsUiState(
+    val movie: Movie? = null,
     val isLoading: Boolean = false,
     val recommendedMovies: List<Movie> = emptyList(), // Recommendations for similar movies
     val trailerUrl: String? = null, // For playing the trailer
@@ -21,12 +23,31 @@ data class DetailsUiState(
     val error: String? = null
 )
 
-class DetailsViewModel : ViewModel() {
+class DetailsViewModel(private val movieId: Int) : ViewModel() {
 
     private val _uiState = MutableStateFlow(DetailsUiState())
     val uiState: StateFlow<DetailsUiState> = _uiState.asStateFlow()
 
     private val apiKey = BuildConfig.TMDB_API_KEY
+
+    init {
+        if (movieId != -1) {
+            loadMovieDetails(movieId)
+            loadRecommendations(movieId)
+        }
+    }
+
+    private fun loadMovieDetails(movieId: Int) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+            try {
+                val movie = RetrofitInstance.api.getMovieDetails(movieId, apiKey)
+                _uiState.update { it.copy(isLoading = false, movie = movie) }
+            } catch (e: Exception) {
+                _uiState.update { it.copy(isLoading = false, error = "Failed to load movie details.") }
+            }
+        }
+    }
 
     fun loadRecommendations(movieId: Int){
         viewModelScope.launch {
@@ -106,5 +127,11 @@ class DetailsViewModel : ViewModel() {
             ?: youtubeVideos.firstOrNull { it.type == "Teaser" }
             ?: youtubeVideos.firstOrNull { it.official }
             ?: youtubeVideos.firstOrNull()
+    }
+
+    class Factory(private val movieId: Int) : ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return DetailsViewModel(movieId) as T
+        }
     }
 }

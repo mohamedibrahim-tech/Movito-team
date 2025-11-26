@@ -1,10 +1,5 @@
 package com.movito.movito.ui.common
 
-// (1) --- إضافة: imports جديدة عشان الـ Intent ---
-// ------------------------------------------
-import android.app.Activity
-import android.content.Context
-import android.content.Intent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -28,71 +23,74 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.movito.movito.R
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.movito.movito.theme.MovitoTheme
-import com.movito.movito.ui.CategoriesActivity
-import com.movito.movito.ui.FavoritesActivity
-import com.movito.movito.ui.SearchActivity
-import com.movito.movito.ui.SettingsActivity
+import com.movito.movito.ui.navigation.Screen
 
-/**
- * (4) --- تعديل: تم إزالة دالة MovieCard من هنا ---
- * (اتنقلت لملف CommonComposables.kt)
- *
- * ده الـ BottomAppBar (شريط التنقل) المشترك بين كل الشاشات.
- * @param selectedItem هو اسم الشاشة اللي إحنا واقفين عليها ("home", "search", "favorite", "profile")
- */
 @Composable
-fun MovitoNavBar(selectedItem: String) {
-    //  بنجيب الـ Context عشان نعرف نفتح Activity جديدة
-    val context = LocalContext.current
-
+fun MovitoNavBar(navController: NavController, selectedItem: String) {
     BottomAppBar(containerColor = MaterialTheme.colorScheme.background) {
         @Composable
         fun NavItem(
-            route: String,
+            label: String,
+            screen: Screen,
             selectedIcon: ImageVector,
-            unselectedIcon: ImageVector,
-            activity: Class<*>
+            unselectedIcon: ImageVector
         ) {
             NavigationBarItem(
-                selected = selectedItem == route,
-                onClick = { if (selectedItem != route) navigateToActivity(context, activity) },
+                selected = selectedItem == label,
+                onClick = {
+                    if (selectedItem != label) {
+                        navController.navigate(screen.route) {
+                            popUpTo(navController.graph.startDestinationId) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    }
+                },
                 icon = {
                     Icon(
-                        imageVector = if (selectedItem == route)
-                            selectedIcon else unselectedIcon,
-                        contentDescription = route,
-                        modifier = Modifier.size((if (selectedItem == route) 32 else 24).dp)
+                        imageVector = if (selectedItem == label) selectedIcon else unselectedIcon,
+                        contentDescription = label,
+                        modifier = Modifier.size((if (selectedItem == label) 32 else 24).dp)
                     )
                 },
                 colors = navBarColors()
             )
         }
 
-        NavItem("home", Icons.Filled.Home, Icons.Outlined.Home, CategoriesActivity::class.java)
-        NavItem("search", Icons.Filled.Search, Icons.Outlined.Search, SearchActivity::class.java)
         NavItem(
-            "favorite",
-            Icons.Filled.Favorite,
-            Icons.Outlined.FavoriteBorder,
-            FavoritesActivity::class.java
+            label = "home",
+            screen = Screen.Categories,
+            selectedIcon = Icons.Filled.Home,
+            unselectedIcon = Icons.Outlined.Home
         )
         NavItem(
-            "profile",
-            Icons.Filled.Settings,
-            Icons.Outlined.Settings,
-            SettingsActivity::class.java
+            label = "search",
+            screen = Screen.Search,
+            selectedIcon = Icons.Filled.Search,
+            unselectedIcon = Icons.Outlined.Search
+        )
+        NavItem(
+            label = "favorite",
+            screen = Screen.Favorites,
+            selectedIcon = Icons.Filled.Favorite,
+            unselectedIcon = Icons.Outlined.FavoriteBorder
+        )
+        NavItem(
+            label = "profile",
+            screen = Screen.Settings,
+            selectedIcon = Icons.Filled.Settings,
+            unselectedIcon = Icons.Outlined.Settings
         )
     }
 }
 
-/*
-   إضافة دالة مساعدة لتوحيد ألوان الـ NavBar
- */
 @Composable
 private fun navBarColors() = NavigationBarItemDefaults.colors(
     selectedIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
@@ -100,44 +98,10 @@ private fun navBarColors() = NavigationBarItemDefaults.colors(
     indicatorColor = MaterialTheme.colorScheme.primaryContainer
 )
 
-/*
-    إضافة دالة التنقل بتستخدم Intent عادي عشان تفتح Activity جديدة
- */
-private val activityOrder = mapOf(
-    CategoriesActivity::class.java to 1,
-    SearchActivity::class.java to 2,
-    FavoritesActivity::class.java to 3,
-    SettingsActivity::class.java to 4
-)
-
-private fun navigateToActivity(context: Context, activityClass: Class<*>) {
-    val currentActivity = context as? Activity ?: return
-
-    // Don't reopen the same activity
-    if (currentActivity::class.java == activityClass) return
-
-    val intent = Intent(context, activityClass).apply {
-        addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-    }
-
-    currentActivity.startActivity(intent)
-
-    // Determine forward/back animation
-    val currentOrder = activityOrder[currentActivity::class.java] ?: 0
-    val targetOrder = activityOrder[activityClass] ?: 0
-    val forward = targetOrder > currentOrder
-
-    currentActivity.overridePendingTransition(
-        if (forward) R.anim.slide_in_right else R.anim.slide_in_left,
-        if (forward) R.anim.slide_out_left else R.anim.slide_out_right
-    )
-}
-
-
 @Preview("NavBar - Light Theme - All Tabs", showBackground = true, widthDp = 360)
 @Composable
 fun MovitoNavBarPreview_LightThemeAllTabs() {
+    val navController = rememberNavController()
     Column {
         listOf("home", "search", "favorite", "profile").forEach { tab ->
             Text(
@@ -145,7 +109,7 @@ fun MovitoNavBarPreview_LightThemeAllTabs() {
                 style = MaterialTheme.typography.labelMedium,
                 modifier = Modifier.padding(8.dp)
             )
-            MovitoNavBar(selectedItem = tab)
+            MovitoNavBar(navController = navController, selectedItem = tab)
             Spacer(modifier = Modifier.height(16.dp))
         }
     }
@@ -154,6 +118,7 @@ fun MovitoNavBarPreview_LightThemeAllTabs() {
 @Preview("NavBar - Dark Theme - All Tabs", showBackground = true, widthDp = 360)
 @Composable
 fun MovitoNavBarPreview_DarkThemeAllTabs() {
+    val navController = rememberNavController()
     MovitoTheme(darkTheme = true) {
         Column {
             listOf("home", "search", "favorite", "profile").forEach { tab ->
@@ -162,7 +127,7 @@ fun MovitoNavBarPreview_DarkThemeAllTabs() {
                     style = MaterialTheme.typography.labelMedium,
                     modifier = Modifier.padding(8.dp)
                 )
-                MovitoNavBar(selectedItem = tab)
+                MovitoNavBar(navController = navController, selectedItem = tab)
                 Spacer(modifier = Modifier.height(16.dp))
             }
         }
