@@ -130,21 +130,9 @@ fun FavoritesScreen(
                             key = { it.id },
                             contentType = { "movie" }
                         ) { favoriteMovie ->
-                            // تحويل FavoriteMovie لـ Movie
-                            val movie = Movie(
-                                id = favoriteMovie.movieId,
-                                title = favoriteMovie.title,
-                                releaseDate = favoriteMovie.releaseDate,
-                                posterPath = favoriteMovie.posterPath,
-                                voteAverage = favoriteMovie.voteAverage,
-                                overview = favoriteMovie.overview
-                            )
-
                             FavoriteMovieCard(
-                                movie = movie,
-                                onRemoveFavorite = {
-                                    viewModel.removeFromFavorites(favoriteMovie.movieId)
-                                }
+                                movie = favoriteMovie,
+                                onRemoveFavorite = { viewModel.removeFromFavorites(favoriteMovie.id) }
                             )
                         }
                     }
@@ -222,26 +210,23 @@ fun FavoritesEmptyPreviewLight() {
 @Composable
 fun FavoritesWithMoviesPreviewDark() {
     val mockFavorites = listOf(
-        com.movito.movito.favorites.FavoriteMovie(
-            id = "user_1",
-            movieId = 1,
+        Movie(
+            id = 1,
             title = "Cosmic Echoes",
             releaseDate = "2025-03-15",
             posterPath = "/qA9b2xSJ8nCK2z3yIuVnAwmWsum.jpg",
             voteAverage = 8.5,
             overview = "An epic space opera.",
-            userId = "test_user"
         ),
-        com.movito.movito.favorites.FavoriteMovie(
-            id = "user_2",
-            movieId = 2,
+        Movie(
+            id = 1,
             title = "Time Warp",
             releaseDate = "2024-07-22",
             posterPath = "/d5NXSklXo0qyIYkgV94XAgMIckC.jpg",
             voteAverage = 7.8,
             overview = "A thrilling time travel adventure.",
-            userId = "test_user"
-        )
+        ),
+
     )
 
     MovitoTheme(darkTheme = true) {
@@ -258,26 +243,22 @@ fun FavoritesWithMoviesPreviewDark() {
 @Composable
 fun FavoritesWithMoviesPreviewLight() {
     val mockFavorites = listOf(
-        com.movito.movito.favorites.FavoriteMovie(
-            id = "user_1",
-            movieId = 1,
+        Movie(
+            id = 1,
             title = "Cosmic Echoes",
             releaseDate = "2025-03-15",
             posterPath = "/qA9b2xSJ8nCK2z3yIuVnAwmWsum.jpg",
             voteAverage = 8.5,
             overview = "An epic space opera.",
-            userId = "test_user"
         ),
-        com.movito.movito.favorites.FavoriteMovie(
-            id = "user_2",
-            movieId = 2,
+        Movie(
+            id = 1,
             title = "Time Warp",
             releaseDate = "2024-07-22",
             posterPath = "/d5NXSklXo0qyIYkgV94XAgMIckC.jpg",
             voteAverage = 7.8,
             overview = "A thrilling time travel adventure.",
-            userId = "test_user"
-        )
+        ),
     )
 
     MovitoTheme(darkTheme = false) {
@@ -363,7 +344,7 @@ fun FavoriteMovieCardPreviewLight() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun FavoritesScreenPreview(
-    favorites: List<com.movito.movito.favorites.FavoriteMovie>,
+    favorites: List<Movie>,
     isLoading: Boolean,
     error: String?
 ) {
@@ -457,7 +438,7 @@ private fun FavoritesScreenPreview(
                             contentType = { "movie" }
                         ) { favoriteMovie ->
                             val movie = Movie(
-                                id = favoriteMovie.movieId,
+                                id = favoriteMovie.id,
                                 title = favoriteMovie.title,
                                 releaseDate = favoriteMovie.releaseDate,
                                 posterPath = favoriteMovie.posterPath,
