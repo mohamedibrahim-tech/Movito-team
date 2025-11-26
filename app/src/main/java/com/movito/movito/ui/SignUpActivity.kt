@@ -66,8 +66,7 @@ class SignUpActivity : ComponentActivity() {
                                     )
                                 )
                                 finish()
-                            },
-                            onGoogleSignUpClicked = {}
+                            }
                         )
                     }
                 }
