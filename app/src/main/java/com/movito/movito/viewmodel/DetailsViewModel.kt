@@ -30,8 +30,18 @@ class DetailsViewModel : ViewModel() {
 
     fun loadRecommendations(movieId: Int){
         viewModelScope.launch {
-            val response = RetrofitInstance.api.getMovieRecommendations(movieId, apiKey)
-            _uiState.update {it.copy(recommendedMovies = response.results) }
+            try {
+                val response = RetrofitInstance.api.getMovieRecommendations(movieId, apiKey)
+                _uiState.update { it.copy(recommendedMovies = response.results) }
+            }catch (e: IOException) {
+                _uiState.update {
+                    it.copy(isLoading = false, error = "Failed to load Recommendations: ${e.message}")
+                }
+            } catch (e: Exception) {
+                _uiState.update {
+                    it.copy(isLoading = false, error = "An unexpected error occurred: ${e.message}")
+                }
+            }
         }
     }
 

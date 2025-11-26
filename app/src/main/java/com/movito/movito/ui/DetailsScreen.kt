@@ -140,7 +140,7 @@ fun DetailsScreen(
     }
 
     LaunchedEffect(uiState.error) {
-        uiState.error?.let {
+        uiState.error?.takeIf { it.contains("Trailer", ignoreCase = true) }?.let {
             Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
             viewModel.onToastShown()
         }
@@ -324,8 +324,15 @@ fun DetailsScreen(
                     }
                 else
                     Text(
-                        modifier = Modifier.weight(0.15f).fillMaxSize(),
-                        text = "Sorry, there are no recommendations for this movie 😕",
+                        modifier = Modifier
+                            .weight(0.15f)
+                            .fillMaxSize(),
+                        text = if (viewModel.uiState.value.error?.contains("Recommendations")
+                                ?: false
+                        )
+                            "Error while loading recommendation!\nplease check the internet connection."
+                        else
+                            "Sorry, there are no recommendations for this movie 😕",
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.bodyMedium,
                         color = contentColor
