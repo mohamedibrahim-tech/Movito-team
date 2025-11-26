@@ -4,70 +4,67 @@ import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
-import androidx.core.app.ActivityCompat
+import androidx.compose.runtime.*
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-// (1) --- تعديل الـ imports عشان تطابق الباكدجات الجديدة ---
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
+import com.google.accompanist.permissions.shouldShowRationale
 import com.movito.movito.ui.HomeScreen
 import com.movito.movito.theme.MovitoTheme
 import com.movito.movito.viewmodel.HomeViewModel
 
 class MainActivity : ComponentActivity() {
 
-    //    الـ ViewModel بقى بيستخدم 'by viewModels()'
-    // (ده محتاج مكتبة 'activity-ktx' اللي ضفناها في الـ gradle)
     private val viewModel: HomeViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        //  خدنا نسخة من الـ splashScreen
         val splashScreen = installSplashScreen()
 
-        enableEdgeToEdge()
+        //  Notification Channel
         createNotificationChannel()
+
+        enableEdgeToEdge()
+
         setContent {
             MovitoTheme {
-                NotificationScreen()
-                //  مررنا الـ ViewModel للـ HomeScreen
-                HomeScreen(viewModel = viewModel)
+                NotificationPermissionHandler(
+                    onPermissionResult = { granted ->
+                        if (granted) {
+                            val prefs = NotificationPreferences.getInstance(this)
+                            prefs.setNotificationsEnabled(true)
+
+                            sendWelcomeNotification(this)
+                        } else {
+                            val prefs = NotificationPreferences.getInstance(this)
+                            prefs.setNotificationsEnabled(false)
+                        }
+                    }
+                ) {
+                    HomeScreen(viewModel = viewModel)
+                }
             }
         }
 
-        //  خلي الـ Splash معروض طول ما الـ ViewModel بيحمل
-        // (isLoading = true)
         splashScreen.setKeepOnScreenCondition {
             viewModel.uiState.value.isLoading
         }
     }
+
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = "Welcome Channel"
@@ -84,91 +81,85 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun NotificationScreen() {
-    val context = LocalContext.current
+fun NotificationPermissionHandler(
+    onPermissionResult: (Boolean) -> Unit,
+    content: @Composable () -> Unit
+) {
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val prefs = NotificationPreferences.getInstance(context)
 
-    val permissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission()
+    var permissionRequested by remember { mutableStateOf(false) }
+
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+        LaunchedEffect(Unit) {
+            if (!permissionRequested) {
+                if (prefs.isNotificationsEnabled()) {
+                    sendWelcomeNotification(context)
+                }
+                onPermissionResult(true)
+                permissionRequested = true
+            }
+        }
+        content()
+        return
+    }
+
+    val notificationPermission = rememberPermissionState(
+        permission = Manifest.permission.POST_NOTIFICATIONS
     ) { isGranted ->
-        if (isGranted) {
-            sendWelcomeNotification(context)
-        } else {
-            Toast.makeText(context, "You will not receive notifications", Toast.LENGTH_SHORT).show()
+        onPermissionResult(isGranted)
+        if (!isGranted) {
+            Toast.makeText(
+                context,
+                "You will not receive notifications",
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
     LaunchedEffect(Unit) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            when {
-                ContextCompat.checkSelfPermission(
-                    context,
-                    Manifest.permission.POST_NOTIFICATIONS
-                ) == PackageManager.PERMISSION_GRANTED -> {
-                    sendWelcomeNotification(context)
-                }
-                else -> {
-                    permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-                }
-            }
-        } else {
-            sendWelcomeNotification(context)
-        }
-    }
-
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text(
-                text = "Welcome to Movito App!",
-                style = MaterialTheme.typography.headlineMedium
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Button(
-                onClick = {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                        if (ContextCompat.checkSelfPermission(
-                                context,
-                                Manifest.permission.POST_NOTIFICATIONS
-                            ) == PackageManager.PERMISSION_GRANTED
-                        ) {
-                            sendWelcomeNotification(context)
-                        } else {
-                            permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-                        }
-                    } else {
+        when {
+            notificationPermission.status.isGranted -> {
+                if (!permissionRequested) {
+                    if (prefs.isNotificationsEnabled()) {
                         sendWelcomeNotification(context)
                     }
+                    onPermissionResult(true)
+                    permissionRequested = true
                 }
-            ) {
-                Text("Send Notification")
+            }
+            notificationPermission.status.shouldShowRationale -> {
+                notificationPermission.launchPermissionRequest()
+            }
+            else -> {
+                notificationPermission.launchPermissionRequest()
             }
         }
     }
+
+    content()
 }
 
+
 fun sendWelcomeNotification(context: Context) {
+    val prefs = NotificationPreferences.getInstance(context)
+    if (!prefs.isNotificationsEnabled()) {
+        return
+    }
+
     val builder = NotificationCompat.Builder(context, "welcome_channel")
-        .setSmallIcon(android.R.drawable.ic_dialog_info)
-        .setContentTitle("Welcome!")
-        .setContentText("Glad to have you in Movito app ")
+        .setSmallIcon(R.drawable.movito_logo)
+        .setContentTitle("Welcome to Movito!")
+        .setContentText("Glad to have you in Movito app 🎬")
         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
         .setAutoCancel(true)
 
     val notificationManager = NotificationManagerCompat.from(context)
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        if (ActivityCompat.checkSelfPermission(
+        if (ContextCompat.checkSelfPermission(
                 context,
                 Manifest.permission.POST_NOTIFICATIONS
             ) == PackageManager.PERMISSION_GRANTED
@@ -177,5 +168,72 @@ fun sendWelcomeNotification(context: Context) {
         }
     } else {
         notificationManager.notify(1, builder.build())
+    }
+}
+
+
+fun sendNotification(
+    context: Context,
+    title: String,
+    message: String,
+    notificationId: Int = System.currentTimeMillis().toInt()
+) {
+    val prefs = NotificationPreferences.getInstance(context)
+
+    if (!prefs.isNotificationsEnabled()) {
+        return
+    }
+
+    val builder = NotificationCompat.Builder(context, "welcome_channel")
+        .setSmallIcon(R.drawable.movito_logo)
+        .setContentTitle(title)
+        .setContentText(message)
+        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+        .setAutoCancel(true)
+
+    val notificationManager = NotificationManagerCompat.from(context)
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        if (ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            notificationManager.notify(notificationId, builder.build())
+        }
+    } else {
+        notificationManager.notify(notificationId, builder.build())
+    }
+}
+
+
+class NotificationPreferences(context: Context) {
+
+    private val prefs: SharedPreferences = context.getSharedPreferences(
+        "notification_prefs",
+        Context.MODE_PRIVATE
+    )
+
+    companion object {
+        private const val KEY_NOTIFICATIONS_ENABLED = "notifications_enabled"
+
+        @Volatile
+        private var INSTANCE: NotificationPreferences? = null
+
+        fun getInstance(context: Context): NotificationPreferences {
+            return INSTANCE ?: synchronized(this) {
+                INSTANCE ?: NotificationPreferences(context.applicationContext).also {
+                    INSTANCE = it
+                }
+            }
+        }
+    }
+
+    fun setNotificationsEnabled(enabled: Boolean) {
+        prefs.edit().putBoolean(KEY_NOTIFICATIONS_ENABLED, enabled).apply()
+    }
+
+    fun isNotificationsEnabled(): Boolean {
+        return prefs.getBoolean(KEY_NOTIFICATIONS_ENABLED, true)
     }
 }

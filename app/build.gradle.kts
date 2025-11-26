@@ -91,5 +91,7 @@ dependencies {
     //Glide
     implementation("com.github.bumptech.glide:glide:5.0.5")
 
+    implementation("com.google.accompanist:accompanist-permissions:0.34.0")
+
 
 }

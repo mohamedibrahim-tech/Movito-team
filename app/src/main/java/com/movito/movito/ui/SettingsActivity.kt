@@ -2,7 +2,10 @@ package com.movito.movito.ui
 
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -40,7 +43,9 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.NotificationManagerCompat
 import com.movito.movito.BuildConfig
+import com.movito.movito.NotificationPreferences
 import com.movito.movito.theme.MovitoTheme
 import com.movito.movito.ui.common.SettingsCards
 
@@ -50,6 +55,13 @@ class SettingsActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val systemIsDark = isSystemInDarkTheme()
+
+            var notificationsState by remember {
+                mutableStateOf(
+                    NotificationManagerCompat.from(this).areNotificationsEnabled()
+                )
+            }
+
             MovitoTheme(darkTheme = systemIsDark) {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
@@ -61,26 +73,33 @@ class SettingsActivity : ComponentActivity() {
                     SettingsScreen(
                         modifier = Modifier.padding(paddingValues),
                         onThemeToggle = {},
-                        currentThemeIsDark = systemIsDark
+                        currentThemeIsDark = systemIsDark,
+                        notificationsEnabled = notificationsState,
+                        onNotificationsStateUpdate = { notificationsState = it }
                     )
                 }
             }
-
         }
     }
+
+
 }
 
 @Composable
 fun SettingsScreen(
     modifier: Modifier = Modifier,
     onThemeToggle: (Boolean) -> Unit,
-    currentThemeIsDark: Boolean
+    currentThemeIsDark: Boolean,
+    notificationsEnabled: Boolean = true,
+    onNotificationsStateUpdate: (Boolean) -> Unit = {}
 ) {
-    var notifications by remember { mutableStateOf(false) }
-    var downloadsWifiOnly by remember { mutableStateOf(true) }
     val context = LocalContext.current
-    val githubUrl = "https://github.com/mohamedibrahim-tech/Movito-team/"
+    val prefs = remember { NotificationPreferences.getInstance(context) }
 
+    var notifications by remember { mutableStateOf(notificationsEnabled) }
+
+    var downloadsWifiOnly by remember { mutableStateOf(true) }
+    val githubUrl = "https://github.com/mohamedibrahim-tech/Movito-team/"
 
     Column(
         modifier = modifier
@@ -107,10 +126,9 @@ fun SettingsScreen(
             }
         }
 
-
         Spacer(Modifier.height(20.dp))
 
-
+        // Account Section
         SettingsCards {
             Text(
                 text = "Account",
@@ -124,7 +142,6 @@ fun SettingsScreen(
                     .fillMaxWidth()
                     .clickable {},
                 verticalAlignment = Alignment.CenterVertically
-
             ) {
                 Column(
                     modifier = Modifier.weight(1f)
@@ -139,10 +156,7 @@ fun SettingsScreen(
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontSize = 16.sp,
                     )
-
                 }
-
-
             }
             Spacer(Modifier.height(16.dp))
 
@@ -170,7 +184,10 @@ fun SettingsScreen(
                 )
             }
         }
+
         Spacer(Modifier.height(20.dp))
+
+        // Appearance Section
         SettingsCards {
             Text(
                 "Appearance",
@@ -199,12 +216,13 @@ fun SettingsScreen(
                         uncheckedThumbColor = MaterialTheme.colorScheme.onSurface,
                         uncheckedTrackColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
                     )
-
                 )
             }
-
         }
+
         Spacer(Modifier.height(20.dp))
+
+        // Notifications Section
         SettingsCards {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -219,7 +237,36 @@ fun SettingsScreen(
                 Spacer(Modifier.weight(1f))
                 Switch(
                     checked = notifications,
-                    onCheckedChange = { notifications = it },
+                    onCheckedChange = { newValue ->
+                        notifications = newValue
+
+                        prefs.setNotificationsEnabled(newValue)
+
+                        onNotificationsStateUpdate(newValue)
+
+                        val intent = Intent().apply {
+                            when {
+                                Build.VERSION.SDK_INT >= Build.VERSION_CODES.O -> {
+                                    action = Settings.ACTION_APP_NOTIFICATION_SETTINGS
+                                    putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
+                                }
+                                else -> {
+                                    action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+                                    data = Uri.fromParts("package", context.packageName, null)
+                                }
+                            }
+                        }
+
+                        try {
+                            context.startActivity(intent)
+                        } catch (e: Exception) {
+                            Toast.makeText(
+                                context,
+                                "Could not open settings",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    },
                     colors = SwitchDefaults.colors(
                         checkedThumbColor = MaterialTheme.colorScheme.onPrimary,
                         checkedTrackColor = MaterialTheme.colorScheme.primary,
@@ -229,7 +276,10 @@ fun SettingsScreen(
                 )
             }
         }
+
         Spacer(Modifier.height(20.dp))
+
+        // Downloads Section
         SettingsCards {
             Text(
                 "Downloads",
@@ -260,7 +310,10 @@ fun SettingsScreen(
                 )
             }
         }
+
         Spacer(Modifier.height(20.dp))
+
+        // About Section
         SettingsCards {
             Text(
                 "About",
@@ -268,14 +321,12 @@ fun SettingsScreen(
                 fontSize = 28.sp,
                 fontWeight = FontWeight.SemiBold
             )
-
             Spacer(Modifier.height(8.dp))
             Text(
                 "Version: ${BuildConfig.VERSION_NAME}",
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 fontSize = 20.sp
             )
-
             Spacer(Modifier.height(6.dp))
             Text(
                 text = "Github Repository",
@@ -290,7 +341,6 @@ fun SettingsScreen(
         }
         Spacer(Modifier.height(16.dp))
     }
-
 }
 
 @Preview(showSystemUi = true, name = "Dark Mode")
