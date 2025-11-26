@@ -24,22 +24,16 @@ class FavoritesRepository {
             val userId = auth.currentUser?.uid
                 ?: return Result.failure(Exception("Not logged in"))
 
-            val favoriteMovie = FavoriteMovie(
-                movieId = movie.id,
-                title = movie.title,
-                releaseDate = movie.releaseDate,
-                posterPath = movie.posterPath,
-                voteAverage = movie.voteAverage,
-                overview = movie.overview,
-                userId = userId,
-                addedAt = com.google.firebase.Timestamp.now().toDate()
-            )
-
             val docId = "${userId}_${movie.id}"
 
             favoritesCollection
                 .document(docId)
-                .set(favoriteMovie)
+                .set(movie)
+                .await()
+
+            favoritesCollection
+                .document(docId)
+                .update("userId", userId)
                 .await()
 
             Result.success(Unit)

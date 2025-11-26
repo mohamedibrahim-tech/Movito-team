@@ -6,7 +6,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.movito.movito.data.model.Movie
-import com.movito.movito.favorites.FavoriteMovie
 import com.movito.movito.favorites.FavoritesRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,7 +22,7 @@ import java.util.Date
  * @property error Optional error message if something went wrong
  */
 data class FavoritesUiState(
-    val favorites: List<FavoriteMovie> = emptyList(),
+    val favorites: List<Movie> = emptyList(),
     val isLoading: Boolean = true,
     val error: String? = null
 )
@@ -90,7 +89,7 @@ class FavoritesViewModel(
 
                     // Convert documents to FavoriteMovie objects
                     val list =
-                        snapshot?.documents?.mapNotNull { it.toObject(FavoriteMovie::class.java) }
+                        snapshot?.documents?.mapNotNull { it.toObject(Movie::class.java) }
                             ?: emptyList()
 
                     // Update UI state with new favorites list
@@ -143,27 +142,15 @@ class FavoritesViewModel(
             if (userId.isEmpty()) return@launch
 
             // 1. OPTIMISTIC UPDATE - Update UI immediately for better UX
-            val newFavorite = FavoriteMovie(
-                id = "${userId}_${movie.id}",
-                movieId = movie.id,
-                title = movie.title,
-                releaseDate = movie.releaseDate,
-                posterPath = movie.posterPath,
-                voteAverage = movie.voteAverage,
-                overview = movie.overview,
-                userId = userId,
-                addedAt = Date()
-            )
-
             _uiState.update { currentState ->
-                val alreadyExists = currentState.favorites.any { it.movieId == movie.id }
+                val alreadyExists = currentState.favorites.any { it.id == movie.id }
                 // Don't add duplicate if already exists
                 if (alreadyExists) {
                     currentState
                 } else {
                     // Add new favorite to the beginning of the list (most recent first)
                     currentState.copy(
-                        favorites = listOf(newFavorite) + currentState.favorites
+                        favorites = listOf(movie) + currentState.favorites
                     )
                 }
             }
@@ -187,7 +174,7 @@ class FavoritesViewModel(
             // 1. OPTIMISTIC UPDATE - Remove from UI immediately
             _uiState.update { currentState ->
                 currentState.copy(
-                    favorites = currentState.favorites.filter { it.movieId != movieId }
+                    favorites = currentState.favorites.filter { it.id != movieId }
                 )
             }
 
@@ -206,7 +193,7 @@ class FavoritesViewModel(
      * @return true if the movie is in the current favorites list, false otherwise
      */
     suspend fun isFavorite(movieId: Int): Boolean {
-        return _uiState.value.favorites.any { it.movieId == movieId }
+        return _uiState.value.favorites.any { it.id == movieId }
     }
 
     /**

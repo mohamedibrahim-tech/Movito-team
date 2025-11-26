@@ -83,7 +83,7 @@ fun DetailsScreen(
     val favoritesViewModel = remember { FavoritesViewModel.getInstance() }
     val favoritesState by favoritesViewModel.uiState.collectAsState()
     val isFavorite = remember(favoritesState.favorites, movie.id) {
-        favoritesState.favorites.any { it.movieId == movie.id }
+        favoritesState.favorites.any { it.id == movie.id }
     }
     var showAddDialog by remember { mutableStateOf(false) }
     var showRemoveDialog by remember { mutableStateOf(false) }
