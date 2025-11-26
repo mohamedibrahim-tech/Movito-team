@@ -17,12 +17,11 @@ private val DarkColorScheme = darkColorScheme(
     tertiary = Pink80,
     background = DarkBlueBackground,
     surface = DarkBlueBackground,
-    onPrimary = Color.White,  // Changed from Black for better contrast
+    onPrimary = Color.White,
     onSecondary = Color.Black,
     onTertiary = Color.Black,
     onBackground = Color.White,
     onSurface = Color.White,
-    // NEW: Add missing Material 3 color roles
     surfaceVariant = SurfaceDark,
     onSurfaceVariant = DarkTextSecondary,
     error = ErrorColor,
@@ -40,7 +39,6 @@ private val LightColorScheme = lightColorScheme(
     onTertiary = Color.White,
     onBackground = LightOnBackground,
     onSurface = LightOnBackground,
-    // NEW: Add missing Material 3 color roles
     surfaceVariant = SurfaceLight,
     onSurfaceVariant = TextSecondary,
     error = ErrorColor,
@@ -50,7 +48,7 @@ private val LightColorScheme = lightColorScheme(
 @Composable
 fun MovitoTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = true,  // Changed default to true for better user experience
+    dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
@@ -71,7 +69,6 @@ fun MovitoTheme(
     }
 }
 
-// Extension functions for easy access to custom colors
 val MaterialTheme.customColors
     @Composable
     get() = if (isSystemInDarkTheme()) DarkCustomColors else LightCustomColors
@@ -92,32 +89,4 @@ object LightCustomColors {
     val warning = WarningColor
     val error = ErrorColor
     val info = InfoColor
-}
-
-// Utility composable for conditional theming
-@Composable
-fun WithMovitoTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = true,
-    content: @Composable () -> Unit
-) {
-    MovitoTheme(
-        darkTheme = darkTheme,
-        dynamicColor = dynamicColor
-    ) {
-        content()
-    }
-}
-
-// Preview theme for easier preview development
-@Composable
-fun MovitoPreviewTheme(
-    darkTheme: Boolean = false,
-    content: @Composable () -> Unit
-) {
-    MovitoTheme(
-        darkTheme = darkTheme,
-        dynamicColor = false, // Disable dynamic color in previews for consistency
-        content = content
-    )
 }

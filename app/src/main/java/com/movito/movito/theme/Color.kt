@@ -2,7 +2,7 @@ package com.movito.movito.theme
 
 import androidx.compose.ui.graphics.Color
 
-// Dark Theme Colors - Enhanced contrast
+// Dark Theme Colors
 val Purple80 = Color(0xFFD0BCFF)
 val PurpleGrey80 = Color(0xFFCCC2DC)
 val Pink80 = Color(0xFFEFB8C8)
@@ -10,7 +10,7 @@ val DarkBlueBackground = Color(0xFF021E30)
 val DarkButtonColor1 = Color(0xFF7C4DFF)
 val DarkButtonColor2 = Color(0xFF26C6DA)
 
-// Light Theme Colors - Enhanced readability
+// Light Theme Colors
 val Purple40 = Color(0xFF6650a4)
 val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
@@ -41,3 +41,13 @@ val DarkTextDisabled = Color(0x80FFFFFF)   // 50% opacity white
 // surface colors
 val SurfaceLight = Color(0xFFF5F5F5)       // Light gray surface
 val SurfaceDark = Color(0xFF1E1E1E)        // Dark gray surface
+
+object FunctionalColors {
+    val Success = Color(0xFF4CAF50)
+    val Warning = Color(0xFFFF9800)
+    val Error = Color(0xFFF44336)
+    val Info = Color(0xFF2196F3)
+
+    val Disabled = Color(0xFF9E9E9E)
+    val Divider = Color(0x1F000000) // 12% opacity black
+}
