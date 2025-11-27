@@ -3,6 +3,7 @@ package com.movito.movito.ui
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -35,12 +36,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.movito.movito.BuildConfig
+import com.movito.movito.R
 import com.movito.movito.theme.MovitoTheme
 import com.movito.movito.ui.common.MovitoButton
 import com.movito.movito.ui.common.MovitoNavBar
@@ -81,7 +84,10 @@ class SettingsActivity : ComponentActivity() {
                             onThemeToggle = { themeViewModel.toggleTheme(it) },
                             currentThemeIsDark = isDarkTheme,
                             onSignOut = { authViewModel.signOut() },
-                            userEmail = authState.user?.email
+                            userEmail = authState.user?.email,
+                            onChangePassword = { email ->
+                                authViewModel.sendPasswordResetEmail(email)
+                            }
                         )
                     }
                 }
@@ -96,10 +102,10 @@ fun SettingsScreen(
     onThemeToggle: (Boolean) -> Unit,
     currentThemeIsDark: Boolean,
     onSignOut: () -> Unit,
-    userEmail: String?
+    userEmail: String?,
+    onChangePassword: (String) -> Unit
 ) {
     var notifications by remember { mutableStateOf(false) }
-    var downloadsWifiOnly by remember { mutableStateOf(true) }
     val context = LocalContext.current
     val githubUrl = "https://github.com/mohamedibrahim-tech/Movito-team/"
 
@@ -122,7 +128,7 @@ fun SettingsScreen(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "Settings",
+                    text = stringResource(id = R.string.settings_title),
                     fontSize = 28.sp,
                     color = MaterialTheme.colorScheme.onBackground
                 )
@@ -135,7 +141,7 @@ fun SettingsScreen(
 
         SettingsCards {
             Text(
-                text = "Account",
+                text = stringResource(id = R.string.settings_account),
                 fontSize = 28.sp,
                 color = MaterialTheme.colorScheme.onSurface
             )
@@ -152,12 +158,12 @@ fun SettingsScreen(
                     modifier = Modifier.weight(1f)
                 ) {
                     Text(
-                        text = "Profile info",
+                        text = stringResource(id = R.string.settings_profile_info),
                         color = MaterialTheme.colorScheme.onSurface,
                         fontSize = 20.sp,
                     )
                     Text(
-                        text = userEmail ?: "Not signed in",
+                        text = userEmail ?: stringResource(id = R.string.settings_not_signed_in),
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontSize = 16.sp,
                     )
@@ -168,7 +174,20 @@ fun SettingsScreen(
             }
             Spacer(Modifier.height(16.dp))
             MovitoButton(
-                text = "Sign Out",
+                text = stringResource(id = R.string.settings_change_password),
+                modifier = Modifier.fillMaxWidth(),
+                roundedCornerSize = 12.dp,
+                isLoading = false,
+                onClick = {
+                    userEmail?.let {
+                        onChangePassword(it)
+                        Toast.makeText(context, context.getString(R.string.settings_password_reset_sent, it), Toast.LENGTH_LONG).show()
+                    } ?: Toast.makeText(context, context.getString(R.string.settings_user_email_not_found), Toast.LENGTH_SHORT).show()
+                }
+            )
+            Spacer(Modifier.height(8.dp))
+            MovitoButton(
+                text = stringResource(id = R.string.settings_sign_out),
                 modifier = Modifier.fillMaxWidth(),
                 roundedCornerSize = 12.dp,
                 isLoading = false,
@@ -178,7 +197,7 @@ fun SettingsScreen(
         Spacer(Modifier.height(20.dp))
         SettingsCards {
             Text(
-                "Appearance",
+                stringResource(id = R.string.settings_appearance),
                 color = MaterialTheme.colorScheme.onSurface,
                 fontSize = 28.sp,
                 fontWeight = FontWeight.SemiBold
@@ -190,7 +209,7 @@ fun SettingsScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    "Theme Mode",
+                    stringResource(id = R.string.settings_theme_mode),
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 20.sp
                 )
@@ -216,7 +235,7 @@ fun SettingsScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    "Notifications",
+                    stringResource(id = R.string.settings_notifications),
                     color = MaterialTheme.colorScheme.onSurface,
                     fontSize = 28.sp,
                     fontWeight = FontWeight.SemiBold
@@ -237,7 +256,7 @@ fun SettingsScreen(
         Spacer(Modifier.height(20.dp))
         SettingsCards {
             Text(
-                "About",
+                stringResource(id = R.string.settings_about),
                 color = MaterialTheme.colorScheme.onSurface,
                 fontSize = 28.sp,
                 fontWeight = FontWeight.SemiBold
@@ -245,14 +264,14 @@ fun SettingsScreen(
 
             Spacer(Modifier.height(8.dp))
             Text(
-                "Version: ${BuildConfig.VERSION_NAME}",
+                stringResource(id = R.string.settings_version, BuildConfig.VERSION_NAME),
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 fontSize = 20.sp
             )
 
             Spacer(Modifier.height(6.dp))
             Text(
-                text = "Github Repository",
+                text = stringResource(id = R.string.settings_github_repository),
                 color = MaterialTheme.colorScheme.primary,
                 fontSize = 20.sp,
                 textDecoration = TextDecoration.Underline,
@@ -276,7 +295,8 @@ fun SettingsPreviewDark() {
             onThemeToggle = { isDark = it },
             currentThemeIsDark = isDark,
             onSignOut = {},
-            userEmail = "preview.user@gmail.com"
+            userEmail = "preview.user@gmail.com",
+            onChangePassword = {}
         )
     }
 }
@@ -290,7 +310,8 @@ fun SettingsPreviewLight() {
             onThemeToggle = { isDark = it },
             currentThemeIsDark = isDark,
             onSignOut = {},
-            userEmail = "preview.user@gmail.com"
+            userEmail = "preview.user@gmail.com",
+            onChangePassword = {}
         )
     }
 }

@@ -27,10 +27,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.movito.movito.R
 import com.movito.movito.viewmodel.AuthViewModel
 
 @Composable
@@ -64,7 +66,7 @@ fun ForgotPasswordScreen(
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "Reset Password",
+            text = stringResource(id = R.string.forgotpassword_title),
             color = MaterialTheme.colorScheme.onBackground,
             fontSize = 24.sp,
             fontWeight = FontWeight.SemiBold
@@ -74,7 +76,7 @@ fun ForgotPasswordScreen(
         CustomAuthTextField(
             value = email,
             onValueChange = { email = it },
-            label = "Email",
+            label = stringResource(id = R.string.forgotpassword_email_label),
             icon = Icons.Default.Email
         )
         Spacer(Modifier.height(40.dp))
@@ -92,7 +94,7 @@ fun ForgotPasswordScreen(
                     containerColor = MaterialTheme.colorScheme.primary
                 )
             ) {
-                Text("Send Reset Email", color = Color.White)
+                Text(stringResource(id = R.string.forgotpassword_send_button), color = Color.White)
             }
         }
     }

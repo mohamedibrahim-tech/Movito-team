@@ -56,6 +56,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -135,8 +136,8 @@ fun DetailsScreen(
                     heartAnimationTrigger = (heartAnimationTrigger ?: 0) + 1
                     scope.launch {
                         val result = snackbarHostState.showSnackbar(
-                            message = "${movie.title} added to favorites",
-                            actionLabel = "Favorites"
+                            message = context.getString(R.string.details_added_to_favorites, movie.title),
+                            actionLabel = context.getString(R.string.details_favorites_button)
                         )
                         if (result.toString() == "ActionPerformed") {
                             val intent = Intent(context, FavoritesActivity::class.java)
@@ -188,11 +189,9 @@ fun DetailsScreen(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopAppBar(
-                title = { Text("Details") },
-                navigationIcon = {
+                title = { Text(stringResource(id = R.string.details_title)) },                navigationIcon = {
                     IconButton(onClick = onClickBackButton) {
-                        Icon(Icons.AutoMirrored.Default.KeyboardArrowLeft, "back")
-                    }
+                        Icon(Icons.AutoMirrored.Default.KeyboardArrowLeft, stringResource(id = R.string.details_back_button_description))                    }
                 },
                 colors = androidx.compose.material3.TopAppBarDefaults.topAppBarColors(
                     containerColor = Color.Transparent
@@ -374,8 +373,7 @@ fun MoviePosterAndActionsSection(
 
             // Play Trailer button (20% height)
             MovitoButton(
-                text = "Play Trailer",
-                modifier = Modifier.weight(0.20f),
+                text = stringResource(id = R.string.details_play_trailer_button),                modifier = Modifier.weight(0.20f),
                 isLoading = isLoading,
                 roundedCornerSize = 100.dp,
                 onClick = onPlayTrailer
