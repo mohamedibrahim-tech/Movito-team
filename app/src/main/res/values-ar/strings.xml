@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Movito</string>
+    <string name="default_web_client_id" translatable="false">YOUR_WEB_CLIENT_ID</string>
+    <string name="title_activity_details">التفاصيل</string>
+
+    <!-- Genres -->
+    <string name="genre_action">أكشن</string>
+    <string name="genre_adventure">مغامرة</string>
+    <string name="genre_animation">رسوم متحركة</string>
+    <string name="genre_comedy">كوميدي</string>
+    <string name="genre_crime">جريمة</string>
+    <string name="genre_documentary">وثائقي</string>
+    <string name="genre_drama">دراما</string>
+    <string name="genre_family">عائلي</string>
+    <string name="genre_fantasy">خيال</string>
+    <string name="genre_history">تاريخ</string>
+    <string name="genre_horror">رعب</string>
+    <string name="genre_music">موسيقى</string>
+    <string name="genre_mystery">غموض</string>
+    <string name="genre_romance">رومانسي</string>
+    <string name="genre_science_fiction">خيال علمي</string>
+    <string name="genre_tv_movie">فيلم تلفزيوني</string>
+    <string name="genre_thriller">إثارة</string>
+    <string name="genre_war">حرب</string>
+    <string name="genre_western">غربي</string>
+    <string name="genre_unknown">نوع غير معروف</string>
+
+    <!-- Settings Screen -->
+    <string name="settings_title">الإعدادات</string>
+    <string name="settings_account">الحساب</string>
+    <string name="settings_profile_info">معلومات الملف الشخصي</string>
+    <string name="settings_not_signed_in">لم يتم تسجيل الدخول</string>
+    <string name="settings_change_password">تغيير كلمة المرور</string>
+    <string name="settings_password_reset_sent">تم إرسال بريد إعادة تعيين كلمة المرور إلى %1$s</string>
+    <string name="settings_user_email_not_found">خطأ: لم يتم العثور على بريد المستخدم.</string>
+    <string name="settings_sign_out">تسجيل الخروج</string>
+    <string name="settings_appearance">المظهر</string>
+    <string name="settings_theme_mode">وضع السمة</string>
+    <string name="settings_notifications">الإشعارات</string>
+    <string name="settings_about">حول</string>
+    <string name="settings_version">الإصدار: %1$s</string>
+    <string name="settings_github_repository">مستودع Github</string>
+
+    <!-- Categories Screen -->
+    <string name="categories_movito_logo_description">شعار موفيتو</string>
+    <string name="categories_unknown_error">حدث خطأ غير معروف</string>
+    <string name="categories_failed_to_load_genres">فشل تحميل الأنواع</string>
+
+    <!-- Sign In Screen -->
+    <string name="signin_movito_logo_description">شعار موفيتو</string>
+    <string name="signin_email_label">البريد الإلكتروني</string>
+    <string name="signin_password_label">كلمة المرور</string>
+    <string name="signin_title">تسجيل الدخول</string>
+    <string name="signin_forgot_password">هل نسيت كلمة المرور؟</string>
+    <string name="signin_button">تسجيل الدخول</string>
+    <string name="signin_no_account">ليس لديك حساب؟</string>
+    <string name="signin_sign_up">إنشاء حساب</string>
+
+    <!-- Sign Up Screen -->
+    <string name="signup_title">إنشاء حساب</string>
+    <string name="signup_email_label">البريد الإلكتروني</string>
+    <string name="signup_password_label">كلمة المرور</string>
+    <string name="signup_confirm_password_label">تأكيد كلمة المرور</string>
+    <string name="signup_email_required">البريد الإلكتروني مطلوب</string>
+    <string name="signup_invalid_email">صيغة البريد الإلكتروني غير صالحة</string>
+    <string name="signup_password_required">كلمة المرور مطلوبة</string>
+    <string name="signup_password_too_short">يجب أن تتكون كلمة المرور من 6 أحرف على الأقل</string>
+    <string name="signup_confirm_password_required">يرجى تأكيد كلمة المرور الخاصة بك</string>
+    <string name="signup_passwords_do_not_match">كلمات المرور غير متطابقة</string>
+    <string name="signup_already_have_account">لديك حساب بالفعل؟</string>
+    <string name="signup_login">تسجيل الدخول</string>
+    <string name="signup_button">إنشاء حساب</string>
+
+    <!-- Forgot Password Screen -->
+    <string name="forgotpassword_title">إعادة تعيين كلمة المرور</string>
+    <string name="forgotpassword_email_label">البريد الإلكتروني</string>
+    <string name="forgotpassword_send_button">إرسال بريد إعادة التعيين</string>
+
+    <!-- Search Screen -->
+    <string name="search_placeholder">ابحث عن أفلام...</string>
+    <string name="search_back_description">رجوع</string>
+    <string name="search_clear_description">مسح البحث</string>
+    <string name="search_failed">فشل البحث: %1$s</string>
+    <string name="search_no_results">لم يتم العثور على نتائج لـ «%1$s»</string>
+    <string name="search_initial_message">ابحث عن الأفلام والمسلسلات والمزيد...</string>
+
+    <!-- Favorites Screen -->
+    <string name="favorites_title">المفضلة</string>
+    <string name="favorites_empty_state_title">لا توجد مفضلات</string>
+    <string name="favorites_empty_state_subtitle">أضف مفضلاتك لرؤيتها هنا</string>
+    <string name="favorites_remove_from_favorites">إزالة من المفضلة</string>
+    <string name="favorites_failed_to_load">فشل تحميل المفضلة</string>
+    <string name="favorites_error">خطأ: %1$s</string>
+
+    <!-- Details Screen -->
+    <string name="details_title">التفاصيل</string>
+    <string name="details_back_button_description">رجوع</string>
+    <string name="details_added_to_favorites">تمت إضافة %1$s إلى المفضلة</string>
+    <string name="details_favorites_button">المفضلة</string>
+    <string name="details_play_trailer_button">تشغيل المقطع الدعائي</string>
+    <string name="details_share_button">مشاركة</string>
+    <string name="details_movie_details_title">تفاصيل الفيلم</string>
+    <string name="details_genres_title">الأنواع</string>
+    <string name="details_more_like_this_title">أفلام مشابهة</string>
+
+    <!-- Movies By Genre Screen -->
+    <string name="movies_by_genre_back_button_description">رجوع</string>
+    <string name="movies_by_genre_refresh_button_description">تحديث</string>
+    <string name="movies_by_genre_failed_to_load">فشل تحميل الأفلام</string>
+</resources>

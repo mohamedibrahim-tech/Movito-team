@@ -12,35 +12,43 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
+    primary = DarkButtonColor1,
+    secondary = DarkButtonColor2,
     tertiary = Pink80,
     background = DarkBlueBackground,
     surface = DarkBlueBackground,
-    onPrimary = Color.Black,
+    onPrimary = Color.White,
     onSecondary = Color.Black,
     onTertiary = Color.Black,
     onBackground = Color.White,
-    onSurface = Color.White
+    onSurface = Color.White,
+    surfaceVariant = SurfaceDark,
+    onSurfaceVariant = DarkTextSecondary,
+    error = ErrorColor,
+    onError = Color.White
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
+    primary = LightButtonColor1,
+    secondary = LightButtonColor2,
     tertiary = Pink40,
     background = LightBackground,
     surface = LightBackground,
     onPrimary = Color.White,
-    onSecondary = Color.White,
+    onSecondary = Color.Black,
     onTertiary = Color.White,
     onBackground = LightOnBackground,
-    onSurface = LightOnBackground
+    onSurface = LightOnBackground,
+    surfaceVariant = SurfaceLight,
+    onSurfaceVariant = TextSecondary,
+    error = ErrorColor,
+    onError = Color.White
 )
 
 @Composable
 fun MovitoTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = false,
+    dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
@@ -56,6 +64,29 @@ fun MovitoTheme(
     MaterialTheme(
         colorScheme = colorScheme,
         typography = Typography,
-        content = content
-    )
+    ) {
+        content()
+    }
+}
+
+val MaterialTheme.customColors
+    @Composable
+    get() = if (isSystemInDarkTheme()) DarkCustomColors else LightCustomColors
+
+object DarkCustomColors {
+    val star = StarColor
+    val heart = HeartColor
+    val success = SuccessColor
+    val warning = WarningColor
+    val error = ErrorColor
+    val info = InfoColor
+}
+
+object LightCustomColors {
+    val star = StarColor
+    val heart = HeartColor
+    val success = SuccessColor
+    val warning = WarningColor
+    val error = ErrorColor
+    val info = InfoColor
 }

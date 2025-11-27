@@ -20,7 +20,7 @@ android {
         minSdk = 29
         targetSdk = 36
         versionCode = 1
-        versionName = "4.2.1"
+        versionName = "5.0.4"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -69,6 +69,8 @@ dependencies {
     implementation(libs.androidx.compose.ui.text)
     implementation(libs.androidx.compose.foundation)
     implementation(libs.androidx.compose.foundation.layout)
+    implementation(libs.firebase.crashlytics.buildtools)
+    implementation(libs.androidx.ui)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -108,5 +110,10 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended")
 
     implementation("com.google.firebase:firebase-firestore")
+
+    // DataStore Preferences
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
+
+    implementation("com.google.accompanist:accompanist-permissions:0.34.0")
 
 }
