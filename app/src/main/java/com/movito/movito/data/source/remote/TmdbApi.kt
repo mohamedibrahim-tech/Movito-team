@@ -15,9 +15,13 @@ interface TmdbApi {
     suspend fun discoverMoviesByGenre(
         @Query("api_key") apiKey: String,
         @Query("page") page: Int,
-        @Query("with_genres") genreId: Int,
-        @Query("sort_by") sortBy: String = "popularity.desc",
-        @Query("primary_release_year") primaryReleaseYear: Int
+        @Query("with_genres") genreId: Int
+    ): MovieResponse
+
+    @GET("search/movie")
+    suspend fun searchMovies(
+        @Query("api_key") apiKey: String,
+        @Query("query") query: String,
     ): MovieResponse
 
     @GET("movie/{movie_id}/videos")
@@ -25,6 +29,12 @@ interface TmdbApi {
         @Path("movie_id") movieId: Int,
         @Query("api_key") apiKey: String
     ): VideoResponse
+
+    @GET("movie/{movie_id}/recommendations")
+    suspend fun getMovieRecommendations(
+        @Path("movie_id") movieId: Int,
+        @Query("api_key") apiKey: String
+    ): MovieResponse
 
 }
 
