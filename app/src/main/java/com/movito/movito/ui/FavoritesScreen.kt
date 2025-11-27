@@ -41,6 +41,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.movito.movito.data.model.Movie
 import com.movito.movito.theme.MovitoTheme
+import com.movito.movito.ui.common.FavoriteDialog
+import com.movito.movito.ui.common.FavoriteDialogConfig
+import com.movito.movito.ui.common.FavoriteDialogType
+import com.movito.movito.ui.common.HeartBeatIcon
 import com.movito.movito.ui.common.MovieCard
 import com.movito.movito.ui.common.MovitoNavBar
 import com.movito.movito.viewmodel.FavoritesViewModel
@@ -50,7 +54,6 @@ import com.movito.movito.viewmodel.FavoritesViewModel
 @Composable
 fun FavoritesScreen(
     modifier: Modifier = Modifier,
-   // viewModel: FavoritesViewModel = viewModel() // ViewModel للـ Firebase
     viewModel: FavoritesViewModel = remember { FavoritesViewModel.getInstance() }
 
 ) {
@@ -151,10 +154,13 @@ fun FavoriteMovieCard(
     var showRemoveDialog by remember { mutableStateOf(false) }
 
     if (showRemoveDialog) {
-        RemoveFromFavoritesDialog(
-            movieTitle = movie.title,
-            onConfirm = onRemoveFavorite,
-            onDismiss = { showRemoveDialog = false }
+        FavoriteDialog(
+            config = FavoriteDialogConfig(
+                FavoriteDialogType.REMOVE,
+                movie.title,
+                onRemoveFavorite,
+                {showRemoveDialog = false}
+            )
         )
     }
 
@@ -168,11 +174,12 @@ fun FavoriteMovieCard(
                 .align(Alignment.TopEnd)
                 .padding(8.dp)
         ) {
-            Icon(
+            HeartBeatIcon(
                 imageVector = Icons.Default.Favorite,
                 contentDescription = "Remove from favorites",
                 tint = Color.Red,
-                modifier = Modifier.size(28.dp)
+                modifier = Modifier.size(28.dp),
+                trigger = 0
             )
         }
     }
