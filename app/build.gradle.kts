@@ -70,6 +70,7 @@ dependencies {
     implementation(libs.androidx.compose.foundation)
     implementation(libs.androidx.compose.foundation.layout)
     implementation(libs.firebase.crashlytics.buildtools)
+    implementation(libs.androidx.ui)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -109,5 +110,8 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended")
 
     implementation("com.google.firebase:firebase-firestore")
+
+    // DataStore Preferences
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
 
 }

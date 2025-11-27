@@ -9,7 +9,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,7 +18,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -30,13 +28,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
@@ -45,46 +42,48 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.movito.movito.BuildConfig
 import com.movito.movito.theme.MovitoTheme
+import com.movito.movito.ui.common.MovitoButton
 import com.movito.movito.ui.common.MovitoNavBar
 import com.movito.movito.ui.common.SettingsCards
 import com.movito.movito.viewmodel.AuthViewModel
+import com.movito.movito.viewmodel.ThemeViewModel
 
 class SettingsActivity : ComponentActivity() {
 
     private val authViewModel: AuthViewModel by viewModels()
+    private val themeViewModel: ThemeViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val systemIsDark = isSystemInDarkTheme()
-            //logout
             val authState by authViewModel.authState.collectAsState()
+            val isDarkTheme by themeViewModel.isDarkTheme.collectAsState()
 
             LaunchedEffect(authState.user) {
-                if (authState.user == null && authState.isInitialCheckDone) { // To avoid navigation on initial load
+                if (authState.user == null && authState.isInitialCheckDone) {
                     val intent = Intent(this@SettingsActivity, SignInActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)
                 }
             }
-            //--------
-
-            MovitoTheme(darkTheme = systemIsDark) {
-                Scaffold(
-                    modifier = Modifier.fillMaxSize(),
-                    containerColor = MaterialTheme.colorScheme.background,
-                    bottomBar = {
-                        MovitoNavBar(selectedItem = "profile")
+            key(isDarkTheme) {
+                MovitoTheme(darkTheme = isDarkTheme) {
+                    Scaffold(
+                        modifier = Modifier.fillMaxSize(),
+                        containerColor = MaterialTheme.colorScheme.background,
+                        bottomBar = {
+                            MovitoNavBar(selectedItem = "profile")
+                        }
+                    ) { paddingValues ->
+                        SettingsScreen(
+                            modifier = Modifier.padding(paddingValues),
+                            onThemeToggle = { themeViewModel.toggleTheme(it) },
+                            currentThemeIsDark = isDarkTheme,
+                            onSignOut = { authViewModel.signOut() },
+                            userEmail = authState.user?.email
+                        )
                     }
-                ) { paddingValues ->
-                    SettingsScreen(
-                        modifier = Modifier.padding(paddingValues),
-                        onThemeToggle = {},
-                        currentThemeIsDark = systemIsDark,
-                        onSignOut = { authViewModel.signOut() },
-                        userEmail = authState.user?.email
-                    )
                 }
             }
         }
@@ -123,7 +122,7 @@ fun SettingsScreen(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "Profile",
+                    text = "Settings",
                     fontSize = 28.sp,
                     color = MaterialTheme.colorScheme.onBackground
                 )
@@ -168,31 +167,13 @@ fun SettingsScreen(
 
             }
             Spacer(Modifier.height(16.dp))
-
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(48.dp)
-                    .background(
-                        brush = Brush.horizontalGradient(
-                            colors = listOf(
-                                Color(0xFF9D5BFF),
-                                Color(0xFF64DFDF)
-                            )
-                        ),
-                        shape = RoundedCornerShape(12.dp)
-                    )
-                    //logout
-                    .clickable { onSignOut() },
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    "Sign Out",
-                    color = Color.White,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium
-                )
-            }
+            MovitoButton(
+                text = "Sign Out",
+                modifier = Modifier.fillMaxWidth(),
+                roundedCornerSize = 12.dp,
+                isLoading = false,
+                onClick = { onSignOut() }
+            )
         }
         Spacer(Modifier.height(20.dp))
         SettingsCards {
@@ -244,37 +225,6 @@ fun SettingsScreen(
                 Switch(
                     checked = notifications,
                     onCheckedChange = { notifications = it },
-                    colors = SwitchDefaults.colors(
-                        checkedThumbColor = MaterialTheme.colorScheme.onPrimary,
-                        checkedTrackColor = MaterialTheme.colorScheme.primary,
-                        uncheckedThumbColor = MaterialTheme.colorScheme.onSurface,
-                        uncheckedTrackColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
-                    )
-                )
-            }
-        }
-        Spacer(Modifier.height(20.dp))
-        SettingsCards {
-            Text(
-                "Downloads",
-                color = MaterialTheme.colorScheme.onSurface,
-                fontSize = 28.sp,
-                fontWeight = FontWeight.SemiBold
-            )
-            Spacer(Modifier.height(12.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    "WiFi only",
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontSize = 20.sp
-                )
-                Spacer(Modifier.weight(1f))
-                Switch(
-                    checked = downloadsWifiOnly,
-                    onCheckedChange = { downloadsWifiOnly = it },
                     colors = SwitchDefaults.colors(
                         checkedThumbColor = MaterialTheme.colorScheme.onPrimary,
                         checkedTrackColor = MaterialTheme.colorScheme.primary,

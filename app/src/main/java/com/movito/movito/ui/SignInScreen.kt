@@ -1,9 +1,6 @@
 package com.movito.movito.ui
 
-import android.app.Activity
 import android.widget.Toast
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -56,9 +53,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.ApiException
 import com.movito.movito.R
 import com.movito.movito.theme.MovitoTheme
 import com.movito.movito.viewmodel.AuthViewModel
@@ -135,30 +129,6 @@ fun SignInScreen(
     var password by remember { mutableStateOf("") }
     val authState by authViewModel.authState.collectAsState()
     val context = LocalContext.current
-
-    val googleSignInLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.StartActivityForResult(),
-        onResult = { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-                try {
-                    val account = task.getResult(ApiException::class.java)
-                    account?.idToken?.let { idToken ->
-                        authViewModel.signInWithGoogle(idToken)
-                    }
-                } catch (_: ApiException) {
-                    authViewModel.resetState()
-                }
-            }
-        }
-    )
-
-    val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-        .requestIdToken(context.getString(R.string.default_web_client_id))
-        .requestEmail()
-        .build()
-
-    val googleSignInClient = GoogleSignIn.getClient(context, gso)
 
     LaunchedEffect(authState) {
         if (authState.user != null) {
@@ -261,45 +231,6 @@ fun SignInScreen(
 
                 Spacer(Modifier.height(16.dp))
 
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(48.dp)
-                        .background(
-                            brush = Brush.horizontalGradient(
-                                colors = listOf(
-                                    Color(0xFF9D5BFF),
-                                    Color(0xFF64DFDF)
-                                )
-                            ),
-                            shape = RoundedCornerShape(12.dp)
-                        )
-                        .clickable { googleSignInLauncher.launch(googleSignInClient.signInIntent) },
-                    contentAlignment = Alignment.Center
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-
-
-                        Spacer(modifier = Modifier.width(8.dp))
-
-
-                        Text(
-                            "Continue with Google",
-                            color = Color.White,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Medium
-                        )
-                        Spacer(Modifier.width(16.dp))
-                        Image(
-                            painter = painterResource(id = R.drawable.google_logo),
-                            contentDescription = "Google Logo",
-                            modifier = Modifier.size(24.dp)
-                        )
-                    }
-                }
             }
 
             Spacer(Modifier.height(32.dp))

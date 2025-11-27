@@ -30,6 +30,12 @@ interface TmdbApi {
         @Query("api_key") apiKey: String
     ): VideoResponse
 
+    @GET("movie/{movie_id}/recommendations")
+    suspend fun getMovieRecommendations(
+        @Path("movie_id") movieId: Int,
+        @Query("api_key") apiKey: String
+    ): MovieResponse
+
 }
 
 data class MovieResponse(

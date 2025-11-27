@@ -16,8 +16,21 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,19 +39,23 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.movito.movito.data.model.Movie
 import com.movito.movito.theme.MovitoTheme
+import com.movito.movito.ui.common.FavoriteDialog
+import com.movito.movito.ui.common.FavoriteDialogConfig
+import com.movito.movito.ui.common.FavoriteDialogType
+import com.movito.movito.ui.common.HeartBeatIcon
 import com.movito.movito.ui.common.MovieCard
 import com.movito.movito.ui.common.MovitoNavBar
-import com.movito.movito.favorites.FavoritesViewModel
+import com.movito.movito.viewmodel.FavoritesViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoritesScreen(
     modifier: Modifier = Modifier,
-    viewModel: FavoritesViewModel = viewModel() // ViewModel للـ Firebase
+    viewModel: FavoritesViewModel = remember { FavoritesViewModel.getInstance() }
+
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -72,6 +89,10 @@ fun FavoritesScreen(
                 .fillMaxSize()
         ) {
             when {
+                uiState.isLoading && uiState.favorites.isEmpty() -> {
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                }
+
                 uiState.favorites.isEmpty() -> {
                     Column(
                         modifier = Modifier.align(Alignment.Center),
@@ -112,21 +133,9 @@ fun FavoritesScreen(
                             key = { it.id },
                             contentType = { "movie" }
                         ) { favoriteMovie ->
-                            // تحويل FavoriteMovie لـ Movie
-                            val movie = Movie(
-                                id = favoriteMovie.movieId,
-                                title = favoriteMovie.title,
-                                releaseDate = favoriteMovie.releaseDate,
-                                posterPath = favoriteMovie.posterPath,
-                                voteAverage = favoriteMovie.voteAverage,
-                                overview = favoriteMovie.overview
-                            )
-
                             FavoriteMovieCard(
-                                movie = movie,
-                                onRemoveFavorite = {
-                                    viewModel.removeFromFavorites(favoriteMovie.movieId)  // ← الحل!
-                                }
+                                movie = favoriteMovie,
+                                onRemoveFavorite = { viewModel.removeFromFavorites(favoriteMovie.id) }
                             )
                         }
                     }
@@ -145,17 +154,19 @@ fun FavoriteMovieCard(
     var showRemoveDialog by remember { mutableStateOf(false) }
 
     if (showRemoveDialog) {
-        RemoveFromFavoritesDialog(
-            movieTitle = movie.title,
-            onConfirm = onRemoveFavorite,
-            onDismiss = { showRemoveDialog = false }
+        FavoriteDialog(
+            config = FavoriteDialogConfig(
+                FavoriteDialogType.REMOVE,
+                movie.title,
+                onRemoveFavorite,
+                {showRemoveDialog = false}
+            )
         )
     }
 
     MovieCard(
         modifier = modifier.height(280.dp),
         movie = movie,
-        isItInFavorites = true
     ) {
         IconButton(
             onClick = { showRemoveDialog = true },
@@ -163,11 +174,12 @@ fun FavoriteMovieCard(
                 .align(Alignment.TopEnd)
                 .padding(8.dp)
         ) {
-            Icon(
+            HeartBeatIcon(
                 imageVector = Icons.Default.Favorite,
                 contentDescription = "Remove from favorites",
                 tint = Color.Red,
-                modifier = Modifier.size(28.dp)
+                modifier = Modifier.size(28.dp),
+                trigger = 0
             )
         }
     }
@@ -205,26 +217,23 @@ fun FavoritesEmptyPreviewLight() {
 @Composable
 fun FavoritesWithMoviesPreviewDark() {
     val mockFavorites = listOf(
-        com.movito.movito.favorites.FavoriteMovie(
-            id = "user_1",
-            movieId = 1,
+        Movie(
+            id = 1,
             title = "Cosmic Echoes",
             releaseDate = "2025-03-15",
             posterPath = "/qA9b2xSJ8nCK2z3yIuVnAwmWsum.jpg",
             voteAverage = 8.5,
             overview = "An epic space opera.",
-            userId = "test_user"
         ),
-        com.movito.movito.favorites.FavoriteMovie(
-            id = "user_2",
-            movieId = 2,
+        Movie(
+            id = 1,
             title = "Time Warp",
             releaseDate = "2024-07-22",
             posterPath = "/d5NXSklXo0qyIYkgV94XAgMIckC.jpg",
             voteAverage = 7.8,
             overview = "A thrilling time travel adventure.",
-            userId = "test_user"
-        )
+        ),
+
     )
 
     MovitoTheme(darkTheme = true) {
@@ -241,26 +250,22 @@ fun FavoritesWithMoviesPreviewDark() {
 @Composable
 fun FavoritesWithMoviesPreviewLight() {
     val mockFavorites = listOf(
-        com.movito.movito.favorites.FavoriteMovie(
-            id = "user_1",
-            movieId = 1,
+        Movie(
+            id = 1,
             title = "Cosmic Echoes",
             releaseDate = "2025-03-15",
             posterPath = "/qA9b2xSJ8nCK2z3yIuVnAwmWsum.jpg",
             voteAverage = 8.5,
             overview = "An epic space opera.",
-            userId = "test_user"
         ),
-        com.movito.movito.favorites.FavoriteMovie(
-            id = "user_2",
-            movieId = 2,
+        Movie(
+            id = 1,
             title = "Time Warp",
             releaseDate = "2024-07-22",
             posterPath = "/d5NXSklXo0qyIYkgV94XAgMIckC.jpg",
             voteAverage = 7.8,
             overview = "A thrilling time travel adventure.",
-            userId = "test_user"
-        )
+        ),
     )
 
     MovitoTheme(darkTheme = false) {
@@ -346,7 +351,7 @@ fun FavoriteMovieCardPreviewLight() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun FavoritesScreenPreview(
-    favorites: List<com.movito.movito.favorites.FavoriteMovie>,
+    favorites: List<Movie>,
     isLoading: Boolean,
     error: String?
 ) {
@@ -440,7 +445,7 @@ private fun FavoritesScreenPreview(
                             contentType = { "movie" }
                         ) { favoriteMovie ->
                             val movie = Movie(
-                                id = favoriteMovie.movieId,
+                                id = favoriteMovie.id,
                                 title = favoriteMovie.title,
                                 releaseDate = favoriteMovie.releaseDate,
                                 posterPath = favoriteMovie.posterPath,
@@ -465,7 +470,6 @@ private fun FavoriteMovieCardPreviewContent(movie: Movie) {
     MovieCard(
         modifier = Modifier.height(280.dp),
         movie = movie,
-        isItInFavorites = true
     ) {
         IconButton(
             onClick = { /* Preview - no action */ },

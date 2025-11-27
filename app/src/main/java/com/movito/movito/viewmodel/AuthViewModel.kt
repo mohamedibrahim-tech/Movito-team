@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.GoogleAuthProvider
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -132,27 +131,6 @@ class AuthViewModel : ViewModel() {
         }
     }
 
-    // Google Sign In
-    fun signInWithGoogle(idToken: String) {
-        viewModelScope.launch {
-            _authState.value = _authState.value.copy(isLoading = true, error = null)
-            try {
-                val credential = GoogleAuthProvider.getCredential(idToken, null)
-                val result = auth.signInWithCredential(credential).await()
-
-                val user = result.user
-
-                if (user != null) {
-                    _authState.value = _authState.value.copy(isLoading = false, user = user)
-                    _navigationChannel.send(Unit)
-                }
-
-            } catch (e: Exception) {
-                _authState.value = _authState.value.copy(isLoading = false, error = e.message)
-            }
-        }
-    }
-
     fun sendPasswordResetEmail(email: String) {
         if (!isValidEmail(email)) {
             _authState.value = _authState.value.copy(error = "Invalid email format.")
@@ -181,6 +159,7 @@ class AuthViewModel : ViewModel() {
             user = null,
             isInitialCheckDone = true
         )
+        FavoritesViewModel.getInstance().resetForNewUser() // reset FavoritesViewMode
     }
 
     fun resetState() {
