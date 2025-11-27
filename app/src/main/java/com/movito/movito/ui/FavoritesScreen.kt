@@ -43,6 +43,7 @@ import com.movito.movito.data.model.Movie
 import com.movito.movito.theme.MovitoTheme
 import com.movito.movito.ui.common.MovieCard
 import com.movito.movito.ui.common.MovitoNavBar
+import com.movito.movito.ui.common.RemoveFromFavoritesDialog
 import com.movito.movito.viewmodel.FavoritesViewModel
 
 
@@ -50,7 +51,6 @@ import com.movito.movito.viewmodel.FavoritesViewModel
 @Composable
 fun FavoritesScreen(
     modifier: Modifier = Modifier,
-   // viewModel: FavoritesViewModel = viewModel() // ViewModel للـ Firebase
     viewModel: FavoritesViewModel = remember { FavoritesViewModel.getInstance() }
 
 ) {

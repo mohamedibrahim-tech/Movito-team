@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -29,13 +28,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
@@ -44,12 +42,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.movito.movito.BuildConfig
 import com.movito.movito.theme.MovitoTheme
+import com.movito.movito.ui.common.MovitoButton
 import com.movito.movito.ui.common.MovitoNavBar
 import com.movito.movito.ui.common.SettingsCards
 import com.movito.movito.viewmodel.AuthViewModel
 import com.movito.movito.viewmodel.ThemeViewModel
-import androidx.compose.runtime.key
-import com.movito.movito.ui.common.MovitoButton
 
 class SettingsActivity : ComponentActivity() {
 
@@ -174,7 +171,6 @@ fun SettingsScreen(
                 text = "Sign Out",
                 modifier = Modifier.fillMaxWidth(),
                 roundedCornerSize = 12.dp,
-                isDarkMode = false,
                 isLoading = false,
                 onClick = { onSignOut() }
             )
