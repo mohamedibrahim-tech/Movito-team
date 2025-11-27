@@ -35,10 +35,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.movito.movito.R
 import com.movito.movito.data.model.Movie
 import com.movito.movito.theme.MovitoTheme
 import com.movito.movito.ui.common.MovieCard
@@ -94,7 +96,7 @@ fun MoviesByGenreContent(
                     IconButton(onClick = onBackPressed) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back"
+                            contentDescription = stringResource(id = R.string.movies_by_genre_back_button_description)
                         )
                     }
                 },
@@ -112,7 +114,7 @@ fun MoviesByGenreContent(
                         } else {
                             Icon(
                                 imageVector = Icons.Default.Refresh,
-                                contentDescription = "Refresh"
+                                contentDescription = stringResource(id = R.string.movies_by_genre_refresh_button_description)
                             )
                         }
                     }
@@ -136,7 +138,7 @@ fun MoviesByGenreContent(
 
                 uiState.error != null && !uiState.isLoadingMore -> {
                     Text(
-                        text = "Failed to load movies",
+                        text = stringResource(id = R.string.movies_by_genre_failed_to_load),
                         color = MaterialTheme.colorScheme.error,
                         textAlign = TextAlign.Center,
                         modifier = Modifier
@@ -199,7 +201,7 @@ fun MoviesByGenrePreviewSuccessDark() {
     val mockMovie = Movie(1, "Cosmic Echoes", "2025-03-15", "/qA9b2xSJ8nCK2z3yIuVnAwmWsum.jpg", 8.5, "An epic space opera.", listOf(878))
     val mockState = MoviesUiState(movies = List(10) { mockMovie })
     MovitoTheme(darkTheme = true) {
-        MoviesByGenreContent(uiState = mockState, gridState = rememberLazyGridState(), genreName = "Action", onRefresh = {}, onLoadMore = {}, onBackPressed = {})
+        MoviesByGenreContent(uiState = mockState, gridState = rememberLazyGridState(), genreName = "Action", onRefresh = {}, onLoadMore = {}, onBackPressed = {}) 
     }
 }
 
@@ -209,7 +211,7 @@ fun MoviesByGenrePreviewSuccessLight() {
     val mockMovie = Movie(1, "Cosmic Echoes", "2025-03-15", "/qA9b2xSJ8nCK2z3yIuVnAwmWsum.jpg", 8.5, "An epic space opera.", listOf(878))
     val mockState = MoviesUiState(movies = List(10) { mockMovie })
     MovitoTheme(darkTheme = false) {
-        MoviesByGenreContent(uiState = mockState, gridState = rememberLazyGridState(), genreName = "Action", onRefresh = {}, onLoadMore = {}, onBackPressed = {})
+        MoviesByGenreContent(uiState = mockState, gridState = rememberLazyGridState(), genreName = "Action", onRefresh = {}, onLoadMore = {}, onBackPressed = {}) 
     }
 }
 
@@ -218,7 +220,7 @@ fun MoviesByGenrePreviewSuccessLight() {
 fun MoviesByGenrePreviewLoading() {
     val mockState = MoviesUiState(isLoading = true)
     MovitoTheme(darkTheme = true) {
-        MoviesByGenreContent(uiState = mockState, gridState = rememberLazyGridState(), genreName = "Action", onRefresh = {}, onLoadMore = {}, onBackPressed = {})
+        MoviesByGenreContent(uiState = mockState, gridState = rememberLazyGridState(), genreName = "Action", onRefresh = {}, onLoadMore = {}, onBackPressed = {}) 
     }
 }
 
@@ -227,7 +229,7 @@ fun MoviesByGenrePreviewLoading() {
 fun MoviesByGenrePreviewError() {
     val mockState = MoviesUiState(error = "Failed to load movies")
     MovitoTheme(darkTheme = true) {
-        MoviesByGenreContent(uiState = mockState, gridState = rememberLazyGridState(), genreName = "Action", onRefresh = {}, onLoadMore = {}, onBackPressed = {})
+        MoviesByGenreContent(uiState = mockState, gridState = rememberLazyGridState(), genreName = "Action", onRefresh = {}, onLoadMore = {}, onBackPressed = {}) 
     }
 }
 
@@ -237,6 +239,6 @@ fun MoviesByGenrePreviewLoadingMore() {
     val mockMovie = Movie(1, "Cosmic Echoes", "2025-03-15", "/qA9b2xSJ8nCK2z3yIuVnAwmWsum.jpg", 8.5, "An epic space opera.", listOf(878))
     val mockState = MoviesUiState(movies = List(10) { mockMovie }, isLoadingMore = true)
     MovitoTheme(darkTheme = true) {
-        MoviesByGenreContent(uiState = mockState, gridState = rememberLazyGridState(), genreName = "Action", onRefresh = {}, onLoadMore = {}, onBackPressed = {})
+        MoviesByGenreContent(uiState = mockState, gridState = rememberLazyGridState(), genreName = "Action", onRefresh = {}, onLoadMore = {}, onBackPressed = {}) 
     }
 }

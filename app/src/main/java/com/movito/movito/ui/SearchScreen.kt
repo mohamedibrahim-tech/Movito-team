@@ -48,6 +48,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -109,11 +110,11 @@ fun SearchScreen(
 
                 active = active,
                 onActiveChange = { active = it },
-                placeholder = { Text("Search for movies...") },
+                placeholder = { Text(stringResource(id = R.string.search_placeholder)) },
                 leadingIcon = {
                     if (active) {
                         IconButton(onClick = { active = false }) {
-                            Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                            Icon(Icons.Default.ArrowBack, contentDescription = stringResource(id = R.string.search_back_description))
                         }
                     } else {
                         Icon(Icons.Default.Search, contentDescription = null)
@@ -122,7 +123,7 @@ fun SearchScreen(
                 trailingIcon = {
                     if (uiState.searchQuery.isNotEmpty()) {
                         IconButton(onClick = { viewModel.updateSearchQuery("") }) {
-                            Icon(Icons.Default.Close, contentDescription = "Clear search")
+                            Icon(Icons.Default.Close, contentDescription = stringResource(id = R.string.search_clear_description))
                         }
                     }
                 },
@@ -168,7 +169,7 @@ fun SearchScreen(
 
                 uiState.error != null -> {
                     Text(
-                        text = "Search failed: ${uiState.error}",
+                        text = stringResource(id = R.string.search_failed, uiState.error!!),
                         color = MaterialTheme.colorScheme.error,
                         modifier = Modifier
                             .align(Alignment.Center)
@@ -179,7 +180,7 @@ fun SearchScreen(
                 // If a search was performed and no movies were found
                 uiState.hasSearched && uiState.movies.isEmpty() -> {
                     Text(
-                        text = "No results found for \"${uiState.searchQuery}\"",
+                        text = stringResource(id = R.string.search_no_results, uiState.searchQuery),
                         textAlign = TextAlign.Center,
                         modifier = Modifier
                             .align(Alignment.Center)
@@ -189,7 +190,7 @@ fun SearchScreen(
                 // Initial state before any search is performed
                 !uiState.hasSearched -> {
                     Text(
-                        text = "Search for movies, series, and more...",
+                        text = stringResource(id = R.string.search_initial_message),
                         style = MaterialTheme.typography.titleLarge,
                         textAlign = TextAlign.Center,
                         modifier = Modifier

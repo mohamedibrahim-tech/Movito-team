@@ -34,11 +34,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.movito.movito.R
 import com.movito.movito.data.model.Movie
 import com.movito.movito.theme.MovitoTheme
 import com.movito.movito.ui.common.FavoriteDialog
@@ -65,7 +67,7 @@ fun FavoritesScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = "Favorites",
+                        text = stringResource(id = R.string.favorites_title),
                         fontSize = 28.sp,
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold,
@@ -106,14 +108,14 @@ fun FavoritesScreen(
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         Text(
-                            text = "There are no favourites",
+                            text = stringResource(id = R.string.favorites_empty_state_title),
                             style = MaterialTheme.typography.titleMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             fontWeight = FontWeight.Bold
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = "Add your favorites to see them here",
+                            text = stringResource(id = R.string.favorites_empty_state_subtitle),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
                         )
@@ -176,7 +178,7 @@ fun FavoriteMovieCard(
         ) {
             HeartBeatIcon(
                 imageVector = Icons.Default.Favorite,
-                contentDescription = "Remove from favorites",
+                contentDescription = stringResource(id = R.string.favorites_remove_from_favorites),
                 tint = Color.Red,
                 modifier = Modifier.size(28.dp),
                 trigger = 0
@@ -298,7 +300,7 @@ fun FavoritesErrorPreview() {
         FavoritesScreenPreview(
             favorites = emptyList(),
             isLoading = false,
-            error = "Failed to load favorites"
+            error = stringResource(id = R.string.favorites_failed_to_load)
         )
     }
 }
@@ -361,7 +363,7 @@ private fun FavoritesScreenPreview(
             TopAppBar(
                 title = {
                     Text(
-                        text = "Favorites",
+                        text = stringResource(id = R.string.favorites_title),
                         fontSize = 28.sp,
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold,
@@ -397,7 +399,7 @@ private fun FavoritesScreenPreview(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = "Error: $error",
+                            text = stringResource(id = R.string.favorites_error, error),
                             color = MaterialTheme.colorScheme.error,
                             textAlign = TextAlign.Center
                         )
@@ -417,14 +419,14 @@ private fun FavoritesScreenPreview(
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         Text(
-                            text = "There are no favourites",
+                            text = stringResource(id = R.string.favorites_empty_state_title),
                             style = MaterialTheme.typography.titleMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             fontWeight = FontWeight.Bold
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = "Add your favorites to see them here",
+                            text = stringResource(id = R.string.favorites_empty_state_subtitle),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
                         )
@@ -479,7 +481,7 @@ private fun FavoriteMovieCardPreviewContent(movie: Movie) {
         ) {
             Icon(
                 imageVector = Icons.Default.Favorite,
-                contentDescription = "Remove from favorites",
+                contentDescription = stringResource(id = R.string.favorites_remove_from_favorites),
                 tint = Color.Red,
                 modifier = Modifier.size(28.dp)
             )

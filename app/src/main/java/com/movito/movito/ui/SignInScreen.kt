@@ -44,6 +44,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -63,12 +64,12 @@ fun MovitoLogo() {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Image(
             painter = painterResource(id = R.drawable.movito_logo),
-            contentDescription = "Movito Logo",
+            contentDescription = stringResource(id = R.string.signin_movito_logo_description),
             modifier = Modifier.size(100.dp)
         )
         Spacer(Modifier.height(8.dp))
         Text(
-            text = "Movito",
+            text = stringResource(id = R.string.app_name),
             color = MaterialTheme.colorScheme.onBackground,
             fontSize = 28.sp,
             fontWeight = FontWeight.Bold
@@ -157,7 +158,7 @@ fun SignInScreen(
             MovitoLogo()
             Spacer(Modifier.height(48.dp))
             Text(
-                text = "Sign In",
+                text = stringResource(id = R.string.signin_title),
                 color = MaterialTheme.colorScheme.onBackground,
                 fontSize = 24.sp,
                 fontWeight = FontWeight.SemiBold
@@ -171,7 +172,7 @@ fun SignInScreen(
                 CustomAuthTextField(
                     value = email,
                     onValueChange = { email = it },
-                    label = "Email",
+                    label = stringResource(id = R.string.signin_email_label),
                     icon = Icons.Default.Email
                 )
                 Spacer(Modifier.height(20.dp))
@@ -179,7 +180,7 @@ fun SignInScreen(
                 CustomAuthTextField(
                     value = password,
                     onValueChange = { password = it },
-                    label = "Password",
+                    label = stringResource(id = R.string.signin_password_label),
                     icon = Icons.Default.Lock,
                     isPassword = true
                 )
@@ -192,7 +193,7 @@ fun SignInScreen(
                 contentPadding = PaddingValues(0.dp)
             ) {
                 Text(
-                    text = "Forgot Password?",
+                    text = stringResource(id = R.string.signin_forgot_password),
                     color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.Bold,
                     textDecoration = TextDecoration.Underline
@@ -222,7 +223,7 @@ fun SignInScreen(
 
                 ) {
                     Text(
-                        "Sign In",
+                        stringResource(id = R.string.signin_button),
                         color = if (isButtonEnabled) Color.White else Color.White.copy(alpha = 0.5f),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Medium
@@ -237,7 +238,7 @@ fun SignInScreen(
 
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    text = "Don't have an account?",
+                    text = stringResource(id = R.string.signin_no_account),
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 14.sp
                 )
@@ -250,7 +251,7 @@ fun SignInScreen(
                     )
                 ) {
                     Text(
-                        text = "Sign Up",
+                        text = stringResource(id = R.string.signin_sign_up),
                         fontWeight = FontWeight.Bold,
                         textDecoration = TextDecoration.Underline,
                         fontSize = 14.sp

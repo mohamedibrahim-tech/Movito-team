@@ -35,6 +35,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -79,7 +80,7 @@ fun CategoriesScreenContent(
             TopAppBar(title = {
                 Image(
                     painter = painterResource(id = R.drawable.movito_logo),
-                    contentDescription = "Movito Logo",
+                    contentDescription = stringResource(id = R.string.categories_movito_logo_description),
                     modifier = Modifier.height(28.dp)
                 )
             })
@@ -101,7 +102,7 @@ fun CategoriesScreenContent(
 
                 uiState.error != null -> {
                     Text(
-                        text = uiState.error ?: "An unknown error occurred",
+                        text = uiState.error ?: stringResource(id = R.string.categories_unknown_error),
                         color = MaterialTheme.colorScheme.error,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(16.dp)
@@ -234,7 +235,7 @@ fun CategoriesScreenLoadingPreview() {
 @Preview(showSystemUi = true, name = "Dark Mode - Error")
 @Composable
 fun CategoriesScreenErrorPreview() {
-    val mockState = CategoriesUiState(error = "Failed to load genres")
+    val mockState = CategoriesUiState(error = stringResource(id = R.string.categories_failed_to_load_genres))
     MovitoTheme(darkTheme = true) {
         CategoriesScreenContent(uiState = mockState, onGenreClick = {})
     }

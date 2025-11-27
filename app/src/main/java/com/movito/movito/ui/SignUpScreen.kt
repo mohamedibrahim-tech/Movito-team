@@ -31,12 +31,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.movito.movito.R
 import com.movito.movito.theme.MovitoTheme
 import com.movito.movito.viewmodel.AuthViewModel
 
@@ -112,7 +114,7 @@ fun SignUpScreen(
             Spacer(Modifier.height(48.dp))
 
             Text(
-                text = "Sign Up",
+                text = stringResource(id = R.string.signup_title),
                 color = MaterialTheme.colorScheme.onBackground,
                 fontSize = 24.sp,
                 fontWeight = FontWeight.SemiBold
@@ -128,7 +130,7 @@ fun SignUpScreen(
                         email = it
                         validationError = null
                     },
-                    label = "Email",
+                    label = stringResource(id = R.string.signup_email_label),
                     icon = Icons.Default.Email
                 )
                 Spacer(Modifier.height(20.dp))
@@ -139,7 +141,7 @@ fun SignUpScreen(
                         password = it
                         validationError = null
                     },
-                    label = "Password",
+                    label = stringResource(id = R.string.signup_password_label),
                     icon = Icons.Default.Lock,
                     isPassword = true
                 )
@@ -151,7 +153,7 @@ fun SignUpScreen(
                         confirmPassword = it
                         validationError = null
                     },
-                    label = "Confirm Password",
+                    label = stringResource(id = R.string.signup_confirm_password_label),
                     icon = Icons.Default.Lock,
                     isPassword = true
                 )
@@ -186,7 +188,7 @@ fun SignUpScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        "Sign Up",
+                        stringResource(id = R.string.signup_button),
                         color = Color.White,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Medium
@@ -225,7 +227,7 @@ fun SignUpScreen(
 
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    text = "Already have an account?",
+                    text = stringResource(id = R.string.signup_already_have_account),
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 14.sp
                 )
@@ -238,7 +240,7 @@ fun SignUpScreen(
                     )
                 ) {
                     Text(
-                        text = "Login",
+                        text = stringResource(id = R.string.signup_login),
                         fontWeight = FontWeight.Bold,
                         textDecoration = TextDecoration.Underline,
                         fontSize = 14.sp
