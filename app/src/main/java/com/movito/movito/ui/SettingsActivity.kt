@@ -3,6 +3,7 @@ package com.movito.movito.ui
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -81,7 +82,10 @@ class SettingsActivity : ComponentActivity() {
                             onThemeToggle = { themeViewModel.toggleTheme(it) },
                             currentThemeIsDark = isDarkTheme,
                             onSignOut = { authViewModel.signOut() },
-                            userEmail = authState.user?.email
+                            userEmail = authState.user?.email,
+                            onChangePassword = { email ->
+                                authViewModel.sendPasswordResetEmail(email)
+                            }
                         )
                     }
                 }
@@ -96,7 +100,8 @@ fun SettingsScreen(
     onThemeToggle: (Boolean) -> Unit,
     currentThemeIsDark: Boolean,
     onSignOut: () -> Unit,
-    userEmail: String?
+    userEmail: String?,
+    onChangePassword: (String) -> Unit
 ) {
     var notifications by remember { mutableStateOf(false) }
     var downloadsWifiOnly by remember { mutableStateOf(true) }
@@ -167,6 +172,19 @@ fun SettingsScreen(
 
             }
             Spacer(Modifier.height(16.dp))
+            MovitoButton(
+                text = "Change Password",
+                modifier = Modifier.fillMaxWidth(),
+                roundedCornerSize = 12.dp,
+                isLoading = false,
+                onClick = {
+                    userEmail?.let {
+                        onChangePassword(it)
+                        Toast.makeText(context, "Password reset email sent to $it", Toast.LENGTH_LONG).show()
+                    } ?: Toast.makeText(context, "Error: User email not found.", Toast.LENGTH_SHORT).show()
+                }
+            )
+            Spacer(Modifier.height(8.dp))
             MovitoButton(
                 text = "Sign Out",
                 modifier = Modifier.fillMaxWidth(),
@@ -276,7 +294,8 @@ fun SettingsPreviewDark() {
             onThemeToggle = { isDark = it },
             currentThemeIsDark = isDark,
             onSignOut = {},
-            userEmail = "preview.user@gmail.com"
+            userEmail = "preview.user@gmail.com",
+            onChangePassword = {}
         )
     }
 }
@@ -290,7 +309,8 @@ fun SettingsPreviewLight() {
             onThemeToggle = { isDark = it },
             currentThemeIsDark = isDark,
             onSignOut = {},
-            userEmail = "preview.user@gmail.com"
+            userEmail = "preview.user@gmail.com",
+            onChangePassword = {}
         )
     }
 }
