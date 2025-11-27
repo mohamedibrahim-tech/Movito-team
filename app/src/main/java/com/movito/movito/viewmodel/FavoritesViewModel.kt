@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.util.Date
 
 /**
  * UI state representing the current state of the favorites screen.
@@ -87,7 +86,6 @@ class FavoritesViewModel(
                         return@addSnapshotListener
                     }
 
-                    // Convert documents to FavoriteMovie objects
                     val list =
                         snapshot?.documents?.mapNotNull { it.toObject(Movie::class.java) }
                             ?: emptyList()

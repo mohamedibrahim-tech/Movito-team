@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,6 +26,8 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Share
+import androidx.compose.material.icons.rounded.Star
+import androidx.compose.material.icons.rounded.StarBorder
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -57,11 +60,14 @@ import com.movito.movito.data.model.Movie
 import com.movito.movito.theme.HeartColor
 import com.movito.movito.theme.LightBackground
 import com.movito.movito.theme.MovitoTheme
-import com.movito.movito.ui.common.AddToFavoritesDialog
+import com.movito.movito.theme.StarColor
+import com.movito.movito.ui.common.FavoriteDialog
+import com.movito.movito.ui.common.FavoriteDialogConfig
+import com.movito.movito.ui.common.FavoriteDialogType
+import com.movito.movito.ui.common.HeartBeatIcon
 import com.movito.movito.ui.common.MovieCard
 import com.movito.movito.ui.common.MovitoButton
-import com.movito.movito.ui.common.RatingBar
-import com.movito.movito.ui.common.RemoveFromFavoritesDialog
+import com.movito.movito.ui.common.PartialStar
 import com.movito.movito.viewmodel.DetailsViewModel
 import com.movito.movito.viewmodel.FavoritesViewModel
 import kotlinx.coroutines.launch
@@ -89,39 +95,46 @@ fun DetailsScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
+    // heart beat animation trigger state
+    var heartAnimationTrigger by remember { mutableStateOf<Int?>(if(isFavorite) 0 else null) }
+
     // Add Dialog
     if (showAddDialog) {
-        AddToFavoritesDialog(
-            movieTitle = movie.title,
-            onConfirm = {
-                favoritesViewModel.addToFavorites(movie)
-                scope.launch {
-                    val result = snackbarHostState.showSnackbar(
-                        message = "${movie.title} added to favorites",
-                        actionLabel = "Favorites"
-                    )
-                    if (result.toString() == "ActionPerformed") {
-                        val intent = Intent(context, FavoritesActivity::class.java)
-                        context.startActivity(intent)
+        FavoriteDialog(
+            config = FavoriteDialogConfig(
+                type = FavoriteDialogType.ADD,
+                movieTitle = movie.title,
+                onConfirm = {
+                    favoritesViewModel.addToFavorites(movie)
+                    // Trigger animation when added to favorites
+                    heartAnimationTrigger = (heartAnimationTrigger ?: 0) + 1
+                    scope.launch {
+                        val result = snackbarHostState.showSnackbar(
+                            message = "${movie.title} added to favorites",
+                            actionLabel = "Favorites"
+                        )
+                        if (result.toString() == "ActionPerformed") {
+                            val intent = Intent(context, FavoritesActivity::class.java)
+                            context.startActivity(intent)
+                        }
                     }
-                }
-            },
-            onDismiss = { showAddDialog = false }
+                },
+                onDismiss = { showAddDialog = false }
+            )
         )
     }
 
-// Remove Dialog
+    // Remove Dialog
     if (showRemoveDialog) {
-        RemoveFromFavoritesDialog(
-            movieTitle = movie.title,
-            onConfirm = {
-                favoritesViewModel.removeFromFavorites(movie.id)
-
-            },
-            onDismiss = { showRemoveDialog = false }
+        FavoriteDialog(
+            config = FavoriteDialogConfig(
+                type = FavoriteDialogType.REMOVE,
+                movieTitle = movie.title,
+                onConfirm = { favoritesViewModel.removeFromFavorites(movie.id) },
+                onDismiss = { showRemoveDialog = false }
+            )
         )
     }
-
     LaunchedEffect(uiState.trailerUrl) {
         uiState.trailerUrl?.let {
             val intent = Intent(Intent.ACTION_VIEW, it.toUri())
@@ -246,12 +259,13 @@ fun DetailsScreen(
                         }
                     }
                 ) {
-                    Icon(
+                    HeartBeatIcon(
                         imageVector = if (isFavorite) Icons.Filled.Favorite
                         else Icons.Outlined.FavoriteBorder,
                         contentDescription = if (isFavorite) "Remove from favorites"
                         else "Add to favorites",
-                        tint = if (isFavorite) HeartColor else Color.Black
+                        tint = if (isFavorite) HeartColor else Color.Black,
+                        trigger = heartAnimationTrigger
                     )
                 }
             }
@@ -294,7 +308,9 @@ fun DetailsScreen(
                     .fillMaxWidth(),
             ) {
                 Text(
-                    modifier = Modifier.weight(0.15f).padding(vertical = 4.dp),
+                    modifier = Modifier
+                        .weight(0.15f)
+                        .padding(vertical = 4.dp),
                     text = "More Like This",
                     style = MaterialTheme.typography.titleLarge,
                     color = contentColor
@@ -302,7 +318,9 @@ fun DetailsScreen(
 
                 if (uiState.recommendedMovies.isNotEmpty())
                     LazyRow(
-                        modifier = Modifier.weight(0.85f).fillMaxSize(),
+                        modifier = Modifier
+                            .weight(0.85f)
+                            .fillMaxSize(),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
@@ -342,6 +360,7 @@ fun DetailsScreen(
     }
 }
 
+
 fun shareUrl(context: Context, url: String) {
     val intent = Intent(Intent.ACTION_SEND).apply {
         type = "text/plain"
@@ -350,6 +369,67 @@ fun shareUrl(context: Context, url: String) {
     val chooser = Intent.createChooser(intent, "Share the trailer link")
     context.startActivity(chooser)
 }
+
+
+@Composable
+fun RatingBar(
+    rating: Float,
+    modifier: Modifier = Modifier,
+    maxRating: Float = 10f,
+    starsCount: Int = 5,
+) {
+    val fullStarValue = maxRating / starsCount
+    val ratingRelativeToStars = rating / fullStarValue
+
+    Row(modifier = modifier.fillMaxWidth()) {
+        val starWeight = 1f / starsCount
+
+        repeat(starsCount) { index ->
+            val fraction = (ratingRelativeToStars - index).coerceIn(0f, 1f)
+
+            when {
+                fraction == 1f -> FullStar(
+                    modifier = Modifier
+                        .weight(starWeight)
+                        .aspectRatio(1f)
+                )
+
+                fraction in 0f..0.99f -> PartialStar(
+                    fillFraction = fraction, modifier = Modifier
+                        .weight(starWeight)
+                        .aspectRatio(1f)
+                )
+
+                else -> EmptyStar(
+                    modifier = Modifier
+                        .weight(starWeight)
+                        .aspectRatio(1f)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun FullStar(modifier: Modifier) {
+    Icon(
+        imageVector = Icons.Rounded.Star,
+        contentDescription = null,
+        modifier = modifier,
+        tint = StarColor
+    )
+}
+
+@Composable
+fun EmptyStar(modifier: Modifier) {
+    Icon(
+        imageVector = Icons.Rounded.StarBorder,
+        contentDescription = null,
+        modifier = modifier,
+        tint = StarColor
+    )
+}
+
 
 @SuppressLint("ViewModelConstructorInComposable")
 @Preview("Dark Details Screen preview", showSystemUi = true)
