@@ -406,7 +406,7 @@ fun MoviePosterAndActionsSection(
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
-                                text = "Share",
+                                text = stringResource(id = R.string.details_share_button),
                                 color = contentColor,
                                 fontSize = 16.sp
                             )
@@ -456,7 +456,7 @@ fun MovieOverviewSection(
     ) {
         Text(
             modifier = Modifier.padding(bottom = 8.dp),
-            text = "Movie Details",
+            text = stringResource(id = R.string.details_movie_details_title),
             style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.ExtraBold),
             color = MaterialTheme.colorScheme.onBackground
         )
@@ -497,7 +497,7 @@ fun GenresSection(
             modifier = Modifier
                 .fillMaxHeight()
                 .weight(0.25f),
-            text = "Genres: ",
+            text = stringResource(id = R.string.details_genres_title),
             style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.ExtraBold),
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onBackground
@@ -579,7 +579,7 @@ fun RecommendationsSection(
             modifier = Modifier
                 .weight(0.2f)
                 .padding(vertical = 8.dp),
-            text = "More Like This",
+            text = stringResource(id = R.string.details_more_like_this_title),
             style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.ExtraBold),
             color = MaterialTheme.colorScheme.onBackground
         )
