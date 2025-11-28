@@ -6,6 +6,7 @@ import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -35,7 +37,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.movito.movito.theme.FunctionalColors
 import com.movito.movito.theme.HeartColor
 import com.movito.movito.theme.MovitoTheme
 
@@ -86,7 +87,7 @@ data class FavoriteDialogConfig(
         @Composable
         get() = when (type) {
             FavoriteDialogType.ADD -> HeartColor
-            FavoriteDialogType.REMOVE -> FunctionalColors.Error
+            FavoriteDialogType.REMOVE -> MaterialTheme.colorScheme.error
         }
 
     /**
@@ -165,9 +166,10 @@ private fun FavoriteDialogContent(
             .padding(16.dp),
         shape = RoundedCornerShape(20.dp),
         colors = listOf(
-            MaterialTheme.colorScheme.primaryContainer.copy(alpha = 1f),
-            MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.7f)
-        ),
+            MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.7f),
+                MaterialTheme.colorScheme.tertiary.copy(alpha = 1f),
+            )
+,
         backgroundAlpha = 0.6f
     ) {
         Column(
@@ -196,17 +198,17 @@ private fun FavoriteDialogContent(
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onSurface,
                 textAlign = TextAlign.Center,
-                maxLines = 2
+                maxLines = 1
             )
 
             // Movie Title (15% of the dialog)
             Text(
-                modifier = Modifier.weight(0.15f),
+                modifier = Modifier.weight(0.10f).fillMaxWidth().horizontalScroll(rememberScrollState(), enabled = true),
                 text = config.movieTitle,
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.primary,
                 textAlign = TextAlign.Center,
-                maxLines = 2
+                maxLines = 1
             )
 
             // Message (20% of the dialog)
@@ -230,10 +232,6 @@ private fun FavoriteDialogContent(
                 GlassContainer(
                     modifier = Modifier.weight(0.5f),
                     shape = RoundedCornerShape(12.dp),
-                    colors = listOf(
-                        MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f),
-                        MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.2f)
-                    ),
                     backgroundAlpha = 0.4f
                 ) {
                     TextButton(

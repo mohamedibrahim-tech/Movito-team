@@ -6,7 +6,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -58,10 +57,6 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.movito.movito.R
 import com.movito.movito.data.model.Movie
-import com.movito.movito.theme.DarkButtonColor1
-import com.movito.movito.theme.DarkButtonColor2
-import com.movito.movito.theme.LightButtonColor1
-import com.movito.movito.theme.LightButtonColor2
 import com.movito.movito.theme.MovitoTheme
 import com.movito.movito.theme.StarColor
 import com.movito.movito.theme.movie
@@ -339,29 +334,27 @@ fun MovitoButton(
     onClick: () -> Unit,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
-    val isDarkTheme = isSystemInDarkTheme()
 
     Box(
         modifier = modifier
             .fillMaxWidth()
             .height(48.dp)
             .shadow(
-                elevation = if (enabled) 8.dp else 2.dp,
+                elevation = if (enabled) 8.dp else 0.dp,
                 shape = RoundedCornerShape(roundedCornerSize),
                 clip = false
             )
             .clip(RoundedCornerShape(roundedCornerSize))
             .background(
-                brush = if (enabled) {
+                brush = if (enabled)
+                    Brush.horizontalGradient(colors = listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.secondary))
+                else
                     Brush.horizontalGradient(
-                        colors = if (isDarkTheme) listOf(LightButtonColor1, LightButtonColor2)
-                        else listOf(DarkButtonColor1, DarkButtonColor2)
+                        colors = listOf(
+                            MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
+                            MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
+                        )
                     )
-                } else {
-                    Brush.horizontalGradient(
-                        colors = listOf(Color.Gray.copy(alpha = 0.3f), Color.Gray.copy(alpha = 0.3f))
-                    )
-                }
             )
             .clickable(
                 enabled = enabled && !isLoading,
@@ -380,9 +373,10 @@ fun MovitoButton(
         } else {
             Text(
                 text = text,
-                color = if (enabled) Color.White else Color.Gray, // Simple gray for disabled text
+                color = if (enabled) Color.White else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
                 fontSize = 16.sp,
-                fontWeight = FontWeight.Medium
+                fontWeight = FontWeight.Medium,
+
             )
         }
     }
