@@ -3,8 +3,6 @@ package com.movito.movito.ui
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -15,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -39,7 +36,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
@@ -56,6 +52,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.movito.movito.R
 import com.movito.movito.theme.MovitoTheme
+import com.movito.movito.ui.common.MovitoButton
 import com.movito.movito.viewmodel.AuthViewModel
 
 
@@ -91,7 +88,13 @@ fun CustomAuthTextField(
 
         placeholder = { Text(label, color = MaterialTheme.colorScheme.onSurfaceVariant) },
 
-        leadingIcon = { Icon(icon, contentDescription = label, tint = MaterialTheme.colorScheme.onSurfaceVariant) },
+        leadingIcon = {
+            Icon(
+                icon,
+                contentDescription = label,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        },
         keyboardOptions = KeyboardOptions(keyboardType = if (isPassword) KeyboardType.Password else KeyboardType.Email),
         visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
         colors = TextFieldDefaults.colors(
@@ -205,30 +208,15 @@ fun SignInScreen(
                 CircularProgressIndicator()
             } else {
                 val isButtonEnabled = email.isNotBlank() && password.isNotBlank()
-                Box(
+
+                MovitoButton(
+                    text = stringResource(id = R.string.signin_button),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(48.dp)
-                        .background(
-                            brush = Brush.horizontalGradient(
-                                colors = listOf(
-                                    Color(0xFF9D5BFF),
-                                    Color(0xFF64DFDF)
-                                )
-                            ),
-                            shape = RoundedCornerShape(12.dp)
-                        )
-                        .clickable(enabled = isButtonEnabled) { authViewModel.signInWithEmailPassword(email.trim(), password) },
-                    contentAlignment = Alignment.Center
-
-                ) {
-                    Text(
-                        stringResource(id = R.string.signin_button),
-                        color = if (isButtonEnabled) Color.White else Color.White.copy(alpha = 0.5f),
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Medium
-                    )
-                }
+                        .height(48.dp),
+                    roundedCornerSize = 12.dp,
+                    enabled = isButtonEnabled,
+                ) { authViewModel.signInWithEmailPassword(email.trim(), password) }
 
                 Spacer(Modifier.height(16.dp))
 
@@ -237,6 +225,7 @@ fun SignInScreen(
             Spacer(Modifier.height(32.dp))
 
             Row(verticalAlignment = Alignment.CenterVertically) {
+
                 Text(
                     text = stringResource(id = R.string.signin_no_account),
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -257,6 +246,7 @@ fun SignInScreen(
                         fontSize = 14.sp
                     )
                 }
+
             }
         }
     }
