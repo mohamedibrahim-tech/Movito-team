@@ -46,11 +46,13 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -214,6 +216,8 @@ fun EmptyStar(modifier: Modifier) {
  */
 @Composable
 fun PartialStar(fillFraction: Float, modifier: Modifier) {
+    val layoutDirection = LocalLayoutDirection.current
+    val isRtl = layoutDirection == LayoutDirection.Rtl
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
         Icon(
             imageVector = Icons.Rounded.StarBorder,
@@ -221,7 +225,6 @@ fun PartialStar(fillFraction: Float, modifier: Modifier) {
             modifier = Modifier.fillMaxSize(),
             tint = StarColor
         )
-
         // Foreground filled star (clipped)
         Icon(
             imageVector = Icons.Rounded.Star,
@@ -229,10 +232,20 @@ fun PartialStar(fillFraction: Float, modifier: Modifier) {
             modifier = Modifier
                 .fillMaxSize()
                 .drawWithContent {
-                    clipRect(
-                        right = this.size.width * fillFraction
-                    ) {
-                        this@drawWithContent.drawContent()
+                    if (isRtl) {
+                        // RTL: clip from left side, fill from right to left
+                        clipRect(
+                            left = this.size.width * (1f - fillFraction)
+                        ) {
+                            this@drawWithContent.drawContent()
+                        }
+                    } else {
+                        // LTR: clip from right side, fill from left to right
+                        clipRect(
+                            right = this.size.width * fillFraction
+                        ) {
+                            this@drawWithContent.drawContent()
+                        }
                     }
                 },
             tint = StarColor

@@ -32,11 +32,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.movito.movito.R
 import com.movito.movito.theme.HeartColor
 import com.movito.movito.theme.MovitoTheme
 
@@ -96,9 +98,10 @@ data class FavoriteDialogConfig(
      * - REMOVE: "Remove from Favorites?"
      */
     val title: String
+        @Composable
         get() = when (type) {
-            FavoriteDialogType.ADD -> "Add to Favorites?"
-            FavoriteDialogType.REMOVE -> "Remove from Favorites?"
+            FavoriteDialogType.ADD -> stringResource(R.string.add_dialog_title)
+            FavoriteDialogType.REMOVE -> stringResource(R.string.remove_dialog_title)
         }
 
     /**
@@ -107,9 +110,10 @@ data class FavoriteDialogConfig(
      * - REMOVE: Confirms removal from favorites
      */
     val message: String
+        @Composable
         get() = when (type) {
-            FavoriteDialogType.ADD -> "Do you want to add this movie to your favorites?"
-            FavoriteDialogType.REMOVE -> "Are you sure you want to remove this movie from your favorites?"
+            FavoriteDialogType.ADD -> stringResource(R.string.add_dialog_msg)
+            FavoriteDialogType.REMOVE -> stringResource(R.string.remove_dialog_msg)
         }
 
     /**
@@ -118,9 +122,10 @@ data class FavoriteDialogConfig(
      * - REMOVE: "Remove"
      */
     val confirmButtonText: String
+        @Composable
         get() = when (type) {
-            FavoriteDialogType.ADD -> "Add"
-            FavoriteDialogType.REMOVE -> "Remove"
+            FavoriteDialogType.ADD -> stringResource(R.string.add)
+            FavoriteDialogType.REMOVE -> stringResource(R.string.remove)
         }
 }
 
@@ -166,7 +171,7 @@ private fun FavoriteDialogContent(
             .padding(16.dp),
         shape = RoundedCornerShape(20.dp),
         colors = listOf(
-            MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.7f),
+            MaterialTheme.colorScheme.tertiary.copy(alpha = 0.7f),
                 MaterialTheme.colorScheme.tertiary.copy(alpha = 1f),
             )
 ,
@@ -203,7 +208,10 @@ private fun FavoriteDialogContent(
 
             // Movie Title (15% of the dialog)
             Text(
-                modifier = Modifier.weight(0.10f).fillMaxWidth().horizontalScroll(rememberScrollState(), enabled = true),
+                modifier = Modifier
+                    .weight(0.10f)
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState(), enabled = true),
                 text = config.movieTitle,
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.primary,
@@ -241,7 +249,7 @@ private fun FavoriteDialogContent(
                         onClick = config.onDismiss,
                     ) {
                         Text(
-                            text = "Cancel",
+                            text = stringResource(R.string.cancel),
                             style = MaterialTheme.typography.labelLarge,
                             textAlign = TextAlign.Center,
                         )

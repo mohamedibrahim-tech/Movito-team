@@ -1,5 +1,6 @@
 package com.movito.movito.ui
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -7,23 +8,27 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.movito.movito.MovitoApplication
 import com.movito.movito.R
 import com.movito.movito.theme.MovitoTheme
+import com.movito.movito.viewmodel.LanguageViewModel
 import com.movito.movito.viewmodel.MoviesByGenreViewModel
 import com.movito.movito.viewmodel.ThemeViewModel
-import androidx.compose.runtime.key
 
 class MoviesByGenreActivity : ComponentActivity() {
     private val themeViewModel: ThemeViewModel by viewModels()
+    private val languageViewModel: LanguageViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val genreId = intent.getIntExtra("genreId", -1)//-1 to handle errors from the intent
-        val genreName = intent.getStringExtra("genreName") ?: "Movies"
+        val genreName = intent.getStringExtra("genreName") ?: getString(R.string.movies)
 
         enableEdgeToEdge()
+        languageViewModel.loadLanguagePreference(this)
         setContent {
             val isDarkTheme by themeViewModel.isDarkTheme.collectAsState()
             key(isDarkTheme) {
@@ -48,5 +53,11 @@ class MoviesByGenreActivity : ComponentActivity() {
     override fun finish() {
         super.finish()
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+    }
+
+    override fun attachBaseContext(newBase: Context) {
+        val savedLanguage = MovitoApplication.getSavedLanguage(newBase)
+        val updatedContext = MovitoApplication.updateBaseContextLocale(newBase, savedLanguage)
+        super.attachBaseContext(updatedContext)
     }
 }

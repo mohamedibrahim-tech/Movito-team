@@ -2,7 +2,6 @@ package com.movito.movito.ui
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -22,6 +21,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
@@ -145,108 +145,116 @@ fun SignInScreen(
         }
     }
 
-    Box(
-        modifier = modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background),
-        contentAlignment = Alignment.TopCenter
-    ) {
-        Column(
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        containerColor = MaterialTheme.colorScheme.background,
+    )
+    { paddingValues ->
+
+        Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp, vertical = 60.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-
-            MovitoLogo()
-            Spacer(Modifier.height(48.dp))
-            Text(
-                text = stringResource(id = R.string.signin_title),
-                color = MaterialTheme.colorScheme.onBackground,
-                fontSize = 24.sp,
-                fontWeight = FontWeight.SemiBold
-            )
-            Spacer(Modifier.height(32.dp))
-
-
+                .padding(paddingValues)
+                .fillMaxSize(),
+            contentAlignment = Alignment.TopCenter
+        )
+        {
             Column(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp, vertical = 60.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                CustomAuthTextField(
-                    value = email,
-                    onValueChange = { email = it },
-                    label = stringResource(id = R.string.signin_email_label),
-                    icon = Icons.Default.Email
-                )
-                Spacer(Modifier.height(20.dp))
 
-                CustomAuthTextField(
-                    value = password,
-                    onValueChange = { password = it },
-                    label = stringResource(id = R.string.signin_password_label),
-                    icon = Icons.Default.Lock,
-                    isPassword = true
-                )
-            }
-
-            Spacer(Modifier.height(16.dp))
-            TextButton(
-                onClick = onForgotPasswordClicked,
-                modifier = Modifier.align(Alignment.End),
-                contentPadding = PaddingValues(0.dp)
-            ) {
+                MovitoLogo()
+                Spacer(Modifier.height(48.dp))
                 Text(
-                    text = stringResource(id = R.string.signin_forgot_password),
-                    color = MaterialTheme.colorScheme.primary,
-                    fontWeight = FontWeight.Bold,
-                    textDecoration = TextDecoration.Underline
+                    text = stringResource(id = R.string.signin_title),
+                    color = MaterialTheme.colorScheme.onBackground,
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.SemiBold
                 )
-            }
-            Spacer(Modifier.height(24.dp))
+                Spacer(Modifier.height(32.dp))
 
-            if (authState.isLoading) {
-                CircularProgressIndicator()
-            } else {
-                val isButtonEnabled = email.isNotBlank() && password.isNotBlank()
 
-                MovitoButton(
-                    text = stringResource(id = R.string.signin_button),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(48.dp),
-                    roundedCornerSize = 12.dp,
-                    enabled = isButtonEnabled,
-                ) { authViewModel.signInWithEmailPassword(email.trim(), password) }
-
-                Spacer(Modifier.height(16.dp))
-
-            }
-
-            Spacer(Modifier.height(32.dp))
-
-            Row(verticalAlignment = Alignment.CenterVertically) {
-
-                Text(
-                    text = stringResource(id = R.string.signin_no_account),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontSize = 14.sp
-                )
-
-                TextButton(
-                    onClick = onSignUpClicked,
-                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
-                    colors = ButtonDefaults.textButtonColors(
-                        contentColor = MaterialTheme.colorScheme.primary
-                    )
+                Column(
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(
-                        text = stringResource(id = R.string.signin_sign_up),
-                        fontWeight = FontWeight.Bold,
-                        textDecoration = TextDecoration.Underline,
-                        fontSize = 14.sp
+                    CustomAuthTextField(
+                        value = email,
+                        onValueChange = { email = it },
+                        label = stringResource(id = R.string.signin_email_label),
+                        icon = Icons.Default.Email
+                    )
+                    Spacer(Modifier.height(20.dp))
+
+                    CustomAuthTextField(
+                        value = password,
+                        onValueChange = { password = it },
+                        label = stringResource(id = R.string.signin_password_label),
+                        icon = Icons.Default.Lock,
+                        isPassword = true
                     )
                 }
 
+                Spacer(Modifier.height(16.dp))
+                TextButton(
+                    onClick = onForgotPasswordClicked,
+                    modifier = Modifier.align(Alignment.End),
+                    contentPadding = PaddingValues(0.dp)
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.signin_forgot_password),
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.Bold,
+                        textDecoration = TextDecoration.Underline
+                    )
+                }
+                Spacer(Modifier.height(24.dp))
+
+                if (authState.isLoading) {
+                    CircularProgressIndicator()
+                } else {
+                    val isButtonEnabled = email.isNotBlank() && password.isNotBlank()
+
+                    MovitoButton(
+                        text = stringResource(id = R.string.signin_button),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(48.dp),
+                        roundedCornerSize = 12.dp,
+                        enabled = isButtonEnabled,
+                    ) { authViewModel.signInWithEmailPassword(email.trim(), password) }
+
+                    Spacer(Modifier.height(16.dp))
+
+                }
+
+                Spacer(Modifier.height(32.dp))
+
+                Row(verticalAlignment = Alignment.CenterVertically) {
+
+                    Text(
+                        text = stringResource(id = R.string.signin_no_account),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontSize = 14.sp
+                    )
+
+                    TextButton(
+                        onClick = onSignUpClicked,
+                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
+                        colors = ButtonDefaults.textButtonColors(
+                            contentColor = MaterialTheme.colorScheme.primary
+                        )
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.signin_sign_up),
+                            fontWeight = FontWeight.Bold,
+                            textDecoration = TextDecoration.Underline,
+                            fontSize = 14.sp
+                        )
+                    }
+
+                }
             }
         }
     }

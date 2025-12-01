@@ -1,32 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Movito</string>
-    <string name="default_web_client_id">YOUR_WEB_CLIENT_ID</string>
+    <string name="default_web_client_id" translatable="false">YOUR_WEB_CLIENT_ID</string>
     <string name="title_activity_details">DetailsActivity</string>
 
-    <!-- Genres -->
-    <string name="genre_action">Action</string>
-    <string name="genre_adventure">Adventure</string>
-    <string name="genre_animation">Animation</string>
-    <string name="genre_comedy">Comedy</string>
-    <string name="genre_crime">Crime</string>
-    <string name="genre_documentary">Documentary</string>
-    <string name="genre_drama">Drama</string>
-    <string name="genre_family">Family</string>
-    <string name="genre_fantasy">Fantasy</string>
-    <string name="genre_history">History</string>
-    <string name="genre_horror">Horror</string>
-    <string name="genre_music">Music</string>
-    <string name="genre_mystery">Mystery</string>
-    <string name="genre_romance">Romance</string>
-    <string name="genre_science_fiction">Science Fiction</string>
-    <string name="genre_tv_movie">TV Movie</string>
-    <string name="genre_thriller">Thriller</string>
-    <string name="genre_war">War</string>
-    <string name="genre_western">Western</string>
-    <string name="genre_unknown">Unknown Genre</string>
+    <!-- Category Screen -->
+    <string name="enable_notifications_riminder">Enable notifications to get movie suggestions</string>
+    <string name="enable">ENABLE</string>
 
     <!-- Settings Screen -->
     <string name="settings_title">Settings</string>
+    <!-- Account Settings Section-->
     <string name="settings_account">Account</string>
     <string name="settings_profile_info">Profile info</string>
     <string name="settings_not_signed_in">Not signed in</string>
@@ -34,9 +18,52 @@
     <string name="settings_password_reset_sent">Password reset email sent to %1$s</string>
     <string name="settings_user_email_not_found">Error: User email not found.</string>
     <string name="settings_sign_out">Sign Out</string>
+    <!-- Language Settings Section-->
+    <string name="language">Language</string>
+    <string name="current">Current: %1$s</string>
+    <string name="current_lan">English</string>
+    <string name="arabic" translatable="false">العربية</string>
+    <string name="english" translatable="false">English</string>
+    <!-- Appearance Settings Section-->
     <string name="settings_appearance">Appearance</string>
     <string name="settings_theme_mode">Theme Mode</string>
+    <!-- Notification Settings Section-->
     <string name="settings_notifications">Notifications</string>
+    <string name="notification_permission_request">Notification permission required to send movie suggestions</string>
+    <string name="grant">GRANT</string>
+    <string name="notification_explaination">Get movie suggestions based on your favorites</string>
+    <string name="notification_not_enabled_message">Enable notifications to get personalized movie suggestions</string>
+    <string name="please_enable_notifications_first">Please enable notifications first</string>
+    <string name="cancelle_notifications_msg">🔕 All notifications cancelled</string>
+    <string name="battery_permission">For precise timing, grant unrestricted battery access. Android may delay notifications otherwise.</string>
+    <string name="notification_frequency">Notification Frequency</string>
+    <string name="interval">Interval</string>
+    <plurals name="minutes">
+        <item quantity="one">minute</item>
+        <item quantity="other">minutes</item>
+    </plurals>
+    <plurals name="hours">
+        <item quantity="one">hour</item>
+        <item quantity="other">hours</item>
+    </plurals>
+    <plurals name="days">
+        <item quantity="one">day</item>
+        <item quantity="other">days</item>
+    </plurals>
+    <string name="currently_every">Currently: Every %1$d %2$s</string>
+    <string name="will_be_every">Will be: Every %1$d %2$s</string>
+    <string name="select_time_unit">Select time unit</string>
+    <string name="interval_must_be_at_least">Interval must be at least %1$d %2$s</string>
+    <string name="please_enter_a_valid_interval">Please enter a valid interval</string>
+    <string name="must_be_at_least">❌ Must be at least %1$d %2$s</string>
+    <string name="minimum_15_minutes_1_hour_or_1_day">Minimum: 15 minutes, 1 hour, or 1 day</string>
+    <string name="save_changes">Save Changes</string>
+    <string name="settings_applied">Settings Applied</string>
+    <string name="notifications_scheduled_every">✓ Notifications scheduled every %1$s</string>
+    <string name="settings_applied_snackbar">Settings applied successfully!</string>
+    <string name="settings_applied_successfully">Settings applied successfully!</string>
+    <string name="failed_to_schedule_notifications">❌ Failed to schedule notifications</string>
+    <!-- About Settings Section-->
     <string name="settings_about">About</string>
     <string name="settings_version">Version: %1$s</string>
     <string name="settings_github_repository">Github Repository</string>
@@ -92,18 +119,38 @@
     <string name="favorites_failed_to_load">Failed to load favorites</string>
     <string name="favorites_error">Error: %1$s</string>
 
+    <!-- Add/Remove favorite dialog-->
+    <!-- Add dialog-->
+    <string name="add_dialog_title">Add to Favorites?</string>
+    <string name="add_dialog_msg">Do you want to add this movie to your favorites?</string>
+    <string name="add">Add</string>
+    <!-- Remove dialog-->
+    <string name="remove_dialog_title">Remove from Favorites?</string>
+    <string name="remove_dialog_msg">Are you sure you want to remove this movie from your favorites?</string>
+    <string name="remove">Remove</string>
+    <!-- shared between both dialogs-->
+    <string name="cancel">Cancel</string>
+
     <!-- Details Screen -->
+    <!-- Top Bar Section -->
     <string name="details_title">Details</string>
     <string name="details_back_button_description">back</string>
+    <!-- Poster and actions Section -->
     <string name="details_added_to_favorites">%1$s added to favorites</string>
     <string name="details_favorites_button">Favorites</string>
     <string name="details_play_trailer_button">Play Trailer</string>
     <string name="details_share_button">Share</string>
+    <string name="share_the_trailer_link">Share the trailer link</string>
+    <!-- Overview Section -->
     <string name="details_movie_details_title">Movie Details</string>
     <string name="details_genres_title">Genres</string>
+    <string name="unknown">Unknown</string>
     <string name="details_more_like_this_title">More Like This</string>
+    <string name="no_recommendations_available">No recommendations available</string>
+    <string name="error_loading_recommendations_no_Internet">Error loading recommendations!\nCheck your connection.</string>
 
     <!-- Movies By Genre Screen -->
+    <string name="movies">Movies</string>
     <string name="movies_by_genre_back_button_description">Back</string>
     <string name="movies_by_genre_refresh_button_description">Refresh</string>
     <string name="movies_by_genre_failed_to_load">Failed to load movies</string>
