@@ -180,14 +180,9 @@ fun DetailsScreen(
         }
     }
 
-    LaunchedEffect(uiState.error) {
-       val show : Boolean = (uiState.error?.contains("Trailer", ignoreCase = true) == true ||
-               uiState.error?.contains("دعائي", ignoreCase = true) == true)
-        if (show)
-        uiState.error?.let {
-            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
-            viewModel.onToastShown()
-        }
+    LaunchedEffect(uiState.trailerError) {
+        uiState.trailerError?.let { Toast.makeText(context, it, Toast.LENGTH_SHORT).show() }
+        viewModel.onTrailerToastShown()
     }
 
     Scaffold(
@@ -267,7 +262,7 @@ fun DetailsScreen(
                     }
                     RecommendationsSection(
                         recommendedMovies = uiState.recommendedMovies,
-                        error = uiState.error,
+                        error = uiState.recommendationsError ?: stringResource(R.string.no_recommendations_available),
                         modifier = Modifier.fillMaxSize(),
                     )
                 }
@@ -584,7 +579,7 @@ private fun GenreChip(genreName: String) {
 @Composable
 fun RecommendationsSection(
     recommendedMovies: List<Movie>,
-    error: String?,
+    error: String,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -624,11 +619,7 @@ fun RecommendationsSection(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = if (error?.contains("Recommendations") == true) {
-                        stringResource(R.string.error_loading_recommendations_no_Internet)
-                    } else {
-                        stringResource(R.string.no_recommendations_available)
-                    },
+                    text = error,
                     textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onBackground
@@ -749,7 +740,7 @@ fun DetailsScreenPreview(
 
                     RecommendationsSection(
                         recommendedMovies = recommendedMovies,
-                        error = error,
+                        error = error ?: stringResource(R.string.no_recommendations_available),
                         modifier = Modifier
                             .weight(0.35f)
                             .fillMaxWidth()

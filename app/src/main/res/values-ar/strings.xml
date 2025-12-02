@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="app_name">Movito</string>
+    <string name="app_name">موڤيتو</string>
     <string name="default_web_client_id" translatable="false">YOUR_WEB_CLIENT_ID</string>
     <string name="title_activity_details">التفاصيل</string>
 
@@ -154,7 +154,6 @@
     <string name="unknown">مجهول</string>
     <string name="details_more_like_this_title">أفلام مشابهة</string>
     <string name="no_recommendations_available">لا توجد اقتراحات متاحة.</string>
-    <string name="error_loading_recommendations_no_Internet">خطأ في تحميل الاقتراحات!\nتحقق من اتصالك بالشبكة.</string>
 
     <!-- Movies By Genre Screen -->
     <string name="movies">أفلام</string>

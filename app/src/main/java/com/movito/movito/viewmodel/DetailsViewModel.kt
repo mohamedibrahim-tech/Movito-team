@@ -32,7 +32,9 @@ data class DetailsUiState(
     val recommendedMovies: List<Movie> = emptyList(),
     val trailerUrl: String? = null,
     val urlToShare: String? = null,
-    val error: String? = null
+    val genreError: String? = null,
+    val trailerError: String? = null,
+    val recommendationsError: String? = null,
 )
 
 /**
@@ -60,7 +62,7 @@ class DetailsViewModel : ViewModel() {
         loadGenres()
     }
     private fun noTrailerFoundMsg() = if(LanguageManager.currentLanguage.value == "ar")  "لم يتم العثور على مقطع دعائي." else "No Trailer Found."
-    private fun falidToLoadTrailerMsg(errorMsg: String?) = if(LanguageManager.currentLanguage.value == "ar")  "تعذر تحميل المقطع الدعائى: $errorMsg" else "Failed to load trailer: $errorMsg"
+    private fun falidToLoadTrailerMsg(errorMsg: String?) = if(LanguageManager.currentLanguage.value == "ar")  "تعذر تحميل المقطع الدعائي: $errorMsg" else "Failed to load trailer: $errorMsg"
     private fun unexpectedErrorMsg(errorMsg: String?) = if(LanguageManager.currentLanguage.value == "ar")  "حدث خطأ غير متوقع: $errorMsg" else "An unexpected error occurred: $errorMsg"
 
     /**
@@ -71,7 +73,7 @@ class DetailsViewModel : ViewModel() {
      */
     fun loadGenres() {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true, error = null) }
+            _uiState.update { it.copy(isLoading = true, genreError = null) }
 
             try {
                 val response = RetrofitInstance.api.getGenres(apiKey, currentLanguage.value)
@@ -85,14 +87,14 @@ class DetailsViewModel : ViewModel() {
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        error = if(currentLanguage.value == "ar") "تعذر تحميل الفئات: ${e.message}" else "Failed to load genres: ${e.message}"
+                        genreError = if(currentLanguage.value == "ar") "تعذر تحميل الفئات: ${e.message}" else "Failed to load genres: ${e.message}"
                     )
                 }
             } catch (e: Exception) {
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        error = unexpectedErrorMsg(e.message)
+                        genreError = unexpectedErrorMsg(e.message)
                     )
                 }
             }
@@ -112,11 +114,11 @@ class DetailsViewModel : ViewModel() {
                 _uiState.update { it.copy(recommendedMovies = response.results) }
             } catch (e: IOException) {
                 _uiState.update {
-                    it.copy(isLoading = false, error = if (currentLanguage.value == "ar") "تعذر تحميل الإتراحات: ${e.message}" else "Failed to load Recommendations: ${e.message}" )
+                    it.copy(isLoading = false, recommendationsError = if (currentLanguage.value == "ar") "تعذر تحميل الإتراحات: ${e.message}" else "Failed to load Recommendations: ${e.message}" )
                 }
             } catch (e: Exception) {
                 _uiState.update {
-                    it.copy(isLoading = false, error = unexpectedErrorMsg(e.message))
+                    it.copy(isLoading = false, recommendationsError = unexpectedErrorMsg(e.message))
                 }
             }
         }
@@ -132,7 +134,7 @@ class DetailsViewModel : ViewModel() {
      */
     fun findTrailer(movieId: Int) {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true, error = null) }
+            _uiState.update { it.copy(isLoading = true, trailerError = null) }
 
             try {
                 val response = RetrofitInstance.api.getMovieVideos(movieId, apiKey, currentLanguage.value)
@@ -145,16 +147,16 @@ class DetailsViewModel : ViewModel() {
                     }
                 } else {
                     _uiState.update {
-                        it.copy(isLoading = false, error = noTrailerFoundMsg())
+                        it.copy(isLoading = false, trailerError = noTrailerFoundMsg())
                     }
                 }
             } catch (e: IOException) {
                 _uiState.update {
-                    it.copy(isLoading = false, error = falidToLoadTrailerMsg(e.message))
+                    it.copy(isLoading = false, trailerError = falidToLoadTrailerMsg(e.message))
                 }
             } catch (e: Exception) {
                 _uiState.update {
-                    it.copy(isLoading = false, error = unexpectedErrorMsg(e.message))
+                    it.copy(isLoading = false, trailerError = unexpectedErrorMsg(e.message))
                 }
             }
         }
@@ -178,12 +180,12 @@ class DetailsViewModel : ViewModel() {
                 if (url != null) {
                     _uiState.update { it.copy(urlToShare = url) }
                 } else {
-                    _uiState.update { it.copy(error = noTrailerFoundMsg()) }
+                    _uiState.update { it.copy(trailerError = noTrailerFoundMsg()) }
                 }
             } catch (e: IOException) {
-                _uiState.update { it.copy(error = falidToLoadTrailerMsg(e.message)) }
+                _uiState.update { it.copy(trailerError =  falidToLoadTrailerMsg(e.message)) }
             } catch (e: Exception) {
-                _uiState.update { it.copy(error = falidToLoadTrailerMsg(e.message)) }
+                _uiState.update { it.copy(trailerError = falidToLoadTrailerMsg(e.message)) }
             }
         }
     }
@@ -210,8 +212,8 @@ class DetailsViewModel : ViewModel() {
      * Clears the error message after it has been shown to the user.
      * Called when an error toast/snackbar is displayed to reset the state.
      */
-    fun onToastShown() {
-        _uiState.update { it.copy(error = null) }
+    fun onTrailerToastShown() {
+        _uiState.update { it.copy(trailerError = null) }
     }
 
     /**

@@ -147,7 +147,6 @@
     <string name="unknown">Unknown</string>
     <string name="details_more_like_this_title">More Like This</string>
     <string name="no_recommendations_available">No recommendations available</string>
-    <string name="error_loading_recommendations_no_Internet">Error loading recommendations!\nCheck your connection.</string>
 
     <!-- Movies By Genre Screen -->
     <string name="movies">Movies</string>

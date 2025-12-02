@@ -26,7 +26,7 @@ class CategoriesViewModel : ViewModel() {
 
     private val apiKey = BuildConfig.TMDB_API_KEY
     private val currentLanguage = LanguageManager.currentLanguage
-    private fun falidToLoadTrailerMsg(errorMsg: String?) = if(LanguageManager.currentLanguage.value == "ar")  "تعذر تحميل المقطع الدعائى: $errorMsg" else "Failed to load trailer: $errorMsg"
+    private fun falidToLoadGenresMsg(errorMsg: String?) = if(LanguageManager.currentLanguage.value == "ar")  "تعذر تحميل الفئات: $errorMsg" else "Failed to load genres: $errorMsg"
     private fun unexpectedErrorMsg(errorMsg: String?) = if(LanguageManager.currentLanguage.value == "ar")  "حدث خطأ غير متوقع: $errorMsg" else "An unexpected error occurred: $errorMsg"
 
     init {
@@ -49,7 +49,7 @@ class CategoriesViewModel : ViewModel() {
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        error = falidToLoadTrailerMsg(e.message)
+                        error = falidToLoadGenresMsg(e.message)
                     )
                 }
             } catch (e: Exception) {
