@@ -39,6 +39,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -171,7 +172,8 @@ fun SignInScreen(
                     text = stringResource(id = R.string.signin_title),
                     color = MaterialTheme.colorScheme.onBackground,
                     fontSize = 24.sp,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.testTag("SignInTitle")
                 )
                 Spacer(Modifier.height(32.dp))
 
@@ -220,7 +222,8 @@ fun SignInScreen(
                         text = stringResource(id = R.string.signin_button),
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(48.dp),
+                            .height(48.dp)
+                            .testTag("SignInButton"),
                         roundedCornerSize = 12.dp,
                         enabled = isButtonEnabled,
                     ) { authViewModel.signInWithEmailPassword(email.trim(), password) }
