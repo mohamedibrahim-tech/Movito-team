@@ -1,5 +1,6 @@
 package com.movito.movito.ui
 
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -9,9 +10,11 @@ import androidx.activity.viewModels
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import com.movito.movito.MovitoApplication
 import com.movito.movito.data.model.Movie
 import com.movito.movito.theme.MovitoTheme
 import com.movito.movito.viewmodel.DetailsViewModel
+import com.movito.movito.viewmodel.LanguageViewModel
 import com.movito.movito.viewmodel.ThemeViewModel
 
 
@@ -19,10 +22,12 @@ class DetailsActivity : ComponentActivity() {
 
     private val viewModel: DetailsViewModel by viewModels()
     private val themeViewModel: ThemeViewModel by viewModels()
+    private val languageViewModel: LanguageViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        languageViewModel.loadLanguagePreference(this)
         setContent {
             val isDarkTheme by themeViewModel.isDarkTheme.collectAsState()
             val movie: Movie? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -42,4 +47,11 @@ class DetailsActivity : ComponentActivity() {
 
         }
     }
+
+    override fun attachBaseContext(newBase: Context) {
+        val savedLanguage = MovitoApplication.getSavedLanguage(newBase)
+        val updatedContext = MovitoApplication.updateBaseContextLocale(newBase, savedLanguage)
+        super.attachBaseContext(updatedContext)
+    }
+
 }

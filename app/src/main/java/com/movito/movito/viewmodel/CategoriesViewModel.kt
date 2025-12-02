@@ -3,6 +3,7 @@ package com.movito.movito.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.movito.movito.BuildConfig
+import com.movito.movito.LanguageManager
 import com.movito.movito.data.model.Genre
 import com.movito.movito.data.source.remote.RetrofitInstance
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,6 +25,9 @@ class CategoriesViewModel : ViewModel() {
     val uiState: StateFlow<CategoriesUiState> = _uiState.asStateFlow()
 
     private val apiKey = BuildConfig.TMDB_API_KEY
+    private val currentLanguage = LanguageManager.currentLanguage
+    private fun falidToLoadTrailerMsg(errorMsg: String?) = if(LanguageManager.currentLanguage.value == "ar")  "تعذر تحميل المقطع الدعائى: $errorMsg" else "Failed to load trailer: $errorMsg"
+    private fun unexpectedErrorMsg(errorMsg: String?) = if(LanguageManager.currentLanguage.value == "ar")  "حدث خطأ غير متوقع: $errorMsg" else "An unexpected error occurred: $errorMsg"
 
     init {
         loadGenres()
@@ -34,7 +38,7 @@ class CategoriesViewModel : ViewModel() {
             _uiState.update { it.copy(isLoading = true, error = null) }
 
             try {
-                val response = RetrofitInstance.api.getGenres(apiKey)
+                val response = RetrofitInstance.api.getGenres(apiKey, currentLanguage.value)
                 _uiState.update {
                     it.copy(
                         isLoading = false,
@@ -45,14 +49,14 @@ class CategoriesViewModel : ViewModel() {
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        error = "Failed to load genres: ${e.message}"
+                        error = falidToLoadTrailerMsg(e.message)
                     )
                 }
             } catch (e: Exception) {
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        error = "An unexpected error occurred: ${e.message}"
+                        error = unexpectedErrorMsg(e.message)
                     )
                 }
             }

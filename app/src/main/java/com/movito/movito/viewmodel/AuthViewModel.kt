@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.movito.movito.LanguageManager
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -30,7 +31,8 @@ class AuthViewModel : ViewModel() {
     private val _navigationChannel = Channel<Unit>()
     val navigationFlow = _navigationChannel.receiveAsFlow()
 
-    // FIX: Prevent login unless email is verified
+    private fun invalidEmailFormatMsg() = if (LanguageManager.currentLanguage.value == "ar") "تنسيق البريد غير صالح." else "Invalid email format."
+    private fun PasswordResetMsg() = if(LanguageManager.currentLanguage.value == "ar") "تم ارسال بريد اعادة التعيين." else "Password reset email sent."
     private val authStateListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
         val user = firebaseAuth.currentUser
 
@@ -56,7 +58,7 @@ class AuthViewModel : ViewModel() {
     // SIGN UP with Email Verification
     fun signUpWithEmailPassword(email: String, password: String) {
         if (!isValidEmail(email)) {
-            _authState.value = _authState.value.copy(error = "Invalid email format.")
+            _authState.value = _authState.value.copy(error = invalidEmailFormatMsg())
             return
         }
 
@@ -75,7 +77,7 @@ class AuthViewModel : ViewModel() {
 
                     _authState.value = _authState.value.copy(
                         isLoading = false,
-                        message = "Verification email sent. Please verify and login ."
+                        message =  if (LanguageManager.currentLanguage.value == "ar") "تم إرسال بريد إلكتروني للتحقق. يُرجى التحقق وتسجيل الدخول." else "Verification email sent. Please verify and login."
                     )
                 }
 
@@ -91,7 +93,7 @@ class AuthViewModel : ViewModel() {
     // LOGIN (Only if email verified)
     fun signInWithEmailPassword(email: String, password: String) {
         if (!isValidEmail(email)) {
-            _authState.value = _authState.value.copy(error = "Invalid email format.")
+            _authState.value = _authState.value.copy(error = invalidEmailFormatMsg())
             return
         }
 
@@ -109,7 +111,7 @@ class AuthViewModel : ViewModel() {
                         auth.signOut()
                         _authState.value = _authState.value.copy(
                             isLoading = false,
-                            error = "Please verify your email first."
+                            error =  if (LanguageManager.currentLanguage.value == "ar") "رجاءً تحقق من بريدك الإلكتروني أولًا." else "Please verify your email first."
                         )
                         return@launch
                     }
@@ -133,7 +135,7 @@ class AuthViewModel : ViewModel() {
 
     fun sendPasswordResetEmail(email: String) {
         if (!isValidEmail(email)) {
-            _authState.value = _authState.value.copy(error = "Invalid email format.")
+            _authState.value = _authState.value.copy(error = invalidEmailFormatMsg())
             return
         }
         viewModelScope.launch {
@@ -144,7 +146,7 @@ class AuthViewModel : ViewModel() {
 
                 _authState.value = _authState.value.copy(
                     isLoading = false,
-                    message = "Password reset email sent."
+                    message = PasswordResetMsg()
                 )
 
             } catch (e: Exception) {

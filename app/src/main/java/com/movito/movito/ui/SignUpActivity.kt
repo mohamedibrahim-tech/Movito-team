@@ -1,5 +1,6 @@
 package com.movito.movito.ui
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -12,16 +13,19 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
+import com.movito.movito.MovitoApplication
 import com.movito.movito.theme.MovitoTheme
 import com.movito.movito.viewmodel.AuthViewModel
+import com.movito.movito.viewmodel.LanguageViewModel
 import com.movito.movito.viewmodel.ThemeViewModel
-import androidx.compose.runtime.key
 
 class SignUpActivity : ComponentActivity() {
 
     private val authViewModel: AuthViewModel by viewModels()
     private val themeViewModel: ThemeViewModel by viewModels()
+    private val languageViewModel: LanguageViewModel by viewModels()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,6 +34,7 @@ class SignUpActivity : ComponentActivity() {
         authViewModel.signOut()
 
         enableEdgeToEdge()
+        languageViewModel.loadLanguagePreference(this)
 
         setContent {
             val isDarkTheme by themeViewModel.isDarkTheme.collectAsState()
@@ -73,4 +78,11 @@ class SignUpActivity : ComponentActivity() {
             }
         }
     }
+
+    override fun attachBaseContext(newBase: Context) {
+        val savedLanguage = MovitoApplication.getSavedLanguage(newBase)
+        val updatedContext = MovitoApplication.updateBaseContextLocale(newBase, savedLanguage)
+        super.attachBaseContext(updatedContext)
+    }
+
 }

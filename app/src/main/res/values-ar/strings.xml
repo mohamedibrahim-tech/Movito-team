@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name">Movito</string>
+    <string name="default_web_client_id" translatable="false">YOUR_WEB_CLIENT_ID</string>
+    <string name="title_activity_details">التفاصيل</string>
+
+    <!-- Catigory Screen -->
+    <string name="enable_notifications_riminder">فعِّل الإشعارات لتحصل على توصيات لأفلام ستعجبك</string>
+    <string name="enable">تفعيل</string>
+
+    <!-- Settings Screen -->
+    <string name="settings_title">الإعدادات</string>
+    <!-- Account Settings Section-->
+    <string name="settings_account">الحساب</string>
+    <string name="settings_profile_info">معلومات الملف الشخصي</string>
+    <string name="settings_not_signed_in">لم يتم تسجيل الدخول</string>
+    <string name="settings_change_password">تغيير كلمة المرور</string>
+    <string name="settings_password_reset_sent">تم إرسال بريد إعادة تعيين كلمة المرور إلى %1$s</string>
+    <string name="settings_user_email_not_found">خطأ: لم يتم العثور على بريد المستخدم.</string>
+    <string name="settings_sign_out">تسجيل الخروج</string>
+    <!-- Language Settings Section-->
+    <string name="language">اللغة</string>
+    <string name="current">الحالية: %1$s</string>
+    <string name="current_lan">العربية</string>
+    <!-- Appearance Settings Section-->
+    <string name="settings_appearance">المظهر</string>
+    <string name="settings_theme_mode">وضع السمة</string>
+    <!-- Notification Settings Section-->
+    <string name="settings_notifications">الإشعارات</string>
+    <string name="notification_permission_request">يرجى منح الإذن بإرسال الإشعارات من الإعدادات أولًا</string>
+    <string name="grant">منح</string>
+    <string name="notification_explaination">احصل على اقتراحاتٍ بناءً على أفلامك المفضلة</string>
+    <string name="notification_not_enabled_message">فعِّل الإشعاراتِ لتحصلَ على اقتراحاتٍ مخصصة</string>
+    <string name="please_enable_notifications_first">الرجاء تمكين الإشعارات أولًا.</string>
+    <string name="cancelle_notifications_msg">🔕 تم إلغاء جميع الإشعارات</string>
+    <string name="battery_permission">لضمان دقة التوقيت، امنح وصولاً غير مقيد للبطارية. قد يؤخر نظام أندرويد الإشعارات إذا رفضت فعلك ذلك.</string>
+    <string name="notification_frequency">معدل تكرار الإشعارات</string>
+    <string name="interval">المدَّة</string>
+    <plurals name="minutes" tools:ignore="MissingQuantity">
+        <item quantity="one">(دقيقةٌ واحدة)</item>
+        <item quantity="two">دقيقتان اثنان</item>
+        <item quantity="few">دقائق</item>
+        <item quantity="many">دقيقةً</item>
+        <item quantity="other">دقيقة</item>
+    </plurals>
+    <plurals name="hours" tools:ignore="MissingQuantity">
+        <item quantity="one">(ساعةٌ واحدة)</item>
+        <item quantity="two">ساعتان اثنان</item>
+        <item quantity="few">ساعات</item>
+        <item quantity="many">ساعةً</item>
+        <item quantity="other">ساعة</item>
+    </plurals>
+    <plurals name="days" tools:ignore="MissingQuantity">
+        <item quantity="one">(يومٌ واحد)</item>
+        <item quantity="two">يومان اثنان</item>
+        <item quantity="few">أيَّام</item>
+        <item quantity="many">يومًا</item>
+        <item quantity="other">يوم</item>
+    </plurals>
+    <string name="currently_every">حاليًا: كل %1$d %2$s</string>
+    <string name="will_be_every">ستصبح: كل  %1$d %2$s</string>
+    <string name="select_time_unit">اختر وحدة التوقيت</string>
+    <string name="interval_must_be_at_least">يجب أن تكون المدَّة على الأقل %1$d %2$s</string>
+    <string name="please_enter_a_valid_interval">الرجاء إدخال مدَّة صالحة</string>
+    <string name="must_be_at_least">❌ يجب أن تكون على الأقل %1$d %2$s</string>
+    <string name="minimum_15_minutes_1_hour_or_1_day">الحد الأدنى: ١٥ دقيقةٌ، ساعة واحدة، يوم واحد </string>
+    <string name="save_changes">احفظ التعديلات</string>
+    <string name="settings_applied">تم تطبيق الإعدادات</string>
+    <string name="notifications_scheduled_every">✓ تم تفعيل الإشارات كل %1$s</string>
+    <string name="settings_applied_snackbar">تم تظبيق الإعدادات</string>
+    <string name="settings_applied_successfully">تم تطبيق الإعدادات بنجاح!</string>
+    <string name="failed_to_schedule_notifications">❌ فشلت جدولة الإشعارات</string>
+    <!-- About Settings Section-->
+    <string name="settings_about">حول</string>
+    <string name="settings_version">الإصدار: %1$s</string>
+    <string name="settings_github_repository">مستودع Github</string>
+
+    <!-- Categories Screen -->
+    <string name="categories_movito_logo_description">شعار موفيتو</string>
+    <string name="categories_unknown_error">حدث خطأ غير معروف</string>
+    <string name="categories_failed_to_load_genres">فشل تحميل الفئات</string>
+
+    <!-- Sign In Screen -->
+    <string name="signin_movito_logo_description">شعار موفيتو</string>
+    <string name="signin_email_label">البريد الإلكتروني</string>
+    <string name="signin_password_label">كلمة المرور</string>
+    <string name="signin_title">تسجيل الدخول</string>
+    <string name="signin_forgot_password">هل نسيت كلمة المرور؟</string>
+    <string name="signin_button">تسجيل الدخول</string>
+    <string name="signin_no_account">ليس لديك حساب؟</string>
+    <string name="signin_sign_up">إنشاء حساب</string>
+
+    <!-- Sign Up Screen -->
+    <string name="signup_title">إنشاء حساب</string>
+    <string name="signup_email_label">البريد الإلكتروني</string>
+    <string name="signup_password_label">كلمة المرور</string>
+    <string name="signup_confirm_password_label">تأكيد كلمة المرور</string>
+    <string name="signup_email_required">البريد الإلكتروني مطلوب</string>
+    <string name="signup_invalid_email">صيغة البريد الإلكتروني غير صالحة</string>
+    <string name="signup_password_required">كلمة المرور مطلوبة</string>
+    <string name="signup_password_too_short">يجب أن تتكون كلمة المرور من ٦ أحرف على الأقل</string>
+    <string name="signup_confirm_password_required">يرجى تأكيد كلمة المرور الخاصة بك</string>
+    <string name="signup_passwords_do_not_match">كلمات المرور غير متطابقة</string>
+    <string name="signup_already_have_account">لديك حساب بالفعل؟</string>
+    <string name="signup_login">تسجيل الدخول</string>
+    <string name="signup_button">إنشاء حساب</string>
+
+    <!-- Forgot Password Screen -->
+    <string name="forgotpassword_title">إعادة تعيين كلمة المرور</string>
+    <string name="forgotpassword_email_label">البريد الإلكتروني</string>
+    <string name="forgotpassword_send_button">إرسال بريد إعادة التعيين</string>
+
+    <!-- Search Screen -->
+    <string name="search_placeholder">ابحث عن أفلام...</string>
+    <string name="search_back_description">رجوع</string>
+    <string name="search_clear_description">مسح البحث</string>
+    <string name="search_failed">فشل البحث: %1$s</string>
+    <string name="search_no_results">لم يتم العثور على نتائج لـ «%1$s»</string>
+    <string name="search_initial_message">ابحث عن الأفلام والمسلسلات والمزيد...</string>
+
+    <!-- Favorites Screen -->
+    <string name="favorites_title">المفضلة</string>
+    <string name="favorites_empty_state_title">لا توجد مفضلات</string>
+    <string name="favorites_empty_state_subtitle">أضف مفضلاتك لرؤيتها هنا</string>
+    <string name="favorites_remove_from_favorites">إزالة من المفضلة</string>
+    <string name="favorites_failed_to_load">فشل تحميل المفضلة</string>
+    <string name="favorites_error">خطأ: %1$s</string>
+
+    <!-- Add/Remove favorite dialog-->
+    <!-- Add dialog-->
+    <string name="add_dialog_title">إضافة إلى المفضلة؟</string>
+    <string name="add_dialog_msg">هل تريد اضافة هذا الفلم إلى مفضلاتك؟</string>
+    <string name="add">أضف</string>
+    <!-- Remove dialog-->
+    <string name="remove_dialog_title">حذف من المفضلة؟</string>
+    <string name="remove_dialog_msg">أمتأكد من رغبتك في حذف هذا الفلم من مفضلاتك؟</string>
+    <string name="remove">احذف</string>
+    <!-- sheard between both dialogs-->
+    <string name="cancel">ألغ</string>
+
+    <!-- Details Screen -->
+    <!-- Top Bar Section -->
+    <string name="details_title">التفاصيل</string>
+    <string name="details_back_button_description">رجوع</string>
+    <!-- Poster and actions Section -->
+    <string name="details_added_to_favorites">تمت إضافة %1$s إلى المفضلة</string>
+    <string name="details_favorites_button">المفضلة</string>
+    <string name="details_play_trailer_button">تشغيل المقطع الدعائي</string>
+    <string name="details_share_button">مشاركة</string>
+    <string name="share_the_trailer_link">شارك رابط المقطع الدعائي</string>
+    <!-- Overview Section -->
+    <string name="details_movie_details_title">تفاصيل الفيلم</string>
+    <string name="details_genres_title">الفئات</string>
+    <string name="unknown">مجهول</string>
+    <string name="details_more_like_this_title">أفلام مشابهة</string>
+    <string name="no_recommendations_available">لا توجد اقتراحات متاحة.</string>
+    <string name="error_loading_recommendations_no_Internet">خطأ في تحميل الاقتراحات!\nتحقق من اتصالك بالشبكة.</string>
+
+    <!-- Movies By Genre Screen -->
+    <string name="movies">أفلام</string>
+    <string name="movies_by_genre_back_button_description">رجوع</string>
+    <string name="movies_by_genre_refresh_button_description">تحديث</string>
+    <string name="movies_by_genre_failed_to_load">فشل تحميل الأفلام</string>
+</resources>

@@ -79,39 +79,40 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
-
     // ViewModel
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.3")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.3")
     implementation("androidx.activity:activity-ktx:1.9.0")
 
-    // Coroutines (عشان الـ ViewModel)
+    // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
+
     // Splash Screen API
     implementation("androidx.core:core-splashscreen:1.0.1")
 
+    // Material Icons Extended
     implementation("androidx.compose.material:material-icons-extended")
-    //   مكتبة Coil لتحميل الصور من الإنترنت
+
+    // Coil for image loading
     implementation("io.coil-kt:coil-compose:2.6.0")
+
+    // Firebase
     implementation("com.google.firebase:firebase-auth")
     implementation(platform("com.google.firebase:firebase-bom:33.1.0"))
     implementation("com.google.android.gms:play-services-auth:21.2.0")
-
-    //Retrofit
-    implementation("com.squareup.retrofit2:retrofit:2.11.0")
-    //Gson Converter
-    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
-    //Glide
-    implementation("com.github.bumptech.glide:glide:5.0.5")
-
-
-// لإصلاح أخطاء Icons و filled:
-    implementation("androidx.compose.material:material-icons-extended")
-
     implementation("com.google.firebase:firebase-firestore")
+
+    // Retrofit
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
+
+    // Glide
+    implementation("com.github.bumptech.glide:glide:5.0.5")
 
     // DataStore Preferences
     implementation("androidx.datastore:datastore-preferences:1.0.0")
+
+    implementation("com.google.accompanist:accompanist-permissions:0.34.0")
 
 }

@@ -31,6 +31,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.movito.movito.MovitoApplication
 import com.movito.movito.R
 import com.movito.movito.theme.MovitoTheme
 import com.movito.movito.ui.CategoriesActivity
@@ -126,12 +127,26 @@ private fun navigateToActivity(context: Context, activityClass: Class<*>) {
     // Determine forward/back animation
     val currentOrder = activityOrder[currentActivity::class.java] ?: 0
     val targetOrder = activityOrder[activityClass] ?: 0
-    val forward = targetOrder > currentOrder
+    var forward = targetOrder > currentOrder
 
-    currentActivity.overridePendingTransition(
-        if (forward) R.anim.slide_in_right else R.anim.slide_in_left,
-        if (forward) R.anim.slide_out_left else R.anim.slide_out_right
-    )
+    // Simplified animation that works for both RTL and LTR
+    val isArabic = MovitoApplication.getSavedLanguage(context) == "ar"
+
+
+    if (isArabic) {
+        forward = !forward
+        // For RTL languages
+        currentActivity.overridePendingTransition(
+            if(forward) R.anim.slide_in_left else R.anim.slide_in_right,
+            if(forward) R.anim.slide_out_right else  R.anim.slide_out_left
+        )
+    } else {
+        // For LTR languages
+        currentActivity.overridePendingTransition(
+            if (forward) R.anim.slide_in_right else R.anim.slide_in_left,
+            if (forward) R.anim.slide_out_left else R.anim.slide_out_right
+        )
+    }
 }
 
 
