@@ -22,6 +22,7 @@ class MovitoApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         // Initialize theme and language when app starts
+        ThemeManager.loadThemePreference(this)
         LanguageManager.loadLanguagePreference(this)
     }
 

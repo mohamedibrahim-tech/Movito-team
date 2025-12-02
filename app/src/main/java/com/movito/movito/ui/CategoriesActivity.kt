@@ -36,6 +36,9 @@ class CategoriesActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         MovitoApplication.LanguageChangeObserver.addListener(languageChangeListener)
         enableEdgeToEdge()
+
+        // Load theme and language preferences
+        themeViewModel.loadThemePreference(this)
         languageViewModel.loadLanguagePreference(this)
 
         setContent {
