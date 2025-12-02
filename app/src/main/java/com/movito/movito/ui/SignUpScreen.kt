@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.movito.movito.R
 import com.movito.movito.theme.MovitoTheme
+import com.movito.movito.ui.common.MovitoButton
 import com.movito.movito.viewmodel.AuthViewModel
 
 @Composable
@@ -170,30 +171,11 @@ fun SignUpScreen(
 
                 Spacer(Modifier.height(16.dp))
 
+                MovitoButton(
+                    text = stringResource(id = R.string.signup_button),
+                    onClick = { validateAndSignUp() }
+                )
 
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(48.dp)
-                        .background(
-                            brush = Brush.horizontalGradient(
-                                colors = listOf(
-                                    Color(0xFF9D5BFF),
-                                    Color(0xFF64DFDF)
-                                )
-                            ),
-                            shape = RoundedCornerShape(12.dp)
-                        )
-                        .clickable { validateAndSignUp() },
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        stringResource(id = R.string.signup_button),
-                        color = Color.White,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Medium
-                    )
-                }
             }
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -217,7 +199,7 @@ fun SignUpScreen(
             authState.message?.let {
                 Text(
                     text = it,
-                    color = Color(0xFF673AB7),
+                    color = MaterialTheme.colorScheme.secondary,
                     fontSize = 13.sp,
                     fontWeight = FontWeight.Medium
                 )

@@ -136,7 +136,10 @@ fun DetailsScreen(
                     heartAnimationTrigger = (heartAnimationTrigger ?: 0) + 1
                     scope.launch {
                         val result = snackbarHostState.showSnackbar(
-                            message = context.getString(R.string.details_added_to_favorites, movie.title),
+                            message = context.getString(
+                                R.string.details_added_to_favorites,
+                                movie.title
+                            ),
                             actionLabel = context.getString(R.string.details_favorites_button)
                         )
                         if (result.toString() == "ActionPerformed") {
@@ -178,7 +181,10 @@ fun DetailsScreen(
     }
 
     LaunchedEffect(uiState.error) {
-        uiState.error?.takeIf { it.contains("Trailer", ignoreCase = true) }?.let {
+       val show : Boolean = (uiState.error?.contains("Trailer", ignoreCase = true) == true ||
+               uiState.error?.contains("دعائي", ignoreCase = true) == true)
+        if (show)
+        uiState.error?.let {
             Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
             viewModel.onToastShown()
         }
@@ -189,9 +195,13 @@ fun DetailsScreen(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(id = R.string.details_title)) },                navigationIcon = {
+                title = { Text(stringResource(id = R.string.details_title)) }, navigationIcon = {
                     IconButton(onClick = onClickBackButton) {
-                        Icon(Icons.AutoMirrored.Default.KeyboardArrowLeft, stringResource(id = R.string.details_back_button_description))                    }
+                        Icon(
+                            Icons.AutoMirrored.Default.KeyboardArrowLeft,
+                            stringResource(id = R.string.details_back_button_description)
+                        )
+                    }
                 },
                 colors = androidx.compose.material3.TopAppBarDefaults.topAppBarColors(
                     containerColor = Color.Transparent
@@ -373,7 +383,8 @@ fun MoviePosterAndActionsSection(
 
             // Play Trailer button (20% height)
             MovitoButton(
-                text = stringResource(id = R.string.details_play_trailer_button),                modifier = Modifier.weight(0.20f),
+                text = stringResource(id = R.string.details_play_trailer_button),
+                modifier = Modifier.weight(0.20f),
                 isLoading = isLoading,
                 roundedCornerSize = 100.dp,
                 onClick = onPlayTrailer
@@ -511,7 +522,11 @@ fun GenresSection(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(movieGenreIds ?: emptyList(), key = { it }) { genreId ->
-                GenreChip(genreName = genres.firstOrNull { it.id == genreId }?.name ?: "Unknown")
+                GenreChip(
+                    genreName = genres.firstOrNull { it.id == genreId }?.name ?: stringResource(
+                        R.string.unknown
+                    )
+                )
             }
         }
     }
@@ -610,9 +625,9 @@ fun RecommendationsSection(
             ) {
                 Text(
                     text = if (error?.contains("Recommendations") == true) {
-                        "Error loading recommendations!\nCheck your connection."
+                        stringResource(R.string.error_loading_recommendations_no_Internet)
                     } else {
-                        "No recommendations available"
+                        stringResource(R.string.no_recommendations_available)
                     },
                     textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.bodyMedium,
@@ -631,7 +646,7 @@ fun shareUrl(context: Context, url: String) {
         type = "text/plain"
         putExtra(Intent.EXTRA_TEXT, url)
     }
-    val chooser = Intent.createChooser(intent, "Share the trailer link")
+    val chooser = Intent.createChooser(intent, context.getString(R.string.share_the_trailer_link))
     context.startActivity(chooser)
 }
 

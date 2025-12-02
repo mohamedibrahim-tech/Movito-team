@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -167,25 +166,25 @@ fun GenreCard(genre: Genre, onClick: () -> Unit) {
 @DrawableRes
 private fun mapGenreNameToDrawable(genreName: String): Int {
     return when (genreName.lowercase()) {
-        "action" -> R.drawable.action
-        "adventure" -> R.drawable.adventure
-        "animation" -> R.drawable.animation
-        "comedy" -> R.drawable.comedy
-        "crime" -> R.drawable.crime
-        "documentary" -> R.drawable.documentary
-        "drama" -> R.drawable.drama
-        "family" -> R.drawable.family
-        "fantasy" -> R.drawable.fantasy
-        "history" -> R.drawable.history
-        "horror" -> R.drawable.horror
-        "music" -> R.drawable.music
-        "mystery" -> R.drawable.mystery
-        "romance" -> R.drawable.romance
-        "science fiction" -> R.drawable.science_fiction
-        "tv movie" -> R.drawable.tv_movie
-        "thriller" -> R.drawable.thriller
-        "war" -> R.drawable.war
-        "western" -> R.drawable.western
+        "action"         , "حركة"         -> R.drawable.action
+        "adventure"      , "مغامرة"       -> R.drawable.adventure
+        "animation"      , "رسوم متحركة"  -> R.drawable.animation
+        "comedy"         , "كوميديا"      -> R.drawable.comedy
+        "crime"          , "جريمة"        -> R.drawable.crime
+        "documentary"    , "وثائقي"       -> R.drawable.documentary
+        "drama"          , "دراما"        -> R.drawable.drama
+        "family"         , "عائلي"        -> R.drawable.family
+        "fantasy"        , "فانتازيا"     -> R.drawable.fantasy
+        "history"        , "تاريخ"        -> R.drawable.history
+        "horror"         , "رعب"          -> R.drawable.horror
+        "music"          , "موسيقى"       -> R.drawable.music
+        "mystery"        , "غموض"         -> R.drawable.mystery
+        "romance"        , "رومنسية"      -> R.drawable.romance
+        "science fiction", "خيال علمي"    -> R.drawable.science_fiction
+        "tv movie"       , "فيلم تلفازي"  -> R.drawable.tv_movie
+        "thriller"       , "إثارة"        -> R.drawable.thriller
+        "war"            , "حرب"          -> R.drawable.war
+        "western"        , "غربي"         -> R.drawable.western
         else -> R.drawable.movito_logo // Default image as a fallback
     }
 }

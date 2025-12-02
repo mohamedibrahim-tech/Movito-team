@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import androidx.lifecycle.SavedStateHandle
 import com.movito.movito.BuildConfig
+import com.movito.movito.LanguageManager
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -27,6 +28,8 @@ data class SearchUiState(
 
 // Keys for SavedStateHandle
 private const val SEARCH_QUERY_KEY = "search_query"
+
+private val currentLanguage = LanguageManager.currentLanguage
 
 class SearchViewModel(
     private val savedStateHandle: SavedStateHandle // Renamed for clarity
@@ -58,6 +61,7 @@ class SearchViewModel(
             started = SharingStarted.WhileSubscribed(5000), // Start collection when a subscriber is present
             initialValue = uiState.value.searchQuery // Use the current value from the main state
         )
+
     // Main function to trigger the movie search, now using the query stored in the state.
     fun searchMovies() {
         val query = _uiState.value.searchQuery.trim() // Get current query from state
@@ -84,7 +88,8 @@ class SearchViewModel(
                 // Call the API.
                 val response = RetrofitInstance.api.searchMovies(
                     apiKey = apiKey,
-                    query = query // Use the current, trimmed query
+                    query = query, // Use the current, trimmed query
+                    language = currentLanguage.value
                 )
                 val movies = response.results.orEmpty() // Use orEmpty() to handle null results safely
 
@@ -97,7 +102,7 @@ class SearchViewModel(
                     it.copy(
                         isLoading = false,
                         movies = emptyList(), // Clear results on error
-                        error = "Failed to fetch movies: ${e.message ?: "Unknown error"}"
+                        error = if(currentLanguage.value == "ar") "تعذر تحميل الأفلام: ${e.message} خطأ عير معروف" else "Failed to fetch movies: ${e.message ?: "Unknown error"}"
                     )
                 }
             }

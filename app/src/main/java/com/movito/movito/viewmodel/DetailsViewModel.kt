@@ -3,6 +3,8 @@ package com.movito.movito.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.movito.movito.BuildConfig
+import com.movito.movito.LanguageManager
+import com.movito.movito.MovitoApplication
 import com.movito.movito.data.model.Genre
 import com.movito.movito.data.model.Movie
 import com.movito.movito.data.source.remote.RetrofitInstance
@@ -51,11 +53,15 @@ class DetailsViewModel : ViewModel() {
     val uiState: StateFlow<DetailsUiState> = _uiState.asStateFlow()
 
     private val apiKey = BuildConfig.TMDB_API_KEY
+    private val currentLanguage = LanguageManager.currentLanguage
 
     // Load genres automatically when ViewModel is created
     init {
         loadGenres()
     }
+    private fun noTrailerFoundMsg() = if(LanguageManager.currentLanguage.value == "ar")  "لم يتم العثور على مقطع دعائي." else "No Trailer Found."
+    private fun falidToLoadTrailerMsg(errorMsg: String?) = if(LanguageManager.currentLanguage.value == "ar")  "تعذر تحميل المقطع الدعائى: $errorMsg" else "Failed to load trailer: $errorMsg"
+    private fun unexpectedErrorMsg(errorMsg: String?) = if(LanguageManager.currentLanguage.value == "ar")  "حدث خطأ غير متوقع: $errorMsg" else "An unexpected error occurred: $errorMsg"
 
     /**
      * Loads all available movie genres from TMDB API.
@@ -68,7 +74,7 @@ class DetailsViewModel : ViewModel() {
             _uiState.update { it.copy(isLoading = true, error = null) }
 
             try {
-                val response = RetrofitInstance.api.getGenres(apiKey)
+                val response = RetrofitInstance.api.getGenres(apiKey, currentLanguage.value)
                 _uiState.update {
                     it.copy(
                         isLoading = false,
@@ -79,14 +85,14 @@ class DetailsViewModel : ViewModel() {
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        error = "Failed to load genres: ${e.message}"
+                        error = if(currentLanguage.value == "ar") "تعذر تحميل الفئات: ${e.message}" else "Failed to load genres: ${e.message}"
                     )
                 }
             } catch (e: Exception) {
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        error = "An unexpected error occurred: ${e.message}"
+                        error = unexpectedErrorMsg(e.message)
                     )
                 }
             }
@@ -102,15 +108,15 @@ class DetailsViewModel : ViewModel() {
     fun loadRecommendations(movieId: Int){
         viewModelScope.launch {
             try {
-                val response = RetrofitInstance.api.getMovieRecommendations(movieId, apiKey)
+                val response = RetrofitInstance.api.getMovieRecommendations(movieId, apiKey, currentLanguage.value)
                 _uiState.update { it.copy(recommendedMovies = response.results) }
             } catch (e: IOException) {
                 _uiState.update {
-                    it.copy(isLoading = false, error = "Failed to load Recommendations: ${e.message}")
+                    it.copy(isLoading = false, error = if (currentLanguage.value == "ar") "تعذر تحميل الإتراحات: ${e.message}" else "Failed to load Recommendations: ${e.message}" )
                 }
             } catch (e: Exception) {
                 _uiState.update {
-                    it.copy(isLoading = false, error = "An unexpected error occurred: ${e.message}")
+                    it.copy(isLoading = false, error = unexpectedErrorMsg(e.message))
                 }
             }
         }
@@ -129,7 +135,7 @@ class DetailsViewModel : ViewModel() {
             _uiState.update { it.copy(isLoading = true, error = null) }
 
             try {
-                val response = RetrofitInstance.api.getMovieVideos(movieId, apiKey)
+                val response = RetrofitInstance.api.getMovieVideos(movieId, apiKey, currentLanguage.value)
                 val trailer = findBestTrailer(response.results)
                 val url = trailer?.key?.let { "https://www.youtube.com/watch?v=$it" }
 
@@ -139,16 +145,16 @@ class DetailsViewModel : ViewModel() {
                     }
                 } else {
                     _uiState.update {
-                        it.copy(isLoading = false, error = "No Trailer Found.")
+                        it.copy(isLoading = false, error = noTrailerFoundMsg())
                     }
                 }
             } catch (e: IOException) {
                 _uiState.update {
-                    it.copy(isLoading = false, error = "Failed to load trailer: ${e.message}")
+                    it.copy(isLoading = false, error = falidToLoadTrailerMsg(e.message))
                 }
             } catch (e: Exception) {
                 _uiState.update {
-                    it.copy(isLoading = false, error = "An unexpected error occurred: ${e.message}")
+                    it.copy(isLoading = false, error = unexpectedErrorMsg(e.message))
                 }
             }
         }
@@ -164,19 +170,20 @@ class DetailsViewModel : ViewModel() {
     fun prepareShareUrl(movieId: Int) {
         viewModelScope.launch {
             try {
-                val response = RetrofitInstance.api.getMovieVideos(movieId, apiKey)
+                val response = RetrofitInstance.api.getMovieVideos(movieId, apiKey, currentLanguage.value)
                 val trailer = findBestTrailer(response.results)
+
                 val url = trailer?.key?.let { "https://www.youtube.com/watch?v=$it" }
 
                 if (url != null) {
                     _uiState.update { it.copy(urlToShare = url) }
                 } else {
-                    _uiState.update { it.copy(error = "No Trailer Found.") }
+                    _uiState.update { it.copy(error = noTrailerFoundMsg()) }
                 }
             } catch (e: IOException) {
-                _uiState.update { it.copy(error = "Failed to load trailer: ${e.message}") }
+                _uiState.update { it.copy(error = falidToLoadTrailerMsg(e.message)) }
             } catch (e: Exception) {
-                _uiState.update { it.copy(error = "An unexpected error occurred: ${e.message}") }
+                _uiState.update { it.copy(error = falidToLoadTrailerMsg(e.message)) }
             }
         }
     }

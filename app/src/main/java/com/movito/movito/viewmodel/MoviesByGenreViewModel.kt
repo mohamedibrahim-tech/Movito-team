@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.movito.movito.BuildConfig
+import com.movito.movito.LanguageManager
 import com.movito.movito.data.source.remote.RetrofitInstance
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,8 +19,11 @@ class MoviesByGenreViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
     val uiState: StateFlow<MoviesUiState> = _uiState.asStateFlow()
 
     private val apiKey = BuildConfig.TMDB_API_KEY
+    private val currentLanguage = LanguageManager.currentLanguage
     private var currentPage = 1
     private val genreId: Int = savedStateHandle.get<Int>("genreId")!!
+
+    private fun unexpectedErrorMsg(errorMsg: String?) = if(LanguageManager.currentLanguage.value == "ar")  "حدث خطأ غير متوقع: $errorMsg" else "An unexpected error occurred: $errorMsg"
 
     init {
         loadMovies(isLoading = true)
@@ -43,7 +47,8 @@ class MoviesByGenreViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
                 val response = RetrofitInstance.api.discoverMoviesByGenre(
                     apiKey = apiKey,
                     page = currentPage,
-                    genreId = genreId
+                    genreId = genreId,
+                    language = currentLanguage.value
                 )
                 _uiState.update { currentState ->
                     val currentMovies = if (isRefreshing) emptyList() else currentState.movies
@@ -75,7 +80,7 @@ class MoviesByGenreViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
                     it.copy(
                         isLoading = false,
                         isRefreshing = false,
-                        error = "An unexpected error occurred: ${e.message}"
+                        error = unexpectedErrorMsg(e.message)
                     )
                 }
             }
@@ -112,14 +117,14 @@ class MoviesByGenreViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
                 _uiState.update {
                     it.copy(
                         isLoadingMore = false,
-                        error = "Failed to load more movies: ${e.message}"
+                        error = if (currentLanguage.value == "ar") "فشل تحميل المزيد من الأفلام ${e.message}" else "Failed to load more movies: ${e.message}"
                     )
                 }
             } catch (e: Exception) {
                 _uiState.update {
                     it.copy(
                         isLoadingMore = false,
-                        error = "An unexpected error occurred: ${e.message}"
+                        error = unexpectedErrorMsg(e.message)
                     )
                 }
             }

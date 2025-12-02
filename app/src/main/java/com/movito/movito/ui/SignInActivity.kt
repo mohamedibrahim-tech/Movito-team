@@ -23,21 +23,31 @@ import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.permissions.shouldShowRationale
 import com.google.firebase.auth.FirebaseAuth
+import com.movito.movito.MovitoApplication
 import com.movito.movito.NotificationPreferences
 import com.movito.movito.sendWelcomeNotification
 import com.movito.movito.theme.MovitoTheme
 import com.movito.movito.viewmodel.FavoritesViewModel
+import com.movito.movito.viewmodel.LanguageViewModel
 import com.movito.movito.viewmodel.ThemeViewModel
 
 @OptIn(ExperimentalPermissionsApi::class)
 class SignInActivity : ComponentActivity() {
     private val themeViewModel: ThemeViewModel by viewModels()
+    private val languageViewModel: LanguageViewModel by viewModels()
+
+    override fun attachBaseContext(newBase: Context) {
+        val savedLanguage = MovitoApplication.getSavedLanguage(newBase)
+        val updatedContext = MovitoApplication.updateBaseContextLocale(newBase, savedLanguage)
+        super.attachBaseContext(updatedContext)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // SPLASH SCREEN MUST BE INSTALLED BEFORE super.onCreate()
         val splashScreen = installSplashScreen()
         var keepSplashOnScreen by mutableStateOf(true)
         splashScreen.setKeepOnScreenCondition { keepSplashOnScreen }
-
+        // SUPER MUST BE CALLED AFTER installSplashScreen BUT BEFORE ANYTHING ELSE
         super.onCreate(savedInstanceState)
 
         //  Notification Channel
@@ -52,6 +62,7 @@ class SignInActivity : ComponentActivity() {
         }
 
         enableEdgeToEdge()
+        languageViewModel.loadLanguagePreference(this)
         setContent {
             val isDarkTheme by themeViewModel.isDarkTheme.collectAsState()
             val context = LocalContext.current
