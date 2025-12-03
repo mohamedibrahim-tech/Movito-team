@@ -30,8 +30,10 @@ import com.movito.movito.theme.MovitoTheme
 import com.movito.movito.viewmodel.FavoritesViewModel
 import com.movito.movito.viewmodel.LanguageViewModel
 import com.movito.movito.viewmodel.ThemeViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
 @OptIn(ExperimentalPermissionsApi::class)
+@AndroidEntryPoint
 class SignInActivity : ComponentActivity() {
     private val themeViewModel: ThemeViewModel by viewModels()
     private val languageViewModel: LanguageViewModel by viewModels()

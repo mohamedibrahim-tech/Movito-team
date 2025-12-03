@@ -7,6 +7,8 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     id("com.google.gms.google-services")
     id("kotlin-parcelize")
+    id("kotlin-kapt")
+    alias(libs.plugins.hilt)
 }
 
 android {
@@ -22,7 +24,7 @@ android {
         versionCode = 1
         versionName = "5.0.4"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "com.movito.movito.HiltTestRunner"
 
         val localProperties = Properties()
         val localPropertiesFile = rootProject.file("local.properties")
@@ -124,5 +126,11 @@ dependencies {
     // Testing
     androidTestImplementation("androidx.test.espresso:espresso-intents:3.5.1")
     androidTestImplementation("io.mockk:mockk-android:1.13.3")
+    
+    // Hilt
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
+    androidTestImplementation(libs.hilt.android.testing)
+    kaptAndroidTest(libs.hilt.compiler)
 
 }
