@@ -128,8 +128,7 @@ fun SignUpScreen(
                 text = stringResource(id = R.string.signup_title),
                 color = MaterialTheme.colorScheme.onBackground,
                 fontSize = 24.sp,
-                fontWeight = FontWeight.SemiBold,
-                modifier = Modifier.testTag("SignUpTitle")
+                fontWeight = FontWeight.SemiBold
             )
             Spacer(Modifier.height(32.dp))
 

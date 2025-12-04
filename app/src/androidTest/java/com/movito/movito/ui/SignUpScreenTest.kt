@@ -31,7 +31,7 @@ class SignUpScreenTest {
             )
         }
 
-        composeTestRule.onNodeWithTag("SignUpTitle").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Sign Up").assertIsDisplayed()
         composeTestRule.onNodeWithContentDescription("Email").assertIsDisplayed()
         composeTestRule.onNodeWithContentDescription("Password").assertIsDisplayed()
         composeTestRule.onNodeWithContentDescription("Confirm Password").assertIsDisplayed()

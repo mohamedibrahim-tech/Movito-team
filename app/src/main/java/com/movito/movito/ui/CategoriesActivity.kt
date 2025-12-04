@@ -44,12 +44,14 @@ class CategoriesActivity : ComponentActivity() {
             // Handle activity restart when language changes
             LaunchedEffect(shouldRestartActivity) {
                 if (shouldRestartActivity) {
+                    // Consume the event first to prevent a restart loop
+                    languageViewModel.onActivityRestarted()
+
                     // Restart this activity
                     val intent = Intent(this@CategoriesActivity, CategoriesActivity::class.java)
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
                     startActivity(intent)
                     finish()
-                    languageViewModel.onActivityRestarted()
                 }
             }
 
