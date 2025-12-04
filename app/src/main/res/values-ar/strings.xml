@@ -160,5 +160,7 @@
     <string name="movies">أفلام</string>
     <string name="movies_by_genre_back_button_description">رجوع</string>
     <string name="movies_by_genre_refresh_button_description">تحديث</string>
-    <string name="movies_by_genre_failed_to_load">فشل تحميل الأفلام</string>
+    <string name="movies_by_genre_failed_to_load">فشل تحميل الأفلام: %1$s</string>
+    <string name="movies_by_genre_failed_to_load_more">فشل تحميل المزيد من الأفلام: %1$s</string>
+    <string name="unexpected_error">حدث خطأ غير متوقع: %1$s</string>
 </resources>
