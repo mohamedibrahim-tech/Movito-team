@@ -12,7 +12,6 @@ import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.movito.movito.viewmodel.AuthViewModel
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Rule
@@ -32,7 +31,8 @@ class SignInScreenTest {
                 authViewModel = viewModel(),
                 onSignInSuccess = {},
                 onSignUpClicked = {},
-                onForgotPasswordClicked = {}
+                onForgotPasswordClicked = {},
+                onLanguageChange = {}
             )
         }
 
@@ -51,7 +51,8 @@ class SignInScreenTest {
                 authViewModel = viewModel(),
                 onSignInSuccess = {},
                 onSignUpClicked = {},
-                onForgotPasswordClicked = {}
+                onForgotPasswordClicked = {},
+                onLanguageChange = {}
             )
         }
 
@@ -70,7 +71,8 @@ class SignInScreenTest {
                 authViewModel = viewModel(),
                 onSignInSuccess = {},
                 onSignUpClicked = { signUpClicked = true },
-                onForgotPasswordClicked = {}
+                onForgotPasswordClicked = {},
+                onLanguageChange = {}
             )
         }
 
@@ -86,7 +88,8 @@ class SignInScreenTest {
                 authViewModel = viewModel(),
                 onSignInSuccess = {},
                 onSignUpClicked = {},
-                onForgotPasswordClicked = { forgotPasswordClicked = true }
+                onForgotPasswordClicked = { forgotPasswordClicked = true },
+                onLanguageChange = {}
             )
         }
 
@@ -101,7 +104,8 @@ class SignInScreenTest {
             SignInScreen(
                 onSignInSuccess = { signInSuccess = true },
                 onSignUpClicked = {},
-                onForgotPasswordClicked = {}
+                onForgotPasswordClicked = {},
+                onLanguageChange = {}
             )
         }
 
@@ -122,7 +126,8 @@ class SignInScreenTest {
             SignInScreen(
                 onSignInSuccess = { signInSuccess = true },
                 onSignUpClicked = { },
-                onForgotPasswordClicked = { }
+                onForgotPasswordClicked = { },
+                onLanguageChange = {}
             )
         }
 
