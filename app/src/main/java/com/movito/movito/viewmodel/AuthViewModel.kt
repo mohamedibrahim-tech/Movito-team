@@ -21,9 +21,11 @@ data class AuthState(
     val isInitialCheckDone: Boolean = false
 )
 
-class AuthViewModel : ViewModel() {
+class AuthViewModel(
+    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
+) : ViewModel() {
 
-    private val auth = FirebaseAuth.getInstance()
+   // private val auth = FirebaseAuth.getInstance()
 
     private val _authState = MutableStateFlow(AuthState())
     val authState: StateFlow<AuthState> = _authState
@@ -51,9 +53,19 @@ class AuthViewModel : ViewModel() {
         auth.removeAuthStateListener(authStateListener)
     }
 
-    private fun isValidEmail(email: String): Boolean {
-        return Patterns.EMAIL_ADDRESS.matcher(email).matches()
-    }
+//    private fun isValidEmail(email: String): Boolean {
+//        return Patterns.EMAIL_ADDRESS.matcher(email).matches()
+//    }
+//private fun isValidEmail(email: String): Boolean {
+//    return email.isNotEmpty() &&
+//            email.contains("@") &&
+//            email.contains(".") &&
+//            email.indexOf("@") < email.lastIndexOf(".")
+//}
+private fun isValidEmail(email: String): Boolean {
+    val emailPattern = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$".toRegex()
+    return emailPattern.matches(email)
+}
 
     // SIGN UP with Email Verification
     fun signUpWithEmailPassword(email: String, password: String) {
