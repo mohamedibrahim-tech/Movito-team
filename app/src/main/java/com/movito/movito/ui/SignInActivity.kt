@@ -67,9 +67,21 @@ class SignInActivity : ComponentActivity() {
         languageViewModel.loadLanguagePreference(this)
         setContent {
             val isDarkTheme by themeViewModel.isDarkTheme.collectAsState()
+            val shouldRestartActivity by languageViewModel.shouldRestartActivity.collectAsState()
             val context = LocalContext.current
             var signInSuccess by remember { mutableStateOf(false) }
             var permissionRequested by remember { mutableStateOf(false) }
+
+            // Handle activity restart when language changes
+            LaunchedEffect(shouldRestartActivity) {
+                if (shouldRestartActivity) {
+                    languageViewModel.onActivityRestarted()
+                    val intent = Intent(this@SignInActivity, SignInActivity::class.java)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+                    startActivity(intent)
+                    finish()
+                }
+            }
 
             // Permission state
             val notificationPermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -150,10 +162,13 @@ class SignInActivity : ComponentActivity() {
                                 }, 500)
                             },
                             onSignUpClicked = {
-                                startActivity(Intent(this, SignUpActivity::class.java))
+                                startActivity(Intent(this@SignInActivity, SignUpActivity::class.java))
                             },
                             onForgotPasswordClicked = {
-                                startActivity(Intent(this, ForgotPasswordActivity::class.java))
+                                startActivity(Intent(this@SignInActivity, ForgotPasswordActivity::class.java))
+                            },
+                            onLanguageChange = { langCode ->
+                                languageViewModel.setLanguage(langCode, context)
                             }
                         )
                     }

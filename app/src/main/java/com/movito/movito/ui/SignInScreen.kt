@@ -2,6 +2,7 @@ package com.movito.movito.ui
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -128,7 +129,8 @@ fun SignInScreen(
     authViewModel: AuthViewModel = viewModel(),
     onSignInSuccess: () -> Unit,
     onSignUpClicked: () -> Unit,
-    onForgotPasswordClicked: () -> Unit
+    onForgotPasswordClicked: () -> Unit,
+    onLanguageChange: (String) -> Unit
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -162,9 +164,19 @@ fun SignInScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 20.dp, vertical = 60.dp),
+                    .padding(horizontal = 20.dp, vertical = 20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                    TextButton(onClick = { onLanguageChange("en") }) {
+                        Text("English")
+                    }
+                    TextButton(onClick = { onLanguageChange("ar") }) {
+                        Text("العربية")
+                    }
+                }
+
+                Spacer(Modifier.height(40.dp))
 
                 MovitoLogo()
                 Spacer(Modifier.height(48.dp))
@@ -272,7 +284,7 @@ fun SignInScreen(
 @Composable
 fun FinalSignInScreenPreviewDark() {
     MovitoTheme(darkTheme = true) {
-        SignInScreen(onSignInSuccess = {}, onSignUpClicked = {}, onForgotPasswordClicked = {})
+        SignInScreen(onSignInSuccess = {}, onSignUpClicked = {}, onForgotPasswordClicked = {}, onLanguageChange = {})
     }
 }
 
@@ -284,6 +296,6 @@ fun FinalSignInScreenPreviewDark() {
 @Composable
 fun FinalSignInScreenPreviewLight() {
     MovitoTheme(darkTheme = false) {
-        SignInScreen(onSignInSuccess = {}, onSignUpClicked = {}, onForgotPasswordClicked = {})
+        SignInScreen(onSignInSuccess = {}, onSignUpClicked = {}, onForgotPasswordClicked = {}, onLanguageChange = {})
     }
 }
