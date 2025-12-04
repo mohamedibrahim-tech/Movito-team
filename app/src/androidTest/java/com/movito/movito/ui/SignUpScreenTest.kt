@@ -3,17 +3,14 @@ package com.movito.movito.ui
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.movito.movito.viewmodel.AuthViewModel
-import com.movito.movito.viewmodel.AuthState
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verify
-import kotlinx.coroutines.flow.MutableStateFlow
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -24,23 +21,21 @@ class SignUpScreenTest {
     @get:Rule
     val composeTestRule = createComposeRule()
 
-    private val mockAuthViewModel: AuthViewModel = mockk(relaxed = true)
-
     @Test
     fun signUpScreen_InitialState_CorrectElementsDisplayed() {
         composeTestRule.setContent {
             SignUpScreen(
-                authViewModel = mockAuthViewModel,
+                authViewModel = viewModel(),
                 onSignUpSuccess = {},
                 onSignInClicked = {}
             )
         }
 
-        composeTestRule.onNodeWithText("Sign Up").assertIsDisplayed()
+        composeTestRule.onNodeWithTag("SignUpTitle").assertIsDisplayed()
         composeTestRule.onNodeWithContentDescription("Email").assertIsDisplayed()
         composeTestRule.onNodeWithContentDescription("Password").assertIsDisplayed()
         composeTestRule.onNodeWithContentDescription("Confirm Password").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Sign Up").assertIsDisplayed()
+        composeTestRule.onNodeWithTag("SignUpButton").assertIsDisplayed()
         composeTestRule.onNodeWithText("Login").assertIsDisplayed()
     }
 
@@ -48,13 +43,13 @@ class SignUpScreenTest {
     fun signUpScreen_Validation_EmptyEmail_ShowsError() {
         composeTestRule.setContent {
             SignUpScreen(
-                authViewModel = mockAuthViewModel,
+                authViewModel = viewModel(),
                 onSignUpSuccess = {},
                 onSignInClicked = {}
             )
         }
 
-        composeTestRule.onNodeWithText("Sign Up").performClick()
+        composeTestRule.onNodeWithTag("SignUpButton").performClick()
         composeTestRule.onNodeWithText("Email is required").assertIsDisplayed()
     }
 
@@ -62,54 +57,53 @@ class SignUpScreenTest {
     fun signUpScreen_Validation_InvalidEmail_ShowsError() {
         composeTestRule.setContent {
             SignUpScreen(
-                authViewModel = mockAuthViewModel,
+                authViewModel = viewModel(),
                 onSignUpSuccess = {},
                 onSignInClicked = {}
             )
         }
 
         composeTestRule.onNodeWithContentDescription("Email").performTextInput("invalid-email")
-        composeTestRule.onNodeWithText("Sign Up").performClick()
+        composeTestRule.onNodeWithTag("SignUpButton").performClick()
         composeTestRule.onNodeWithText("Invalid email format").assertIsDisplayed()
     }
 
     @Test
     fun signUpScreen_SuccessfulSignUp_onSignUpSuccessCalled() {
-        val onSignUpSuccess: () -> Unit = mockk(relaxed = true)
-        val authState = MutableStateFlow(AuthState(message = "Verification email sent."))
-        every { mockAuthViewModel.authState } returns authState
-
+        var signUpSuccess = false
         composeTestRule.setContent {
             SignUpScreen(
-                authViewModel = mockAuthViewModel,
-                onSignUpSuccess = onSignUpSuccess,
+                authViewModel = viewModel(),
+                onSignUpSuccess = { signUpSuccess = true },
                 onSignInClicked = {}
             )
         }
 
-        composeTestRule.onNodeWithContentDescription("Email").performTextInput("test@example.com")
-        composeTestRule.onNodeWithContentDescription("Password").performTextInput("password")
-        composeTestRule.onNodeWithContentDescription("Confirm Password").performTextInput("password")
-        composeTestRule.onNodeWithText("Sign Up").performClick()
+        // Use a unique email to avoid conflicts with existing accounts
+        val uniqueEmail = "testuser_${System.currentTimeMillis()}@example.com"
+        composeTestRule.onNodeWithContentDescription("Email").performTextInput(uniqueEmail)
+        composeTestRule.onNodeWithContentDescription("Password").performTextInput("password123")
+        composeTestRule.onNodeWithContentDescription("Confirm Password").performTextInput("password123")
+        composeTestRule.onNodeWithTag("SignUpButton").performClick()
 
-        composeTestRule.waitForIdle()
-        verify { onSignUpSuccess() }
+        composeTestRule.waitUntil(timeoutMillis = 15_000) {
+            signUpSuccess
+        }
+        assertTrue(signUpSuccess)
     }
 
     @Test
     fun signUpScreen_SignInClicked_onSignInClickedCalled() {
-        val onSignInClicked: () -> Unit = mockk(relaxed = true)
-
+        var signInClicked = false
         composeTestRule.setContent {
             SignUpScreen(
-                authViewModel = mockAuthViewModel,
+                authViewModel = viewModel(),
                 onSignUpSuccess = {},
-                onSignInClicked = onSignInClicked
+                onSignInClicked = { signInClicked = true }
             )
         }
 
         composeTestRule.onNodeWithText("Login").performClick()
-
-        verify { onSignInClicked() }
+        assertTrue(signInClicked)
     }
 }

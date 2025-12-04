@@ -8,11 +8,11 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
 import com.movito.movito.R
 import com.movito.movito.data.model.Movie
 import com.movito.movito.viewmodel.MoviesUiState
-import io.mockk.mockk
-import io.mockk.verify
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -36,15 +36,15 @@ class MoviesByGenreScreenTest {
             )
         }
 
-        // The loading indicator is a CircularProgressIndicator, which does not have a content description by default.
-        // We can check for its existence by asserting that the error and success states are not displayed.
-        composeTestRule.onNodeWithText("Failed to load movies").assertDoesNotExist()
+        val errorMessage = InstrumentationRegistry.getInstrumentation().targetContext.getString(R.string.movies_by_genre_failed_to_load)
+        composeTestRule.onNodeWithText(errorMessage).assertDoesNotExist()
         composeTestRule.onNodeWithText("Movie 1").assertDoesNotExist()
 
     }
 
     @Test
     fun moviesByGenreScreen_ErrorState_ShowsErrorMessage() {
+        val errorMessage = InstrumentationRegistry.getInstrumentation().targetContext.getString(R.string.movies_by_genre_failed_to_load)
         composeTestRule.setContent {
             MoviesByGenreContent(
                 uiState = MoviesUiState(error = "Failed to load"),
@@ -56,7 +56,7 @@ class MoviesByGenreScreenTest {
             )
         }
 
-        composeTestRule.onNodeWithText("Failed to load movies").assertIsDisplayed()
+        composeTestRule.onNodeWithText(errorMessage).assertIsDisplayed()
     }
 
     @Test
@@ -78,25 +78,25 @@ class MoviesByGenreScreenTest {
 
     @Test
     fun moviesByGenreScreen_RefreshAction_CallsOnRefresh() {
-        val onRefresh: () -> Unit = mockk(relaxed = true)
+        var refreshClicked = false
         composeTestRule.setContent {
             MoviesByGenreContent(
                 uiState = MoviesUiState(),
                 gridState = rememberLazyGridState(),
                 genreName = "Action",
-                onRefresh = onRefresh,
+                onRefresh = { refreshClicked = true },
                 onLoadMore = {},
                 onBackPressed = {}
             )
         }
 
         composeTestRule.onNodeWithContentDescription("Refresh").performClick()
-        verify { onRefresh() }
+        assertTrue(refreshClicked)
     }
 
     @Test
     fun moviesByGenreScreen_BackPressedAction_CallsOnBackPressed() {
-        val onBackPressed: () -> Unit = mockk(relaxed = true)
+        var backPressed = false
         composeTestRule.setContent {
             MoviesByGenreContent(
                 uiState = MoviesUiState(),
@@ -104,11 +104,11 @@ class MoviesByGenreScreenTest {
                 genreName = "Action",
                 onRefresh = {},
                 onLoadMore = {},
-                onBackPressed = onBackPressed
+                onBackPressed = { backPressed = true }
             )
         }
 
         composeTestRule.onNodeWithContentDescription("Back").performClick()
-        verify { onBackPressed() }
+        assertTrue(backPressed)
     }
 }

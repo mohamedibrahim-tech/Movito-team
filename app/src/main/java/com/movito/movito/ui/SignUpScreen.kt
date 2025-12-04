@@ -34,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
@@ -127,7 +128,8 @@ fun SignUpScreen(
                 text = stringResource(id = R.string.signup_title),
                 color = MaterialTheme.colorScheme.onBackground,
                 fontSize = 24.sp,
-                fontWeight = FontWeight.SemiBold
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.testTag("SignUpTitle")
             )
             Spacer(Modifier.height(32.dp))
 
@@ -182,7 +184,8 @@ fun SignUpScreen(
 
                 MovitoButton(
                     text = stringResource(id = R.string.signup_button),
-                    onClick = { validateAndSignUp() }
+                    onClick = { validateAndSignUp() },
+                    modifier = Modifier.testTag("SignUpButton")
                 )
 
             }
