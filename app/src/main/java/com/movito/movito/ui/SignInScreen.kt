@@ -139,7 +139,8 @@ fun SignInScreen(
             authViewModel.resetState()
         }
         if (authState.error != null) {
-            Toast.makeText(context, authState.error, Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, authState.error, Toast.LENGTH_SHORT).apply {
+                setText(authState.error) /* This ensures multi-line display*/ }.show()
             authViewModel.resetState()
         }
     }

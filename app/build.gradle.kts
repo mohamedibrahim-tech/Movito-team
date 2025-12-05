@@ -71,6 +71,7 @@ dependencies {
     implementation(libs.androidx.compose.foundation.layout)
     implementation(libs.firebase.crashlytics.buildtools)
     implementation(libs.androidx.ui)
+    implementation(libs.androidx.hilt.common)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -115,4 +116,10 @@ dependencies {
 
     implementation("com.google.accompanist:accompanist-permissions:0.34.0")
 
+    // WorkManager for notifications
+    implementation("androidx.work:work-runtime-ktx:2.9.0")
+
+    //ListenableFuture compatibility
+    implementation("androidx.concurrent:concurrent-futures:1.1.0")
+    implementation("com.google.guava:guava:31.0.1-android")
 }

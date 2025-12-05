@@ -32,7 +32,6 @@ class DetailsActivity : ComponentActivity() {
         languageViewModel.loadLanguagePreference(this)
         setContent {
             val isDarkTheme by themeViewModel.isDarkTheme.collectAsState()
-            val currentLanguage by languageViewModel.currentLanguage.collectAsState()
             val movie: Movie? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 intent.getParcelableExtra("movie", Movie::class.java)
             } else {

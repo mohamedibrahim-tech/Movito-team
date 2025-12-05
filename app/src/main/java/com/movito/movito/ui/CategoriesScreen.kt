@@ -48,11 +48,11 @@ import com.movito.movito.viewmodel.CategoriesUiState
 import com.movito.movito.viewmodel.CategoriesViewModel
 
 @Composable
-fun CategoriesScreen(viewModel: CategoriesViewModel = viewModel()) {
+fun CategoriesScreen(viewModel: CategoriesViewModel = viewModel(), snackbarHost: @Composable () -> Unit = {},) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
 
-    CategoriesScreenContent(uiState = uiState) { genre ->
+    CategoriesScreenContent(uiState = uiState, snackbarHost = snackbarHost) { genre ->
         val intent = Intent(context, MoviesByGenreActivity::class.java).apply {
             putExtra("genreId", genre.id)
             putExtra("genreName", genre.name)
@@ -71,6 +71,8 @@ fun CategoriesScreen(viewModel: CategoriesViewModel = viewModel()) {
 fun CategoriesScreenContent(
     modifier: Modifier = Modifier,
     uiState: CategoriesUiState,
+    //used to remind user to grant the notification permeation
+    snackbarHost: @Composable () -> Unit = {},
     onGenreClick: (Genre) -> Unit
 ) {
     Scaffold(
@@ -86,7 +88,8 @@ fun CategoriesScreenContent(
         },
         bottomBar = {
             MovitoNavBar(selectedItem = "home")
-        }
+        },
+        snackbarHost = snackbarHost
     ) { innerPadding ->
         Box(
             modifier = Modifier

@@ -79,6 +79,7 @@ fun SearchScreen(
     // Show a snackbar when an error occurs
     LaunchedEffect(uiState.error) {
         uiState.error?.let {
+            snackbarHostState.currentSnackbarData?.dismiss()
             snackbarHostState.showSnackbar(message = it, duration = SnackbarDuration.Short)
             // viewModel.errorShown() // Notify ViewModel that the error has been shown
         }
