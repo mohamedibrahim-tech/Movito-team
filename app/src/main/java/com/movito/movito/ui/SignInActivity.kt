@@ -1,19 +1,18 @@
 package com.movito.movito.ui
 
-import android.Manifest
+import android.Manifest.permission.POST_NOTIFICATIONS
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.widget.Toast
+import android.os.Handler
+import android.os.Looper
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -21,14 +20,12 @@ import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
-import com.google.accompanist.permissions.shouldShowRationale
 import com.google.firebase.auth.FirebaseAuth
 import com.movito.movito.MovitoApplication
 import com.movito.movito.notifications.BatteryPermissionHelper
@@ -40,7 +37,6 @@ import com.movito.movito.viewmodel.FavoritesViewModel
 import com.movito.movito.viewmodel.LanguageViewModel
 import com.movito.movito.viewmodel.ThemeViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import android.Manifest.permission.POST_NOTIFICATIONS
 
 /**
  * USER AUTHENTICATION AND ONBOARDING ACTIVITY
@@ -189,7 +185,7 @@ class SignInActivity : ComponentActivity() {
             val notificationPermission =
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     rememberPermissionState(
-                        permission = Manifest.permission.POST_NOTIFICATIONS
+                        permission = POST_NOTIFICATIONS
                     ) { isGranted ->
                         val prefs = NotificationPreferences.getInstance(context)
                         prefs.setNotificationsEnabled(isGranted)
@@ -207,7 +203,7 @@ class SignInActivity : ComponentActivity() {
              * 4. Schedule personalized notifications
              * 5. Navigate to main app
              */
-            LaunchedEffect(signInSuccess, currentLanguage) {
+            LaunchedEffect(signInSuccess) {
                 if (signInSuccess) {
                     val prefs = NotificationPreferences.getInstance(context)
 
@@ -253,6 +249,9 @@ class SignInActivity : ComponentActivity() {
                                     ForgotPasswordActivity::class.java
                                 )
                             )
+                        },
+                        onLanguageChange = { langCode ->
+                            languageViewModel.setLanguage(langCode, context)
                         }
                     )
                 }
@@ -283,7 +282,6 @@ class SignInActivity : ComponentActivity() {
     }
 
 
-
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = "Welcome Channel"
@@ -294,9 +292,11 @@ class SignInActivity : ComponentActivity() {
                 description = descriptionText
             }
 
-            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
         }
+    }
+
     /**
      * Determines if notifications should be auto-enabled for the user.
      * New users (no preference set) get notifications by default (opt-out model).
@@ -321,7 +321,7 @@ class SignInActivity : ComponentActivity() {
      * @since 3 Dec 2025
      */
     private fun navigateToCategories(context: Context) {
-        android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+        Handler(Looper.getMainLooper()).postDelayed({
             val intent = Intent(context, CategoriesActivity::class.java)
             context.startActivity(intent)
             finish()
