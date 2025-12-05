@@ -125,7 +125,6 @@ fun CustomAuthTextField(
 
 @Composable
 fun SignInScreen(
-    modifier: Modifier = Modifier,
     authViewModel: AuthViewModel = viewModel(),
     onSignInSuccess: () -> Unit,
     onSignUpClicked: () -> Unit,
@@ -151,13 +150,9 @@ fun SignInScreen(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         containerColor = MaterialTheme.colorScheme.background,
-    )
-    { paddingValues ->
-
+    ) { paddingValues ->
         Box(
-            modifier = Modifier
-                .padding(paddingValues)
-                .fillMaxSize(),
+            modifier = Modifier.padding(paddingValues).fillMaxSize(),
             contentAlignment = Alignment.TopCenter
         )
         {

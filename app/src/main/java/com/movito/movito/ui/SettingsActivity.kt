@@ -42,6 +42,8 @@ class SettingsActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         MovitoApplication.LanguageChangeObserver.addListener(languageChangeListener)
         enableEdgeToEdge()
+        // Load theme and language preferences
+        themeViewModel.loadThemePreference(this)
         languageViewModel.loadLanguagePreference(this)
         setContent {
             val authState by authViewModel.authState.collectAsState()
@@ -65,7 +67,7 @@ class SettingsActivity : ComponentActivity() {
                 MovitoTheme(darkTheme = isDarkTheme) {
                     SettingsScreen(
                         onThemeToggle = { newTheme ->
-                            themeViewModel.toggleTheme(newTheme)
+                            themeViewModel.toggleTheme(newTheme, this@SettingsActivity)
                         },
                         onSignOut = {
                             authViewModel.signOut()

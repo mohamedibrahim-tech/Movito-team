@@ -28,6 +28,8 @@ class MoviesByGenreActivity : ComponentActivity() {
         val genreName = intent.getStringExtra("genreName") ?: getString(R.string.movies)
 
         enableEdgeToEdge()
+        // Load theme preference
+        themeViewModel.loadThemePreference(this)
         languageViewModel.loadLanguagePreference(this)
         setContent {
             val isDarkTheme by themeViewModel.isDarkTheme.collectAsState()

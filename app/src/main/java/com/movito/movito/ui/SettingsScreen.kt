@@ -189,7 +189,7 @@ fun SettingsScreen(
             }
 
             // Language Section
-            LanguageSection()
+            LanguageSection(languageViewModel = languageViewModel)
 
             // Appearance Section
             SettingsCards {
@@ -322,12 +322,27 @@ fun SettingsScreen(
     }
 }
 
+/**
+ * LANGUAGE SECTION COMPOSABLE
+ *
+ * PURPOSE: Provides language selection between English and Arabic
+ * with visual feedback for the current selection.
+ *
+ * FEATURES:
+ * - Bilingual support with proper localization
+ * - Activity restart on language change
+ * - Visual border indication for selected language
+ * - Proper RTL/LTR layout switching
+ *
+ * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
+ *
+ * @since 1 Dec 2025
+ */
 @Composable
-fun LanguageSection() {
+fun LanguageSection(
+    languageViewModel: LanguageViewModel
+) {
     val context = LocalContext.current
-    val languageViewModel: LanguageViewModel = viewModel()
-
-    // Observe current language state
     val currentLanguage by languageViewModel.currentLanguage.collectAsState()
 
     SettingsCards {
@@ -345,53 +360,70 @@ fun LanguageSection() {
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             // English Button
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .border(
-                        width = if (currentLanguage == "en") 2.dp else 0.dp,
-                        color = if (currentLanguage == "en") MaterialTheme.colorScheme.primary
-                        else Color.Transparent,
-                        shape = RoundedCornerShape(12.dp)
-                    )
-            ) {
-                MovitoButton(
-                    text = stringResource(R.string.english),
-                    modifier = Modifier.fillMaxWidth(),
-                    roundedCornerSize = 12.dp,
-                    enabled = currentLanguage != "en",
-                    onClick = {
-                        languageViewModel.setLanguage("en", context)
-                        // The activity will automatically restart due to the key change
-                    }
+            @Composable
+            fun EnglishButton() =
+                LanguageButton(
+                    displayText = stringResource(R.string.english),
+                    isSelected = currentLanguage == "en",
+                    onClick = { languageViewModel.setLanguage("en", context) },
+                    modifier = Modifier.weight(1f)
                 )
-            }
 
             // Arabic Button
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .border(
-                        width = if (currentLanguage == "ar") 2.dp else 0.dp,
-                        color = if (currentLanguage == "ar") MaterialTheme.colorScheme.primary
-                        else Color.Transparent,
-                        shape = RoundedCornerShape(12.dp)
-                    )
-            ) {
-                MovitoButton(
-                    text = stringResource(R.string.arabic),
-                    modifier = Modifier.fillMaxWidth(),
-                    roundedCornerSize = 12.dp,
-                    enabled = currentLanguage != "ar",
-                    onClick = {
-                        languageViewModel.setLanguage("ar", context)
-                        // The activity will automatically restart due to the key change
-                    }
+            @Composable
+            fun ArabicButton() =
+                LanguageButton(
+                    displayText = stringResource(R.string.arabic),
+                    isSelected = currentLanguage == "ar",
+                    onClick = { languageViewModel.setLanguage("ar", context) },
+                    modifier = Modifier.weight(1f)
                 )
+
+            // To keep the buttons at the same place when language change
+            if (languageViewModel.currentLanguage.value == "ar") {
+                EnglishButton()
+                ArabicButton()
+            } else {
+                ArabicButton()
+                EnglishButton()
             }
+
         }
     }
 }
+
+/**
+ * REUSABLE LANGUAGE BUTTON COMPOSABLE
+ *
+ * PURPOSE: Individual language button with selection visual feedback
+ *
+ * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
+ *
+ * @since 4 Dec 2025
+ */
+@Composable
+private fun LanguageButton(
+    displayText: String,
+    isSelected: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) =
+    Box(
+        modifier = modifier.border(
+            width = if (isSelected) 2.dp else 0.dp,
+            color = if (isSelected) MaterialTheme.colorScheme.primary
+            else Color.Transparent,
+            shape = RoundedCornerShape(12.dp)
+        )
+    ) {
+        MovitoButton(
+            text = displayText,
+            modifier = Modifier.fillMaxWidth(),
+            roundedCornerSize = 12.dp,
+            enabled = !isSelected,
+            onClick = onClick
+        )
+    }
 
 @Preview(showSystemUi = true, name = "Dark Mode")
 @Composable
