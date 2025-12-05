@@ -107,8 +107,7 @@ fun DetailsScreen(
     movie: Movie,
     modifier: Modifier = Modifier,
     onClickBackButton: () -> Unit,
-)
-{
+) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
     val favoritesViewModel = remember { FavoritesViewModel.getInstance() }
@@ -135,6 +134,7 @@ fun DetailsScreen(
                     favoritesViewModel.addToFavorites(movie)
                     heartAnimationTrigger = (heartAnimationTrigger ?: 0) + 1
                     scope.launch {
+                        snackbarHostState.currentSnackbarData?.dismiss()
                         val result = snackbarHostState.showSnackbar(
                             message = context.getString(
                                 R.string.details_added_to_favorites,
@@ -181,7 +181,10 @@ fun DetailsScreen(
     }
 
     LaunchedEffect(uiState.trailerError) {
-        uiState.trailerError?.let { Toast.makeText(context, it, Toast.LENGTH_SHORT).show() }
+        uiState.trailerError?.let {
+            Toast.makeText(context, it, Toast.LENGTH_SHORT)
+                .apply { setText(it) }.show()
+        }
         viewModel.onTrailerToastShown()
     }
 
@@ -262,7 +265,8 @@ fun DetailsScreen(
                     }
                     RecommendationsSection(
                         recommendedMovies = uiState.recommendedMovies,
-                        error = uiState.recommendationsError ?: stringResource(R.string.no_recommendations_available),
+                        error = uiState.recommendationsError
+                            ?: stringResource(R.string.no_recommendations_available),
                         modifier = Modifier.fillMaxSize(),
                     )
                 }
@@ -278,8 +282,7 @@ fun DetailsScreen(
 private fun BackgroundWithBlur(
     posterPath: String?,
     content: @Composable () -> Unit
-)
-{
+) {
     Box(modifier = Modifier.fillMaxSize()) {
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
@@ -326,8 +329,7 @@ fun MoviePosterAndActionsSection(
     onShare: () -> Unit,
     onFavoriteClick: () -> Unit,
     modifier: Modifier = Modifier
-)
-{
+) {
     val contentColor = MaterialTheme.colorScheme.onBackground
 
     Row(
@@ -455,8 +457,7 @@ fun MoviePosterAndActionsSection(
 fun MovieOverviewSection(
     overview: String,
     modifier: Modifier = Modifier
-)
-{
+) {
     Column(
         modifier = modifier,
     ) {
@@ -493,8 +494,7 @@ fun GenresSection(
     genres: List<Genre>,
     movieGenreIds: List<Int>?,
     modifier: Modifier = Modifier
-)
-{
+) {
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
@@ -659,8 +659,7 @@ fun DetailsScreenPreview(
     onPlayTrailer: () -> Unit = {},
     onShare: () -> Unit = {},
     onFavoriteClick: () -> Unit = {}
-)
-{
+) {
     var heartAnimationTrigger by remember { mutableStateOf<Int?>(if (isFavorite) 0 else null) }
 
     Scaffold(

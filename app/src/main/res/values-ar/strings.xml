@@ -35,24 +35,25 @@
     <string name="cancelle_notifications_msg">🔕 تم إلغاء جميع الإشعارات</string>
     <string name="battery_permission">لضمان دقة التوقيت، امنح وصولاً غير مقيد للبطارية. قد يؤخر نظام أندرويد الإشعارات إذا رفضت فعلك ذلك.</string>
     <string name="notification_frequency">معدل تكرار الإشعارات</string>
+    <string name="notification_frequency_description">كلَّ كم من الوقت يحب أن تتلقى اقتراحات لأفلام؟</string>
     <string name="interval">المدَّة</string>
     <plurals name="minutes" tools:ignore="MissingQuantity">
         <item quantity="one">(دقيقةٌ واحدة)</item>
-        <item quantity="two">دقيقتان اثنان</item>
+        <item quantity="two">(دقيقتان اثنان)</item>
         <item quantity="few">دقائق</item>
         <item quantity="many">دقيقةً</item>
         <item quantity="other">دقيقة</item>
     </plurals>
     <plurals name="hours" tools:ignore="MissingQuantity">
         <item quantity="one">(ساعةٌ واحدة)</item>
-        <item quantity="two">ساعتان اثنان</item>
+        <item quantity="two">(ساعتان اثنان)</item>
         <item quantity="few">ساعات</item>
         <item quantity="many">ساعةً</item>
         <item quantity="other">ساعة</item>
     </plurals>
     <plurals name="days" tools:ignore="MissingQuantity">
         <item quantity="one">(يومٌ واحد)</item>
-        <item quantity="two">يومان اثنان</item>
+        <item quantity="two">(يومان اثنان)</item>
         <item quantity="few">أيَّام</item>
         <item quantity="many">يومًا</item>
         <item quantity="other">يوم</item>
@@ -62,14 +63,40 @@
     <string name="select_time_unit">اختر وحدة التوقيت</string>
     <string name="interval_must_be_at_least">يجب أن تكون المدَّة على الأقل %1$d %2$s</string>
     <string name="please_enter_a_valid_interval">الرجاء إدخال مدَّة صالحة</string>
-    <string name="must_be_at_least">❌ يجب أن تكون على الأقل %1$d %2$s</string>
+    <string name="must_be_at_least">يجب أن تكون على الأقل %1$d %2$s</string>
     <string name="minimum_15_minutes_1_hour_or_1_day">الحد الأدنى: ١٥ دقيقةٌ، ساعة واحدة، يوم واحد </string>
+    <!-- Notifications Limit -->
+    <plurals name="notifications">
+        <item quantity="zero">إشعار</item>
+        <item quantity="one">(إشعار واحد)</item>
+        <item quantity="two">(إشعاران)</item>
+        <item quantity="few">إشعارات</item>
+        <item quantity="many">إشعارًا</item>
+        <item quantity="other">إشعارات</item>
+    </plurals>
+    <string name="notification_limit">حد الإشعارات</string>
+    <string name="notification_limit_desc">الحد الأقصى لعدد إشعارات اقتراحات الأفلام التي يمكن عرضها في وقت واحد</string>
+    <string name="notification_limit_must_be_between_and">يجب أن يكون حد الإشعار بين %1$d و%2$d</string>
+    <string name="maximum_notifications_label">الحد الأقصى للإشعارات</string>
+    <string name="currently_concurrent_notifications">حاليًا: %d %s في نفس الوقت</string>
+    <string name="will_be_concurrent_notifications">ستصبح: %d %s في نفس الوقت</string>
+    <string name="oldest_notifications_removed">سيتم إزالة أقدم الإشعارات عند وصول إشعارات جديدة</string>
+    <!-- Notifications Apply Changes Button -->
+    <string name="and">و</string>
     <string name="save_changes">احفظ التعديلات</string>
     <string name="settings_applied">تم تطبيق الإعدادات</string>
-    <string name="notifications_scheduled_every">✓ تم تفعيل الإشارات كل %1$s</string>
-    <string name="settings_applied_snackbar">تم تظبيق الإعدادات</string>
+    <string name="notifications_scheduled_every">✓ تم تفعيل الإشارات كل %1$d %2$s</string>
+    <string name="settings_applied_snackbar">تم تطبيق الإعدادات</string>
     <string name="settings_applied_successfully">تم تطبيق الإعدادات بنجاح!</string>
     <string name="failed_to_schedule_notifications">❌ فشلت جدولة الإشعارات</string>
+    <!-- Test Notifications -->
+    <string name="test_notifications_title">اختبر الإشعارات</string>
+    <string name="test_notifications_description">اختبر إعدادات اشعاراتك</string>
+    <string name="test_notifications_notify_right_now_btn">أرسل اشعارًا الآن</string>
+    <string name="test_notifications_now_msg">يتم الآن إرسال الإشارات...</string>
+    <string name="test_notifications_repeat_btn">كرر ٣٠ث (٥×)</string>
+    <string name="test_notifications_repeat_snackbar_msg">٥ إشعارات اختبار تمت جدولتها كل ٣٠ث!</string>
+    <string name="test_notifications_cancel_all_btn">ألغ جميع الإشعارات</string>
     <!-- About Settings Section-->
     <string name="settings_about">حول</string>
     <string name="settings_version">الإصدار: %1$s</string>
@@ -160,4 +187,23 @@
     <string name="movies_by_genre_back_button_description">رجوع</string>
     <string name="movies_by_genre_refresh_button_description">تحديث</string>
     <string name="movies_by_genre_failed_to_load">فشل تحميل الأفلام</string>
+
+    <!-- Notifications -->
+    <!-- Welcome Notifications -->
+    <string name="notification_welcome_title">مرحبا بك في موڤيتو!</string>
+    <string name="notification_welcome_msg">نحن سعداء بوجودك في التطبيق 🎬</string>
+    <!-- Recommendation Notifications -->
+    <string name="notification_general_msg">شاهد هذا الفيلم الشهير!</string>
+    <string name="notification_recommend_based_on_fav_genre">بما أنك أحببت "%1$s", ألق نظرة على هذا الفيلم المشابه!</string>
+    <string name="notification_movie_suggestion_title">فيلم مقترح</string>
+    <string name="notification_movie_suggestion_title_collapsed">لدينا فيلم رائع لك!</string>
+    <string name="notification_recommendation_based_on_fav_recommendation">نظرًا لأنك أحببت \"%1$s\"، فنحن نعتقد أنك ستحب \"%2$s\" لأنه مشابه!</string>
+
+    <string name="please">رجاءَ</string>
+    <string name="confirm_to_the_interval_constraints">التزم بالشروط المتعلة بالمّدة</string>
+    <string name="confirm_to_the_limit_constraints">التزم بالشروط المتعلمة بحد الإشعارات</string>
+    <string name="sending_notification_now_mgs">🔔 Sending notification now!</string>
+    <string name="failed_to_send_notification_msg">❌ Failed to send notification</string>
+    <string name="notifications_30s_5x_btn_msg">🔄 5 test notifications scheduled every 30 seconds!</string>
+
 </resources>

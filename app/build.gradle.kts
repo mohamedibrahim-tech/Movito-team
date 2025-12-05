@@ -80,6 +80,7 @@ dependencies {
     implementation(libs.androidx.compose.foundation.layout)
     implementation(libs.firebase.crashlytics.buildtools)
     implementation(libs.androidx.ui)
+    implementation(libs.androidx.hilt.common)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -123,17 +124,23 @@ dependencies {
     implementation("androidx.datastore:datastore-preferences:1.0.0")
 
     implementation("com.google.accompanist:accompanist-permissions:0.34.0")
-    
+
     // Testing
     androidTestImplementation("androidx.test.espresso:espresso-intents:3.5.1")
     androidTestImplementation("io.mockk:mockk-android:1.13.3")
-    
+
     // Hilt
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
     androidTestImplementation(libs.hilt.android.testing)
     kaptAndroidTest(libs.hilt.compiler)
 
+    // WorkManager for notifications
+    implementation("androidx.work:work-runtime-ktx:2.9.0")
+
+    //ListenableFuture compatibility
+    implementation("androidx.concurrent:concurrent-futures:1.1.0")
+    implementation("com.google.guava:guava:31.0.1-android")
     // Testing
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.robolectric:robolectric:4.11.1")

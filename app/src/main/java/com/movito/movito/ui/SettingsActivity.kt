@@ -1,5 +1,6 @@
 package com.movito.movito.ui
 
+import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -17,6 +18,7 @@ import androidx.compose.runtime.setValue
 import androidx.core.app.NotificationManagerCompat
 import com.movito.movito.MovitoApplication
 import com.movito.movito.R
+import com.movito.movito.notifications.NotificationScheduler
 import com.movito.movito.theme.MovitoTheme
 import com.movito.movito.viewmodel.AuthViewModel
 import com.movito.movito.viewmodel.LanguageViewModel
@@ -30,6 +32,10 @@ class SettingsActivity : ComponentActivity() {
         // Restart activity when language changes
         val intent = Intent(this, this::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+        this.overridePendingTransition(
+            R.anim.change_language_in,
+            R.anim.change_language_out
+        )
         startActivity(intent)
         this.overridePendingTransition(
             R.anim.change_language_in,
@@ -48,6 +54,7 @@ class SettingsActivity : ComponentActivity() {
         setContent {
             val authState by authViewModel.authState.collectAsState()
             val isDarkTheme by themeViewModel.isDarkTheme.collectAsState()
+            val currentLanguage by languageViewModel.currentLanguage.collectAsState()
 
             var notificationsState by remember {
                 mutableStateOf(
@@ -63,6 +70,7 @@ class SettingsActivity : ComponentActivity() {
                 }
             }
 
+            // Force recomposition when theme/language changes
             key(isDarkTheme) {
                 MovitoTheme(darkTheme = isDarkTheme) {
                     SettingsScreen(
@@ -70,6 +78,10 @@ class SettingsActivity : ComponentActivity() {
                             themeViewModel.toggleTheme(newTheme, this@SettingsActivity)
                         },
                         onSignOut = {
+                            NotificationScheduler.cancelNotifications(this@SettingsActivity)
+                            val notificationManager =
+                                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                            notificationManager.cancelAll()
                             authViewModel.signOut()
                         },
                         userEmail = authState.user?.email,
