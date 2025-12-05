@@ -231,6 +231,15 @@ class SignInActivity : ComponentActivity() {
                 }
             }
 
+            LaunchedEffect(shouldRestartActivity) {
+                if (shouldRestartActivity) {
+                    // Restart the activity to apply the new language
+                    val intent = intent
+                    finish()
+                    startActivity(intent)
+                }
+            }
+
             // Apply theme and render authentication UI
             key(isDarkTheme) {
                 MovitoTheme(darkTheme = isDarkTheme) {
