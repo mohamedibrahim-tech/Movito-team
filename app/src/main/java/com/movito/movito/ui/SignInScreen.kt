@@ -2,6 +2,7 @@ package com.movito.movito.ui
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -39,6 +40,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -123,11 +125,11 @@ fun CustomAuthTextField(
 
 @Composable
 fun SignInScreen(
-    modifier: Modifier = Modifier,
     authViewModel: AuthViewModel = viewModel(),
     onSignInSuccess: () -> Unit,
     onSignUpClicked: () -> Unit,
-    onForgotPasswordClicked: () -> Unit
+    onForgotPasswordClicked: () -> Unit,
+    onLanguageChange: (String) -> Unit
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -140,7 +142,8 @@ fun SignInScreen(
             authViewModel.resetState()
         }
         if (authState.error != null) {
-            Toast.makeText(context, authState.error, Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, authState.error, Toast.LENGTH_SHORT).apply {
+                setText(authState.error) /* This ensures multi-line display*/ }.show()
             authViewModel.resetState()
         }
     }
@@ -148,22 +151,28 @@ fun SignInScreen(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         containerColor = MaterialTheme.colorScheme.background,
-    )
-    { paddingValues ->
-
+    ) { paddingValues ->
         Box(
-            modifier = Modifier
-                .padding(paddingValues)
-                .fillMaxSize(),
+            modifier = Modifier.padding(paddingValues).fillMaxSize(),
             contentAlignment = Alignment.TopCenter
         )
         {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 20.dp, vertical = 60.dp),
+                    .padding(horizontal = 20.dp, vertical = 20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                    TextButton(onClick = { onLanguageChange("en") }) {
+                        Text("English")
+                    }
+                    TextButton(onClick = { onLanguageChange("ar") }) {
+                        Text("العربية")
+                    }
+                }
+
+                Spacer(Modifier.height(40.dp))
 
                 MovitoLogo()
                 Spacer(Modifier.height(48.dp))
@@ -171,7 +180,8 @@ fun SignInScreen(
                     text = stringResource(id = R.string.signin_title),
                     color = MaterialTheme.colorScheme.onBackground,
                     fontSize = 24.sp,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.testTag("SignInTitle")
                 )
                 Spacer(Modifier.height(32.dp))
 
@@ -220,7 +230,8 @@ fun SignInScreen(
                         text = stringResource(id = R.string.signin_button),
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(48.dp),
+                            .height(48.dp)
+                            .testTag("SignInButton"),
                         roundedCornerSize = 12.dp,
                         enabled = isButtonEnabled,
                     ) { authViewModel.signInWithEmailPassword(email.trim(), password) }
@@ -269,7 +280,7 @@ fun SignInScreen(
 @Composable
 fun FinalSignInScreenPreviewDark() {
     MovitoTheme(darkTheme = true) {
-        SignInScreen(onSignInSuccess = {}, onSignUpClicked = {}, onForgotPasswordClicked = {})
+        SignInScreen(onSignInSuccess = {}, onSignUpClicked = {}, onForgotPasswordClicked = {}, onLanguageChange = {})
     }
 }
 
@@ -281,6 +292,6 @@ fun FinalSignInScreenPreviewDark() {
 @Composable
 fun FinalSignInScreenPreviewLight() {
     MovitoTheme(darkTheme = false) {
-        SignInScreen(onSignInSuccess = {}, onSignUpClicked = {}, onForgotPasswordClicked = {})
+        SignInScreen(onSignInSuccess = {}, onSignUpClicked = {}, onForgotPasswordClicked = {}, onLanguageChange = {})
     }
 }

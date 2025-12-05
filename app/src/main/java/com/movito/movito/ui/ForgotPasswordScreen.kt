@@ -47,12 +47,18 @@ fun ForgotPasswordScreen(
 
     LaunchedEffect(authState) {
         if (authState.message != null) {
-            Toast.makeText(context, authState.message, Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, authState.message, Toast.LENGTH_SHORT)
+                .apply {
+                    setText(authState.message)
+                }.show()
             onPasswordResetSent()
             authViewModel.resetState()
         }
         if (authState.error != null) {
-            Toast.makeText(context, authState.error, Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, authState.error, Toast.LENGTH_SHORT)
+                .apply {
+                    setText(authState.error)
+                }.show()
             authViewModel.resetState()
         }
     }

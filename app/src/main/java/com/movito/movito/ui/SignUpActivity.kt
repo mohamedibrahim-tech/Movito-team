@@ -34,6 +34,8 @@ class SignUpActivity : ComponentActivity() {
         authViewModel.signOut()
 
         enableEdgeToEdge()
+        // Load theme preference
+        themeViewModel.loadThemePreference(this)
         languageViewModel.loadLanguagePreference(this)
 
         setContent {

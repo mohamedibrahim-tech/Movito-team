@@ -1,5 +1,7 @@
+
 package com.movito.movito.ui
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -31,6 +33,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
@@ -56,11 +60,17 @@ fun SignUpScreen(
     var validationError by remember { mutableStateOf<String?>(null) }
 
     val authState by authViewModel.authState.collectAsState()
+    val context = LocalContext.current
 
-
-    LaunchedEffect(Unit) {
-        authViewModel.navigationFlow.collect {
+    LaunchedEffect(authState) {
+        if (authState.message != null) {
+            Toast.makeText(context, authState.message, Toast.LENGTH_LONG).show()
             onSignUpSuccess()
+            authViewModel.resetState()
+        }
+        if (authState.error != null) {
+            Toast.makeText(context, authState.error, Toast.LENGTH_SHORT).show()
+            authViewModel.resetState()
         }
     }
 
@@ -173,7 +183,8 @@ fun SignUpScreen(
 
                 MovitoButton(
                     text = stringResource(id = R.string.signup_button),
-                    onClick = { validateAndSignUp() }
+                    onClick = { validateAndSignUp() },
+                    modifier = Modifier.testTag("SignUpButton")
                 )
 
             }
@@ -193,15 +204,6 @@ fun SignUpScreen(
                     text = it,
                     color = MaterialTheme.colorScheme.error,
                     fontSize = 13.sp
-                )
-            }
-
-            authState.message?.let {
-                Text(
-                    text = it,
-                    color = MaterialTheme.colorScheme.secondary,
-                    fontSize = 13.sp,
-                    fontWeight = FontWeight.Medium
                 )
             }
 

@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.content.res.Configuration
 import android.os.Build
+import dagger.hilt.android.HiltAndroidApp
 import java.util.Locale
 
 /**
@@ -17,11 +18,13 @@ import java.util.Locale
  * Note: This class is created when the app process starts and exists
  * for the entire lifecycle of the app.
  */
+@HiltAndroidApp
 class MovitoApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
         // Initialize theme and language when app starts
+        ThemeManager.loadThemePreference(this)
         LanguageManager.loadLanguagePreference(this)
     }
 

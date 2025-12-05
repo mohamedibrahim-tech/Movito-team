@@ -107,8 +107,7 @@ fun DetailsScreen(
     movie: Movie,
     modifier: Modifier = Modifier,
     onClickBackButton: () -> Unit,
-)
-{
+) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
     val favoritesViewModel = remember { FavoritesViewModel.getInstance() }
@@ -135,6 +134,7 @@ fun DetailsScreen(
                     favoritesViewModel.addToFavorites(movie)
                     heartAnimationTrigger = (heartAnimationTrigger ?: 0) + 1
                     scope.launch {
+                        snackbarHostState.currentSnackbarData?.dismiss()
                         val result = snackbarHostState.showSnackbar(
                             message = context.getString(
                                 R.string.details_added_to_favorites,
@@ -180,14 +180,12 @@ fun DetailsScreen(
         }
     }
 
-    LaunchedEffect(uiState.error) {
-       val show : Boolean = (uiState.error?.contains("Trailer", ignoreCase = true) == true ||
-               uiState.error?.contains("دعائي", ignoreCase = true) == true)
-        if (show)
-        uiState.error?.let {
-            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
-            viewModel.onToastShown()
+    LaunchedEffect(uiState.trailerError) {
+        uiState.trailerError?.let {
+            Toast.makeText(context, it, Toast.LENGTH_SHORT)
+                .apply { setText(it) }.show()
         }
+        viewModel.onTrailerToastShown()
     }
 
     Scaffold(
@@ -267,7 +265,8 @@ fun DetailsScreen(
                     }
                     RecommendationsSection(
                         recommendedMovies = uiState.recommendedMovies,
-                        error = uiState.error,
+                        error = uiState.recommendationsError
+                            ?: stringResource(R.string.no_recommendations_available),
                         modifier = Modifier.fillMaxSize(),
                     )
                 }
@@ -283,8 +282,7 @@ fun DetailsScreen(
 private fun BackgroundWithBlur(
     posterPath: String?,
     content: @Composable () -> Unit
-)
-{
+) {
     Box(modifier = Modifier.fillMaxSize()) {
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
@@ -331,8 +329,7 @@ fun MoviePosterAndActionsSection(
     onShare: () -> Unit,
     onFavoriteClick: () -> Unit,
     modifier: Modifier = Modifier
-)
-{
+) {
     val contentColor = MaterialTheme.colorScheme.onBackground
 
     Row(
@@ -460,8 +457,7 @@ fun MoviePosterAndActionsSection(
 fun MovieOverviewSection(
     overview: String,
     modifier: Modifier = Modifier
-)
-{
+) {
     Column(
         modifier = modifier,
     ) {
@@ -498,8 +494,7 @@ fun GenresSection(
     genres: List<Genre>,
     movieGenreIds: List<Int>?,
     modifier: Modifier = Modifier
-)
-{
+) {
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
@@ -584,7 +579,7 @@ private fun GenreChip(genreName: String) {
 @Composable
 fun RecommendationsSection(
     recommendedMovies: List<Movie>,
-    error: String?,
+    error: String,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -624,11 +619,7 @@ fun RecommendationsSection(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = if (error?.contains("Recommendations") == true) {
-                        stringResource(R.string.error_loading_recommendations_no_Internet)
-                    } else {
-                        stringResource(R.string.no_recommendations_available)
-                    },
+                    text = error,
                     textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onBackground
@@ -668,8 +659,7 @@ fun DetailsScreenPreview(
     onPlayTrailer: () -> Unit = {},
     onShare: () -> Unit = {},
     onFavoriteClick: () -> Unit = {}
-)
-{
+) {
     var heartAnimationTrigger by remember { mutableStateOf<Int?>(if (isFavorite) 0 else null) }
 
     Scaffold(
@@ -749,7 +739,7 @@ fun DetailsScreenPreview(
 
                     RecommendationsSection(
                         recommendedMovies = recommendedMovies,
-                        error = error,
+                        error = error ?: stringResource(R.string.no_recommendations_available),
                         modifier = Modifier
                             .weight(0.35f)
                             .fillMaxWidth()
