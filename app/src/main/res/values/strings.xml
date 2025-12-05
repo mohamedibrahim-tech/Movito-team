@@ -1,5 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Movito</string>
-    <string name="default_web_client_id">YOUR_WEB_CLIENT_ID</string>
+    <string name="default_web_client_id" translatable="false">YOUR_WEB_CLIENT_ID</string>
     <string name="title_activity_details">DetailsActivity</string>
+
+    <!-- Category Screen -->
+    <string name="enable_notifications_riminder">Enable notifications to get movie suggestions</string>
+    <string name="enable">ENABLE</string>
+
+    <!-- Settings Screen -->
+    <string name="settings_title">Settings</string>
+    <!-- Account Settings Section-->
+    <string name="settings_account">Account</string>
+    <string name="settings_profile_info">Profile info</string>
+    <string name="settings_not_signed_in">Not signed in</string>
+    <string name="settings_change_password">Change Password</string>
+    <string name="settings_password_reset_sent">Password reset email sent to %1$s</string>
+    <string name="settings_user_email_not_found">Error: User email not found.</string>
+    <string name="settings_sign_out">Sign Out</string>
+    <!-- Language Settings Section-->
+    <string name="language">Language</string>
+    <string name="current">Current: %1$s</string>
+    <string name="current_lan">English</string>
+    <string name="arabic" translatable="false">العربية</string>
+    <string name="english" translatable="false">English</string>
+    <!-- Appearance Settings Section-->
+    <string name="settings_appearance">Appearance</string>
+    <string name="settings_theme_mode">Theme Mode</string>
+    <!-- Notification Settings Section-->
+    <string name="settings_notifications">Notifications</string>
+    <string name="notification_permission_request">Notification permission required to send movie suggestions</string>
+    <string name="grant">GRANT</string>
+    <string name="notification_explaination">Get movie suggestions based on your favorites</string>
+    <string name="notification_not_enabled_message">Enable notifications to get personalized movie suggestions</string>
+    <string name="please_enable_notifications_first">Please enable notifications first</string>
+    <string name="cancelle_notifications_msg">🔕 All notifications cancelled</string>
+    <string name="battery_permission">For precise timing, grant unrestricted battery access. Android may delay notifications otherwise.</string>
+    <string name="notification_frequency">Notification Frequency</string>
+    <string name="notification_frequency_description">How often to receive movie suggestions?</string>
+    <string name="interval">Interval</string>
+    <plurals name="minutes">
+        <item quantity="one">minute</item>
+        <item quantity="other">minutes</item>
+    </plurals>
+    <plurals name="hours">
+        <item quantity="one">hour</item>
+        <item quantity="other">hours</item>
+    </plurals>
+    <plurals name="days">
+        <item quantity="one">day</item>
+        <item quantity="other">days</item>
+    </plurals>
+    <string name="currently_every">Currently: Every %1$d %2$s</string>
+    <string name="will_be_every">Will be: Every %1$d %2$s</string>
+    <string name="select_time_unit">Select time unit</string>
+    <string name="interval_must_be_at_least">Interval must be at least %1$d %2$s</string>
+    <string name="please_enter_a_valid_interval">Please enter a valid interval</string>
+    <string name="must_be_at_least">Must be at least %1$d %2$s</string>
+    <string name="minimum_15_minutes_1_hour_or_1_day">Minimum: 15 minutes, 1 hour, or 1 day</string>
+    <!-- Notifications Limit -->
+    <plurals name="notifications">
+        <item quantity="zero">notifications</item>
+        <item quantity="one">notification</item>
+        <item quantity="other">notifications</item>
+    </plurals>
+    <string name="notification_limit">Notification Limit</string>
+    <string name="notification_limit_desc">Maximum number of movie suggestion notifications to show at once</string>
+    <string name="maximum_notifications_label">Maximum Notifications</string>
+    <string name="currently_concurrent_notifications">Currently: %d %s at the same time</string>
+    <string name="will_be_concurrent_notifications">Will be: %d %s at the same time</string>
+    <string name="oldest_notifications_removed">Oldest notifications will be replaced when limit is reached</string>
+    <!-- Notifications Apply Changes Button -->
+    <string name="and">and</string>
+    <string name="save_changes">Save Changes</string>
+    <string name="settings_applied">Settings Applied</string>
+    <string name="notifications_scheduled_every">✓ Notifications scheduled every %1$d %2$s</string>
+    <string name="settings_applied_snackbar">Settings applied successfully!</string>
+    <string name="settings_applied_successfully">Settings applied successfully!</string>
+    <string name="failed_to_schedule_notifications">❌ Failed to schedule notifications</string>
+    <!-- Test Notifications -->
+    <string name="test_notifications_title">Test The Notifications</string>
+    <string name="test_notifications_description">Test your notification settings</string>
+    <string name="test_notifications_notify_right_now_btn">Notify Right Now</string>
+    <string name="test_notifications_now_msg">Sending notification now...</string>
+    <string name="test_notifications_repeat_btn">Repeat 30s (5x)</string>
+    <string name="test_notifications_repeat_snackbar_msg">5 test notifications scheduled every 30 seconds!</string>
+    <string name="test_notifications_cancel_all_btn">Cancel All Notifications</string>
+    <!-- About Settings Section-->
+    <string name="settings_about">About</string>
+    <string name="settings_version">Version: %1$s</string>
+    <string name="settings_github_repository">Github Repository</string>
+
+    <!-- Categories Screen -->
+    <string name="categories_movito_logo_description">Movito Logo</string>
+    <string name="categories_unknown_error">An unknown error occurred</string>
+    <string name="categories_failed_to_load_genres">Failed to load genres</string>
+
+    <!-- Sign In Screen -->
+    <string name="signin_movito_logo_description">Movito Logo</string>
+    <string name="signin_email_label">Email</string>
+    <string name="signin_password_label">Password</string>
+    <string name="signin_title">Sign In</string>
+    <string name="signin_forgot_password">Forgot Password?</string>
+    <string name="signin_button">Sign In</string>
+    <string name="signin_no_account">Don\'t have an account?</string>
+    <string name="signin_sign_up">Sign Up</string>
+
+    <!-- Sign Up Screen -->
+    <string name="signup_title">Sign Up</string>
+    <string name="signup_email_label">Email</string>
+    <string name="signup_password_label">Password</string>
+    <string name="signup_confirm_password_label">Confirm Password</string>
+    <string name="signup_email_required">Email is required</string>
+    <string name="signup_invalid_email">Invalid email format</string>
+    <string name="signup_password_required">Password is required</string>
+    <string name="signup_password_too_short">Password must be at least 6 characters</string>
+    <string name="signup_confirm_password_required">Please confirm your password</string>
+    <string name="signup_passwords_do_not_match">Passwords do not match</string>
+    <string name="signup_already_have_account">Already have an account?</string>
+    <string name="signup_login">Login</string>
+    <string name="signup_button">Sign Up</string>
+
+    <!-- Forgot Password Screen -->
+    <string name="forgotpassword_title">Reset Password</string>
+    <string name="forgotpassword_email_label">Email</string>
+    <string name="forgotpassword_send_button">Send Reset Email</string>
+
+    <!-- Search Screen -->
+    <string name="search_placeholder">Search for movies...</string>
+    <string name="search_back_description">Back</string>
+    <string name="search_clear_description">Clear search</string>
+    <string name="search_failed">Search failed: %1$s</string>
+    <string name="search_no_results">No results found for \"%1$s\"</string>
+    <string name="search_initial_message">Search for movies, series, and more...</string>
+
+    <!-- Favorites Screen -->
+    <string name="favorites_title">Favorites</string>
+    <string name="favorites_empty_state_title">There are no favourites</string>
+    <string name="favorites_empty_state_subtitle">Add your favorites to see them here</string>
+    <string name="favorites_remove_from_favorites">Remove from favorites</string>
+    <string name="favorites_failed_to_load">Failed to load favorites</string>
+    <string name="favorites_error">Error: %1$s</string>
+
+    <!-- Add/Remove favorite dialog-->
+    <!-- Add dialog-->
+    <string name="add_dialog_title">Add to Favorites?</string>
+    <string name="add_dialog_msg">Do you want to add this movie to your favorites?</string>
+    <string name="add">Add</string>
+    <!-- Remove dialog-->
+    <string name="remove_dialog_title">Remove from Favorites?</string>
+    <string name="remove_dialog_msg">Are you sure you want to remove this movie from your favorites?</string>
+    <string name="remove">Remove</string>
+    <!-- shared between both dialogs-->
+    <string name="cancel">Cancel</string>
+
+    <!-- Details Screen -->
+    <!-- Top Bar Section -->
+    <string name="details_title">Details</string>
+    <string name="details_back_button_description">back</string>
+    <!-- Poster and actions Section -->
+    <string name="details_added_to_favorites">%1$s added to favorites</string>
+    <string name="details_favorites_button">Favorites</string>
+    <string name="details_play_trailer_button">Play Trailer</string>
+    <string name="details_share_button">Share</string>
+    <string name="share_the_trailer_link">Share the trailer link</string>
+    <!-- Overview Section -->
+    <string name="details_movie_details_title">Movie Details</string>
+    <string name="details_genres_title">Genres</string>
+    <string name="unknown">Unknown</string>
+    <string name="details_more_like_this_title">More Like This</string>
+    <string name="no_recommendations_available">No recommendations available</string>
+
+    <!-- Movies By Genre Screen -->
+    <string name="movies">Movies</string>
+    <string name="movies_by_genre_back_button_description">Back</string>
+    <string name="movies_by_genre_refresh_button_description">Refresh</string>
+    <string name="movies_by_genre_failed_to_load">Failed to load movies</string>
+
+    <!-- Notifications -->
+    <!-- Welcome Notifications -->
+    <string name="notification_welcome_title">Welcome to Movito!</string>
+    <string name="notification_welcome_msg">Glad to have you in Movito app 🎬</string>
+    <!-- Recommendation Notifications -->
+    <string name="notification_general_msg">Check out this popular movie!</string>
+    <string name="notification_recommend_based_on_fav_genre">Since you liked %1$s, check out this similar movie!</string>
+    <string name="notification_movie_suggestion_title">Suggested Movie</string>
+    <string name="notification_movie_suggestion_title_collapsed">We have a great movie for you!</string>
+    <string name="notification_recommendation_based_on_fav_recommendation">Since you liked %1$s, we think you\'ll love %2$s because it\'s similar!</string>
+    <string name="notification_limit_must_be_between_and">Notification limit must be between %1$d and %2$d</string>
+    <string name="please">Please</string>
+    <string name="confirm_to_the_interval_constraints">confirm to the interval constraints</string>
+    <string name="confirm_to_the_limit_constraints">confirm to the limit constraints</string>
+    <string name="sending_notification_now_mgs">🔔 Sending notification now!</string>
+    <string name="failed_to_send_notification_msg">❌ Failed to send notification</string>
+    <string name="notifications_30s_5x_btn_msg">🔄 5 test notifications scheduled every 30 seconds!</string>
+
 </resources>

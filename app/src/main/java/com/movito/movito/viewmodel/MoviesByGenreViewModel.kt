@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.movito.movito.BuildConfig
+import com.movito.movito.LanguageManager
 import com.movito.movito.data.source.remote.RetrofitInstance
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -11,7 +12,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.IOException
-import java.util.Calendar
 
 class MoviesByGenreViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
 
@@ -19,9 +19,11 @@ class MoviesByGenreViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
     val uiState: StateFlow<MoviesUiState> = _uiState.asStateFlow()
 
     private val apiKey = BuildConfig.TMDB_API_KEY
+    private val currentLanguage = LanguageManager.currentLanguage
     private var currentPage = 1
     private val genreId: Int = savedStateHandle.get<Int>("genreId")!!
-    private val currentYear = Calendar.getInstance().get(Calendar.YEAR)
+
+    private fun unexpectedErrorMsg(errorMsg: String?) = if(LanguageManager.currentLanguage.value == "ar")  "حدث خطأ غير متوقع: $errorMsg" else "An unexpected error occurred: $errorMsg"
 
     init {
         loadMovies(isLoading = true)
@@ -46,15 +48,20 @@ class MoviesByGenreViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
                     apiKey = apiKey,
                     page = currentPage,
                     genreId = genreId,
-                    sortBy = "release_date.desc",
-                    primaryReleaseYear = currentYear
+                    language = currentLanguage.value
                 )
-                _uiState.update {
-                    val currentMovies = if (isRefreshing) emptyList() else it.movies
-                    it.copy(
+                _uiState.update { currentState ->
+                    val currentMovies = if (isRefreshing) emptyList() else currentState.movies
+                    
+                    // لمنع انهيار التطبيق بسبب وجود أفلام مكررة، نقوم بفلترة النتائج الجديدة
+                    // ونتأكد من عدم إضافة أي فيلم موجود بالفعل في القائمة الحالية.
+                    val existingMovieIds = currentMovies.map { it.id }.toSet()
+                    val newMovies = response.results.filter { it.id !in existingMovieIds }
+                    
+                    currentState.copy(
                         isLoading = false,
                         isRefreshing = false,
-                        movies = currentMovies + response.results
+                        movies = currentMovies + newMovies
                     )
                 }
                 if (response.results.isNotEmpty()) {
@@ -73,7 +80,7 @@ class MoviesByGenreViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
                     it.copy(
                         isLoading = false,
                         isRefreshing = false,
-                        error = "An unexpected error occurred: ${e.message}"
+                        error = unexpectedErrorMsg(e.message)
                     )
                 }
             }
@@ -90,14 +97,17 @@ class MoviesByGenreViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
                 val response = RetrofitInstance.api.discoverMoviesByGenre(
                     apiKey = apiKey,
                     page = currentPage,
-                    genreId = genreId,
-                    sortBy = "release_date.desc",
-                    primaryReleaseYear = currentYear
+                    genreId = genreId
                 )
-                _uiState.update {
-                    it.copy(
+                _uiState.update { currentState ->
+                    // لمنع انهيار التطبيق بسبب وجود أفلام مكررة، نقوم بفلترة النتائج الجديدة
+                    // ونتأكد من عدم إضافة أي فيلم موجود بالفعل في القائمة الحالية.
+                    val existingMovieIds = currentState.movies.map { it.id }.toSet()
+                    val newMovies = response.results.filter { it.id !in existingMovieIds }
+                    
+                    currentState.copy(
                         isLoadingMore = false,
-                        movies = it.movies + response.results
+                        movies = currentState.movies + newMovies
                     )
                 }
                 if (response.results.isNotEmpty()) {
@@ -107,14 +117,14 @@ class MoviesByGenreViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
                 _uiState.update {
                     it.copy(
                         isLoadingMore = false,
-                        error = "Failed to load more movies: ${e.message}"
+                        error = if (currentLanguage.value == "ar") "فشل تحميل المزيد من الأفلام ${e.message}" else "Failed to load more movies: ${e.message}"
                     )
                 }
             } catch (e: Exception) {
                 _uiState.update {
                     it.copy(
                         isLoadingMore = false,
-                        error = "An unexpected error occurred: ${e.message}"
+                        error = unexpectedErrorMsg(e.message)
                     )
                 }
             }

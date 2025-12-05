@@ -1,5 +1,6 @@
 package com.movito.movito.ui
 
+import android.app.Activity
 import android.content.Intent
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
@@ -7,16 +8,14 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
-import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
-import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -31,9 +30,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -44,19 +46,23 @@ import com.movito.movito.theme.MovitoTheme
 import com.movito.movito.ui.common.MovitoNavBar
 import com.movito.movito.viewmodel.CategoriesUiState
 import com.movito.movito.viewmodel.CategoriesViewModel
-import kotlin.math.floor
 
 @Composable
-fun CategoriesScreen(viewModel: CategoriesViewModel = viewModel()) {
+fun CategoriesScreen(viewModel: CategoriesViewModel = viewModel(), snackbarHost: @Composable () -> Unit = {},) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
 
-    CategoriesScreenContent(uiState = uiState) { genre ->
+    CategoriesScreenContent(uiState = uiState, snackbarHost = snackbarHost) { genre ->
         val intent = Intent(context, MoviesByGenreActivity::class.java).apply {
             putExtra("genreId", genre.id)
             putExtra("genreName", genre.name)
+            flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
         }
         context.startActivity(intent)
+        (context as? Activity)?.overridePendingTransition(
+            R.anim.slide_in_right,
+            R.anim.slide_out_left
+        )
     }
 }
 
@@ -65,6 +71,8 @@ fun CategoriesScreen(viewModel: CategoriesViewModel = viewModel()) {
 fun CategoriesScreenContent(
     modifier: Modifier = Modifier,
     uiState: CategoriesUiState,
+    //used to remind user to grant the notification permeation
+    snackbarHost: @Composable () -> Unit = {},
     onGenreClick: (Genre) -> Unit
 ) {
     Scaffold(
@@ -73,14 +81,15 @@ fun CategoriesScreenContent(
             TopAppBar(title = {
                 Image(
                     painter = painterResource(id = R.drawable.movito_logo),
-                    contentDescription = "Movito Logo",
+                    contentDescription = stringResource(id = R.string.categories_movito_logo_description),
                     modifier = Modifier.height(28.dp)
                 )
             })
         },
         bottomBar = {
             MovitoNavBar(selectedItem = "home")
-        }
+        },
+        snackbarHost = snackbarHost
     ) { innerPadding ->
         Box(
             modifier = Modifier
@@ -95,7 +104,7 @@ fun CategoriesScreenContent(
 
                 uiState.error != null -> {
                     Text(
-                        text = uiState.error ?: "An unknown error occurred",
+                        text = uiState.error ?: stringResource(id = R.string.categories_unknown_error),
                         color = MaterialTheme.colorScheme.error,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(16.dp)
@@ -112,10 +121,10 @@ fun CategoriesScreenContent(
 
 @Composable
 fun CategoriesGrid(genres: List<Genre>, onGenreClick: (Genre) -> Unit) {
-    LazyVerticalStaggeredGrid(
-        columns = StaggeredGridCells.Fixed(2),
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(2),
         contentPadding = PaddingValues(16.dp),
-        verticalItemSpacing = 16.dp,
+        verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         modifier = Modifier.fillMaxSize()
     ) {
@@ -127,46 +136,58 @@ fun CategoriesGrid(genres: List<Genre>, onGenreClick: (Genre) -> Unit) {
 
 @Composable
 fun GenreCard(genre: Genre, onClick: () -> Unit) {
-    val printer = painterResource(id = mapGenreNameToDrawable(genre.name))
     Card(
         modifier = Modifier
-            .width(floor(printer.intrinsicSize.width / 4.0f).dp)
-            .height(floor(printer.intrinsicSize.height / 4.0f).dp)
+            .fillMaxWidth()
+            .aspectRatio(16f / 9f)
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
-        Image(
-            painter = printer,
-            contentDescription = genre.name, // For accessibility
-            contentScale = ContentScale.FillBounds,
-            modifier = Modifier.fillMaxSize()
-        )
+        Box(modifier = Modifier.fillMaxSize()) {
+            Image(
+                painter = painterResource(id = mapGenreNameToDrawable(genre.name)),
+                contentDescription = genre.name, // For accessibility
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            )
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+            )
+            Text(
+                text = genre.name,
+                color = Color.White,
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier.align(Alignment.TopStart).padding(8.dp)
+            )
+        }
     }
 }
 
 @DrawableRes
 private fun mapGenreNameToDrawable(genreName: String): Int {
     return when (genreName.lowercase()) {
-        "action" -> R.drawable.action
-        "adventure" -> R.drawable.adventure
-        "animation" -> R.drawable.animation
-        "comedy" -> R.drawable.comedy
-        "crime" -> R.drawable.crime
-        "documentary" -> R.drawable.documentary
-        "drama" -> R.drawable.drama
-        "family" -> R.drawable.family
-        "fantasy" -> R.drawable.fantasy
-        "history" -> R.drawable.history
-        "horror" -> R.drawable.horror
-        "music" -> R.drawable.music
-        "mystery" -> R.drawable.mystery
-        "romance" -> R.drawable.romance
-        "science fiction" -> R.drawable.science_fiction
-        "tv movie" -> R.drawable.tv_movie
-        "thriller" -> R.drawable.thriller
-        "war" -> R.drawable.war
-        "western" -> R.drawable.western
+        "action"         , "حركة"         -> R.drawable.action
+        "adventure"      , "مغامرة"       -> R.drawable.adventure
+        "animation"      , "رسوم متحركة"  -> R.drawable.animation
+        "comedy"         , "كوميديا"      -> R.drawable.comedy
+        "crime"          , "جريمة"        -> R.drawable.crime
+        "documentary"    , "وثائقي"       -> R.drawable.documentary
+        "drama"          , "دراما"        -> R.drawable.drama
+        "family"         , "عائلي"        -> R.drawable.family
+        "fantasy"        , "فانتازيا"     -> R.drawable.fantasy
+        "history"        , "تاريخ"        -> R.drawable.history
+        "horror"         , "رعب"          -> R.drawable.horror
+        "music"          , "موسيقى"       -> R.drawable.music
+        "mystery"        , "غموض"         -> R.drawable.mystery
+        "romance"        , "رومنسية"      -> R.drawable.romance
+        "science fiction", "خيال علمي"    -> R.drawable.science_fiction
+        "tv movie"       , "فيلم تلفازي"  -> R.drawable.tv_movie
+        "thriller"       , "إثارة"        -> R.drawable.thriller
+        "war"            , "حرب"          -> R.drawable.war
+        "western"        , "غربي"         -> R.drawable.western
         else -> R.drawable.movito_logo // Default image as a fallback
     }
 }
@@ -216,7 +237,7 @@ fun CategoriesScreenLoadingPreview() {
 @Preview(showSystemUi = true, name = "Dark Mode - Error")
 @Composable
 fun CategoriesScreenErrorPreview() {
-    val mockState = CategoriesUiState(error = "Failed to load genres")
+    val mockState = CategoriesUiState(error = stringResource(id = R.string.categories_failed_to_load_genres))
     MovitoTheme(darkTheme = true) {
         CategoriesScreenContent(uiState = mockState, onGenreClick = {})
     }
