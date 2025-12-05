@@ -15,7 +15,7 @@ import org.junit.Test
 /**
  * Unit Tests للـ LanguageViewModel
  *
- * ⚠️ ملحوظة: بنختبر الأجزاء اللي ممكن نختبرها بدون SharedPreferences
+ *  ملحوظة: بنختبر الأجزاء اللي ممكن نختبرها بدون SharedPreferences
  *
  * بنختبر:
  * - Initial state
@@ -306,10 +306,8 @@ class LanguageViewModelTest {
         }
     }
 
-    // ===== ملاحظة نهائية =====
 
     /**
-     * ⚠️ ملحوظة:
      *
      * لاختبار setLanguage و loadLanguagePreference بشكل كامل،
      * محتاجين نعمل Mock لـ SharedPreferences أو نستخدم
