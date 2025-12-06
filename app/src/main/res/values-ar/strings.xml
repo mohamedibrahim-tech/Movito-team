@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="app_name">Movito</string>
+    <string name="app_name">موڤيتو</string>
     <string name="default_web_client_id" translatable="false">YOUR_WEB_CLIENT_ID</string>
     <string name="title_activity_details">التفاصيل</string>
 
@@ -170,7 +170,7 @@
     <string name="details_title">التفاصيل</string>
     <string name="details_back_button_description">رجوع</string>
     <!-- Poster and actions Section -->
-    <string name="details_added_to_favorites">تمت إضافة %1$s إلى المفضلة</string>
+    <string name="details_added_to_favorites">تمت إضافة \"%1$s\" إلى المفضلة</string>
     <string name="details_favorites_button">المفضلة</string>
     <string name="details_play_trailer_button">تشغيل المقطع الدعائي</string>
     <string name="details_share_button">مشاركة</string>
@@ -194,7 +194,7 @@
     <string name="notification_welcome_msg">نحن سعداء بوجودك في التطبيق 🎬</string>
     <!-- Recommendation Notifications -->
     <string name="notification_general_msg">شاهد هذا الفيلم الشهير!</string>
-    <string name="notification_recommend_based_on_fav_genre">بما أنك أحببت "%1$s", ألق نظرة على هذا الفيلم المشابه!</string>
+    <string name="notification_recommend_based_on_fav_genre">بما أنك أحببت \"%1$s\", ألق نظرة على هذا الفيلم المشابه!</string>
     <string name="notification_movie_suggestion_title">فيلم مقترح</string>
     <string name="notification_movie_suggestion_title_collapsed">لدينا فيلم رائع لك!</string>
     <string name="notification_recommendation_based_on_fav_recommendation">نظرًا لأنك أحببت \"%1$s\"، فنحن نعتقد أنك ستحب \"%2$s\" لأنه مشابه!</string>
@@ -202,8 +202,8 @@
     <string name="please">رجاءَ</string>
     <string name="confirm_to_the_interval_constraints">التزم بالشروط المتعلة بالمّدة</string>
     <string name="confirm_to_the_limit_constraints">التزم بالشروط المتعلمة بحد الإشعارات</string>
-    <string name="sending_notification_now_mgs">🔔 Sending notification now!</string>
-    <string name="failed_to_send_notification_msg">❌ Failed to send notification</string>
-    <string name="notifications_30s_5x_btn_msg">🔄 5 test notifications scheduled every 30 seconds!</string>
+    <string name="sending_notification_now_mgs">🔔 يتم الآن إرسال الإشعارات!</string>
+    <string name="failed_to_send_notification_msg">❌ تعذر إرسال الإشعارات</string>
+    <string name="notifications_30s_5x_btn_msg">🔄 ٥ إشعارات اختبار تمت جدولتها كل ٣٠ث!</string>
 
 </resources>

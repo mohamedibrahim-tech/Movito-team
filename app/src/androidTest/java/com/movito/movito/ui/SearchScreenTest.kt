@@ -57,6 +57,17 @@ class SearchScreenTest {
     }
 
     @Test
+    fun searchScreen_ErrorState_ShowsErrorMessage() {
+        val errorMessage = "Something went wrong"
+        var fullErrorMessage = ""
+        composeTestRule.setContent {
+            fullErrorMessage = stringResource(id = R.string.search_failed, errorMessage)
+            SearchScreen(viewModel = mockViewModel)
+        }
+        uiState.value = SearchUiState(error = errorMessage)
+        composeTestRule.onNodeWithText(fullErrorMessage).assertIsDisplayed()
+    }
+    @Test
     fun searchScreen_NoResultsState_ShowsNoResultsMessage() {
         val query = "nonexistent"
         var noResultsMessage = ""

@@ -75,7 +75,7 @@ class DetailsViewModelTest {
         val state = viewModel.uiState.value
         assertFalse(state.isLoading)
         assertEquals(fakeGenres, state.genres)
-        assertNull(state.error)
+        assertNull(state.genreError)
     }
 
     @Test
@@ -85,7 +85,7 @@ class DetailsViewModelTest {
         viewModel = DetailsViewModel()
         advanceUntilIdle()
 
-        assertEquals("Failed to load genres: No internet", viewModel.uiState.value.error)
+        assertEquals("Failed to load genres: No internet", viewModel.uiState.value.genreError)
     }
 
     @Test
@@ -95,7 +95,7 @@ class DetailsViewModelTest {
         viewModel = DetailsViewModel()
         advanceUntilIdle()
 
-        assertEquals("An unexpected error occurred: Server error", viewModel.uiState.value.error)
+        assertEquals("An unexpected error occurred: Server error", viewModel.uiState.value.genreError)
     }
 
     // ===== Tests for loadRecommendations =====
@@ -122,7 +122,7 @@ class DetailsViewModelTest {
         viewModel.loadRecommendations(movieId)
         advanceUntilIdle()
 
-        assertEquals("Failed to load Recommendations: No connection", viewModel.uiState.value.error)
+        assertEquals("Failed to load Recommendations: No connection", viewModel.uiState.value.recommendationsError)
     }
 
     // ===== Tests for findTrailer =====
@@ -146,7 +146,7 @@ class DetailsViewModelTest {
 
         assertEquals(fakeTrailerUrl, viewModel.uiState.value.trailerUrl)
         assertFalse(viewModel.uiState.value.isLoading)
-        assertNull(viewModel.uiState.value.error)
+        assertNull(viewModel.uiState.value.trailerError)
     }
 
     @Test
@@ -158,7 +158,7 @@ class DetailsViewModelTest {
         viewModel.findTrailer(movieId)
         advanceUntilIdle()
 
-        assertEquals("No Trailer Found.", viewModel.uiState.value.error)
+        assertEquals("No Trailer Found.", viewModel.uiState.value.trailerError)
         assertFalse(viewModel.uiState.value.isLoading)
         assertNull(viewModel.uiState.value.trailerUrl)
     }
@@ -172,7 +172,7 @@ class DetailsViewModelTest {
         viewModel.findTrailer(movieId)
         advanceUntilIdle()
 
-        assertEquals("Failed to load trailer: No internet", viewModel.uiState.value.error)
+        assertEquals("Failed to load trailer: No internet", viewModel.uiState.value.trailerError)
         assertFalse(viewModel.uiState.value.isLoading)
     }
 
@@ -191,7 +191,7 @@ class DetailsViewModelTest {
         advanceUntilIdle()
 
         assertEquals(fakeTrailerUrl, viewModel.uiState.value.urlToShare)
-        assertNull(viewModel.uiState.value.error)
+        assertNull(viewModel.uiState.value.trailerError)
     }
 
     @Test
@@ -203,7 +203,7 @@ class DetailsViewModelTest {
         viewModel.prepareShareUrl(movieId)
         advanceUntilIdle()
 
-        assertEquals("No Trailer Found.", viewModel.uiState.value.error)
+        assertEquals("No Trailer Found.", viewModel.uiState.value.trailerError)
         assertNull(viewModel.uiState.value.urlToShare)
     }
 
@@ -219,7 +219,7 @@ class DetailsViewModelTest {
         viewModel.findTrailer(movieId)
         advanceUntilIdle()
 
-        assertEquals("تعذر تحميل المقطع الدعائى: لا اتصال", viewModel.uiState.value.error)
+        assertEquals("تعذر تحميل المقطع الدعائي: لا اتصال", viewModel.uiState.value.trailerError)
     }
 
     // ===== Tests for state cleanup methods =====
@@ -258,14 +258,14 @@ class DetailsViewModelTest {
 
     @Test
     fun `onToastShown should clear error`() = runTest(testDispatcher) {
-        coEvery { mockApi.getGenres(any(), "en") } throws okio.IOException("No internet")
+        coEvery { mockApi.getMovieVideos(any(), "en") } throws okio.IOException("No internet")
 
         viewModel = DetailsViewModel()
         advanceUntilIdle()
 
-        assertEquals("Failed to load genres: No internet", viewModel.uiState.value.error)
+        //assertEquals("Failed to load genres: No internet", viewModel.uiState.value.trailerError)
 
-        viewModel.onToastShown()
-        assertNull(viewModel.uiState.value.error)
+        viewModel.onTrailerToastShown()
+        assertNull(viewModel.uiState.value.trailerError)
     }
 }

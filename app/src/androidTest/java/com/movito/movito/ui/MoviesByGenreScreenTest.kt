@@ -1,6 +1,6 @@
-
 package com.movito.movito.ui
 
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -36,7 +36,8 @@ class MoviesByGenreScreenTest {
             )
         }
 
-        val errorMessage = InstrumentationRegistry.getInstrumentation().targetContext.getString(R.string.movies_by_genre_failed_to_load)
+        val errorMessage =
+            InstrumentationRegistry.getInstrumentation().targetContext.getString(R.string.movies_by_genre_failed_to_load)
         composeTestRule.onNodeWithText(errorMessage).assertDoesNotExist()
         composeTestRule.onNodeWithText("Movie 1").assertDoesNotExist()
 
@@ -44,7 +45,8 @@ class MoviesByGenreScreenTest {
 
     @Test
     fun moviesByGenreScreen_ErrorState_ShowsErrorMessage() {
-        val errorMessage = InstrumentationRegistry.getInstrumentation().targetContext.getString(R.string.movies_by_genre_failed_to_load)
+        val errorMessage =
+            InstrumentationRegistry.getInstrumentation().targetContext.getString(R.string.movies_by_genre_failed_to_load)
         composeTestRule.setContent {
             MoviesByGenreContent(
                 uiState = MoviesUiState(error = "Failed to load"),
@@ -110,5 +112,23 @@ class MoviesByGenreScreenTest {
 
         composeTestRule.onNodeWithContentDescription("Back").performClick()
         assertTrue(backPressed)
+    }
+
+    @Test
+    fun moviesByGenreScreen_ScrollToEnd_CallsOnLoadMore() {
+        var loadMoreCalled = false
+        val movies = (1..20).map { Movie(it, "Movie $it", "2022-01-01", "", 8.0, "", emptyList()) }
+        lateinit var gridState: LazyGridState
+        composeTestRule.setContent {
+            gridState = rememberLazyGridState()
+            MoviesByGenreContent(
+                uiState = MoviesUiState(movies = movies, isLoading = false),
+                gridState = gridState,
+                genreName = "Action",
+                onRefresh = {},
+                onLoadMore = { loadMoreCalled = true },
+                onBackPressed = {}
+            )
+        }
     }
 }

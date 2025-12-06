@@ -49,7 +49,7 @@ data class DetailsUiState(
  *
  * Uses TMDB API for all data operations and maintains UI state through [DetailsUiState].
  */
-class DetailsViewModel : ViewModel() {
+open class DetailsViewModel : ViewModel() {
 
     private val _uiState = MutableStateFlow(DetailsUiState())
     val uiState: StateFlow<DetailsUiState> = _uiState.asStateFlow()
@@ -132,7 +132,7 @@ class DetailsViewModel : ViewModel() {
      * On success, sets [DetailsUiState.trailerUrl] with YouTube URL.
      * On failure, sets [DetailsUiState.error] with appropriate message.
      */
-    fun findTrailer(movieId: Int) {
+    open fun findTrailer(movieId: Int) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, trailerError = null) }
 
@@ -169,7 +169,7 @@ class DetailsViewModel : ViewModel() {
      * On success, sets [DetailsUiState.urlToShare] with YouTube URL.
      * On failure, sets [DetailsUiState.error] with appropriate message.
      */
-    fun prepareShareUrl(movieId: Int) {
+    open fun prepareShareUrl(movieId: Int) {
         viewModelScope.launch {
             try {
                 val response = RetrofitInstance.api.getMovieVideos(movieId, apiKey, currentLanguage.value)
