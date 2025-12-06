@@ -67,6 +67,54 @@ class SignUpScreenTest {
     }
 
     @Test
+    fun signUpScreen_Validation_EmptyPassword_ShowsError() {
+        composeTestRule.setContent {
+            SignUpScreen(
+                authViewModel = viewModel(),
+                onSignUpSuccess = {},
+                onSignInClicked = {}
+            )
+        }
+
+        composeTestRule.onNodeWithContentDescription("Email").performTextInput("test@example.com")
+        composeTestRule.onNodeWithTag("SignUpButton").performClick()
+        composeTestRule.onNodeWithText("Password is required").assertIsDisplayed()
+    }
+
+    @Test
+    fun signUpScreen_Validation_ShortPassword_ShowsError() {
+        composeTestRule.setContent {
+            SignUpScreen(
+                authViewModel = viewModel(),
+                onSignUpSuccess = {},
+                onSignInClicked = {}
+            )
+        }
+
+        composeTestRule.onNodeWithContentDescription("Email").performTextInput("test@example.com")
+        composeTestRule.onNodeWithContentDescription("Password").performTextInput("12345")
+        composeTestRule.onNodeWithContentDescription("Confirm Password").performTextInput("12345")
+        composeTestRule.onNodeWithTag("SignUpButton").performClick()
+        composeTestRule.onNodeWithText("Password must be at least 6 characters").assertIsDisplayed()
+    }
+
+    @Test
+    fun signUpScreen_Validation_EmptyConfirmPassword_ShowsError() {
+        composeTestRule.setContent {
+            SignUpScreen(
+                authViewModel = viewModel(),
+                onSignUpSuccess = {},
+                onSignInClicked = {}
+            )
+        }
+
+        composeTestRule.onNodeWithContentDescription("Email").performTextInput("test@example.com")
+        composeTestRule.onNodeWithContentDescription("Password").performTextInput("password123")
+        composeTestRule.onNodeWithTag("SignUpButton").performClick()
+        composeTestRule.onNodeWithText("Please confirm your password").assertIsDisplayed()
+    }
+
+    @Test
     fun signUpScreen_Validation_PasswordsDoNotMatch_ShowsError() {
         composeTestRule.setContent {
             SignUpScreen(
