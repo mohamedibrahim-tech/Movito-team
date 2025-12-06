@@ -1,12 +1,9 @@
+
 package com.movito.movito.ui
 
-import android.app.Activity
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -16,8 +13,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
@@ -39,20 +34,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.ApiException
 import com.movito.movito.R
 import com.movito.movito.theme.MovitoTheme
+import com.movito.movito.ui.common.MovitoButton
 import com.movito.movito.viewmodel.AuthViewModel
-
 
 @Composable
 fun SignUpScreen(
@@ -60,7 +53,6 @@ fun SignUpScreen(
     authViewModel: AuthViewModel = viewModel(),
     onSignUpSuccess: () -> Unit = {},
     onSignInClicked: () -> Unit = {},
-    onGoogleSignUpClicked: () -> Unit
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -70,36 +62,15 @@ fun SignUpScreen(
     val authState by authViewModel.authState.collectAsState()
     val context = LocalContext.current
 
-
-    val googleSignInLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.StartActivityForResult(),
-        onResult = {
-            if (it.resultCode == Activity.RESULT_OK) {
-                val task = GoogleSignIn.getSignedInAccountFromIntent(it.data)
-                try {
-                    val account = task.getResult(ApiException::class.java)
-                    account?.idToken?.let { token ->
-                        authViewModel.signInWithGoogle(token)
-                    }
-                } catch (e: ApiException) {
-                    authViewModel.resetState()
-                }
-            }
-        }
-    )
-
-
-    val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-        .requestIdToken(context.getString(R.string.default_web_client_id))
-        .requestEmail()
-        .build()
-
-    val googleSignInClient = GoogleSignIn.getClient(context, gso)
-
-
-    LaunchedEffect(Unit) {
-        authViewModel.navigationFlow.collect {
+    LaunchedEffect(authState) {
+        if (authState.message != null) {
+            Toast.makeText(context, authState.message, Toast.LENGTH_LONG).show()
             onSignUpSuccess()
+            authViewModel.resetState()
+        }
+        if (authState.error != null) {
+            Toast.makeText(context, authState.error, Toast.LENGTH_SHORT).show()
+            authViewModel.resetState()
         }
     }
 
@@ -134,7 +105,6 @@ fun SignUpScreen(
             }
         }
 
-
         authViewModel.signUpWithEmailPassword(email, password)
     }
 
@@ -146,7 +116,7 @@ fun SignUpScreen(
     ) {
         Column(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
                 .padding(horizontal = 20.dp, vertical = 60.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -155,7 +125,7 @@ fun SignUpScreen(
             Spacer(Modifier.height(48.dp))
 
             Text(
-                text = "Sign Up",
+                text = stringResource(id = R.string.signup_title),
                 color = MaterialTheme.colorScheme.onBackground,
                 fontSize = 24.sp,
                 fontWeight = FontWeight.SemiBold
@@ -171,7 +141,7 @@ fun SignUpScreen(
                         email = it
                         validationError = null
                     },
-                    label = "Email",
+                    label = stringResource(id = R.string.signup_email_label),
                     icon = Icons.Default.Email
                 )
                 Spacer(Modifier.height(20.dp))
@@ -182,7 +152,7 @@ fun SignUpScreen(
                         password = it
                         validationError = null
                     },
-                    label = "Password",
+                    label = stringResource(id = R.string.signup_password_label),
                     icon = Icons.Default.Lock,
                     isPassword = true
                 )
@@ -194,7 +164,7 @@ fun SignUpScreen(
                         confirmPassword = it
                         validationError = null
                     },
-                    label = "Confirm Password",
+                    label = stringResource(id = R.string.signup_confirm_password_label),
                     icon = Icons.Default.Lock,
                     isPassword = true
                 )
@@ -209,98 +179,39 @@ fun SignUpScreen(
                 )
             } else {
 
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(48.dp)
-                        .background(
-                            brush = Brush.horizontalGradient(
-                                colors = listOf(
-                                    Color(0xFF9D5BFF),
-                                    Color(0xFF64DFDF)
-                                )
-                            ),
-                            shape = RoundedCornerShape(12.dp)
-                        )
-                        .clickable {
-                            googleSignInLauncher.launch(googleSignInClient.signInIntent)
-                        },
-                    contentAlignment = Alignment.Center
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Spacer(modifier = Modifier.width(8.dp))
-
-                        Text(
-                            "Continue with Google",
-                            color = Color.White,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Medium
-                        )
-                        Spacer(Modifier.width(16.dp))
-                        Image(
-                            painter = painterResource(id = R.drawable.google_logo),
-                            contentDescription = "Google Logo",
-                            modifier = Modifier.size(24.dp)
-                        )
-                    }
-                }
-
                 Spacer(Modifier.height(16.dp))
 
+                MovitoButton(
+                    text = stringResource(id = R.string.signup_button),
+                    onClick = { validateAndSignUp() },
+                    modifier = Modifier.testTag("SignUpButton")
+                )
 
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(48.dp)
-                        .background(
-                            brush = Brush.horizontalGradient(
-                                colors = listOf(
-                                    Color(0xFF9D5BFF),
-                                    Color(0xFF64DFDF)
-                                )
-                            ),
-                            shape = RoundedCornerShape(12.dp)
-                        )
-                        .clickable { validateAndSignUp() },
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        "Sign Up",
-                        color = Color.White,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Medium
-                    )
-                }
             }
 
+            Spacer(modifier = Modifier.height(8.dp))
 
             validationError?.let {
                 Text(
                     text = it,
                     color = MaterialTheme.colorScheme.error,
-                    fontSize = 13.sp,
-                    modifier = Modifier.padding(top = 8.dp)
+                    fontSize = 13.sp
                 )
             }
-
 
             authState.error?.let {
                 Text(
                     text = it,
                     color = MaterialTheme.colorScheme.error,
-                    fontSize = 13.sp,
-                    modifier = Modifier.padding(top = 8.dp)
+                    fontSize = 13.sp
                 )
             }
 
-            Spacer(Modifier.height(32.dp))
+            Spacer(Modifier.weight(1f))
 
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    text = "Already have an account?",
+                    text = stringResource(id = R.string.signup_already_have_account),
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 14.sp
                 )
@@ -313,7 +224,7 @@ fun SignUpScreen(
                     )
                 ) {
                     Text(
-                        text = "Login",
+                        text = stringResource(id = R.string.signup_login),
                         fontWeight = FontWeight.Bold,
                         textDecoration = TextDecoration.Underline,
                         fontSize = 14.sp
@@ -334,7 +245,6 @@ fun FinalSignUpScreenPreviewDark() {
         SignUpScreen(
             onSignUpSuccess = {},
             onSignInClicked = {},
-            onGoogleSignUpClicked = {}
         )
     }
 }
@@ -350,7 +260,6 @@ fun FinalSignUpScreenPreviewLight() {
         SignUpScreen(
             onSignUpSuccess = {},
             onSignInClicked = {},
-            onGoogleSignUpClicked = {}
         )
     }
 }

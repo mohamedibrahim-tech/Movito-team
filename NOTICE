@@ -1,0 +1,54 @@
+Movito - A Modern Movie Discovery App
+Copyright (c) 2025 Movito Contributors
+
+This project is licensed under the MIT License.
+See the LICENSE file for the full license text.
+
+---
+
+This application uses third-party components and services:
+
+1. The Movie Database (TMDB) API
+   - Used for movie data, posters, and metadata
+   - This product uses the TMDB API but is not endorsed or certified by TMDB
+   - TMDB terms: https://www.themoviedb.org/documentation/api/terms-of-use
+
+2. Firebase Services (Google)
+   - Firebase Authentication for user login
+   - Firestore for cloud data storage
+   - Terms: https://firebase.google.com/terms
+
+3. Android Jetpack Libraries (Google)
+   - Jetpack Compose
+   - ViewModel
+   - Room
+   - WorkManager
+   - Licensed under Apache License 2.0
+
+4. Third-Party Libraries:
+   - Retrofit (Square) - Apache License 2.0
+   - Coil (Image loading) - Apache License 2.0
+   - Kotlin Coroutines - Apache License 2.0
+
+5. Icons & Assets:
+   - App icons and UI illustrations are original or licensed for use
+   - Movie posters and images are sourced from TMDB API
+   - Material Design Icons (Google) - Apache License 2.0
+
+---
+
+Developed by:
+- Mohamed Ibrahim
+- Ahmed Essam  
+- Basmala Wahid
+- Alyaa Osama
+- Youssef Sayed
+- Yehia Mohamed
+
+For contributions, see the CONTRIBUTORS section in README.md.
+
+---
+
+Disclaimer:
+This app is a personal/educational project. Movie data is provided by TMDB.
+All movie titles, posters, and related content are property of their respective owners.

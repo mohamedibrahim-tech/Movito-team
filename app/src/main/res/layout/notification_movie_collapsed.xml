@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?><!-- res/layout/notification_movie_collapsed.xml -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/transparent"
+    android:layoutDirection="locale"
+    android:orientation="horizontal"
+    android:padding="2dp">
+
+    <!-- Poster thumbnail -->
+    <ImageView
+        android:id="@+id/poster"
+        android:layout_width="48dp"
+        android:layout_height="72dp"
+        android:layout_marginEnd="4dp"
+        android:importantForAccessibility="no"
+        android:scaleType="centerCrop" />
+
+    <TextView
+        android:id="@+id/rating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:background="@drawable/rating_background"
+        android:paddingHorizontal="4dp"
+        android:paddingVertical="2dp"
+        android:textColor="@android:color/white"
+        android:textSize="8sp"
+        android:textStyle="bold" />
+
+    <!-- Text content -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="@string/notification_movie_suggestion_title_collapsed"
+        android:textAlignment="center"
+        android:textColor="@android:color/white"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+</LinearLayout>
