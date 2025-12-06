@@ -1,137 +1,235 @@
-# Movito Team
+# 🎬 Movito  
+*A modern movie discovery app built with Kotlin + Jetpack Compose*
 
-Welcome to Movito team repository.  
-We are a group of passionate developers working together on Android projects using Kotlin, Jetpack Compose, and modern development practices.
+<p align="center">
+  <img src="https://img.shields.io/badge/Kotlin-1.9-blue?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Compose-Material3-orange?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Architecture-MVVM-green?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/API-TMDB-red?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge" />
+</p>
 
----
+<p align="center">
+  <img src="docs/movito_logo.svg" width="30%" alt="Movito App Banner"/>
+</p>
 
-## Team Members
-- Mohamed Ibrahim Abdel-Samee (Team Leader)  
-- Youssef Sayed  
-- Yehia Mohamed  
-- Ahmed Essam  
-- Basmala Wahid  
-- Alyaa Osama
-
----
-
-## Project Name
-Movito (Movie Discovery App)
+The app fetches data from the TMDB API and stores user favorites in **Firebase Firestore**. It also provides scheduled recommendations notifications.
 
 ---
 
-## Project Idea
-We are building a Movie Discovery App that allows users to:
-- Browse popular movies in a beautiful grid layout  
-- View detailed information about a selected movie (title, synopsis, rating, release date)  
-- Search for movies by title  
-- Enjoy a modern UI/UX powered by Jetpack Compose and Material Design 3
+## 📱 Overview
+
+Movito is a clean, fast, and modern Android movie-exploration app powered by:
+
+- **Jetpack Compose**
+- **TMDB API**
+- **MVVM architecture**
+- **Room Database**
+- **WorkManager advanced notifications**
+- **Firebase Authentication**
+
+It allows users to browse trending movies, search titles, view deep movie details, save favorites, and receive smart scheduled movie recommendations.
 
 ---
 
-## Functional Requirements  
-The app should allow users to:  
-- Login / Sign Up → Create a new account or sign in securely  
-- Browse Popular Movies → View a grid/list of trending and top-rated movies  
-- Search Movies → Find movies by title  
-- View Movie Details → See title, synopsis, rating, release date, and poster  
-- Watch Movie Trailer → Play official trailers inside the app  
-- Add to Favorites → Save movies to a personal favorites list
+## ✨ Features
+
+### 🎞 Discover Movies
+- Popular, trending, and top-rated lists  
+- Genre-based browsing  
+
+### 📄 Movie Details
+- HD posters, overview, release info  
+- Watch/Sheare Trailer  
+- Add to favorites  
+- Similar movies  
+
+### ❤️ Favorites
+- Save movies with Room  
+- Persistent storage  
+- Smooth animated UI  
+
+### 🔔 Smart Notifications
+- Scheduled movie suggestions  
+- Customizable frequency (every X hours)  
+- Android 13+ permission support  
+- Test notification buttons
+- Arabic localization  
+
+### 🧑‍💻 Authentication
+- Email & password login    
+- Session persistence  
+
+### 🎨 Modern UI
+- 100% Jetpack Compose  
+- Material 3 
+- Light / Dark / System themes  
+- Custom splash screen  
+- Arabic localization  
 
 ---
 
-## Technologies
-- Language: Kotlin  
-- UI Toolkit: Jetpack Compose  
-- Networking: Retrofit  
-- Image Loading: Coil  
-- Architecture: MVVM / Clean Architecture  
-- Database: Room (for caching/offline mode) and firestore
-- Version Control: Git & GitHub  
-- Testing: Unit Testing + Compose UI Testing  
-- Security: Secure API key storage using gradle.properties (no hardcoded keys)  
+## 🖼️ Screenshots
+### English 🇬🇧
+
+<p align="center">
+  <img src="docs/screen_home.jpeg" width="30%" />
+  <img src="docs/screen_details.jpeg" width="30%" />
+  <img src="docs/screen_favorites.jpeg" width="30%" />
+</p>
+
+<p align="center">
+  <img src="docs/screen_login.jpeg" width="30%" />
+  <img src="docs/screen_settings.jpeg" width="30%" />
+  <img src="docs/screen_notification.jpeg" width="30%" />
+</p>
+
+
+### Arabic 🇪🇬
+
+<p align="center">
+  <img src="docs/screen_home_ar.jpeg" width="30%" />
+  <img src="docs/screen_details_ar.jpeg" width="30%" />
+  <img src="docs/screen_favorites_ar.jpeg" width="30%" />
+</p>
+
+<p align="center">
+  <img src="docs/screen_login_ar.jpeg" width="30%" />
+  <img src="docs/screen_settings_ar.jpeg" width="30%" />
+  <img src="docs/screen_notification_ar.jpeg" width="30%" />
+</p>
+---
+
+### 🏛 Architecture
+
+Movito follows a clean MVVM architecture:
+
+```
+UI (Jetpack Compose)
+  ↓
+ViewModel (StateFlow)
+  ↓
+Repository
+  ↓
+Remote (TMDB API) + Remote DB (Firestore)
+```
 
 ---
 
-## Project Plan  
-
-### Week 1: Design & Setup  
-- Project structure setup, Gradle dependencies, mock data  
-- Screens & Navigation setup  
-
-### Week 2: API & Data Layer  
-- TMDB API integration, Repository & Data Models  
-- Asynchronous calls with Coroutines + Flow  
-- Loading & error handling  
-
-### Week 3: Features & Improvements  
-- Search, filters, pagination, UI enhancements  
-- Optional offline caching with Room  
-
-### Week 4: Final Touches & Release  
-- Unit & UI testing, performance optimization  
-- Splash Screen & App Icon  
-- Prepare Play Store build  
+### Tech Stack
+- Kotlin  
+- Jetpack Compose (Material 3)  
+- ViewModel + StateFlow  
+- Coroutines  
+- Retrofit
+- Firebase Firestore (favorites + realtime listeners)
+- WorkManager (notifications)
+- Firebase Authentication  
+- Coil (image loading)
 
 ---
 
-## Team Responsibilities  
+## 📁 Project Structure
 
-### Mohamed Ibrahim
-UI:  
-- Wireframe & High-fidelity UI Screen Design  
-- Splash Screen  
-- Home Screen  
+```
+     
+app/
+ └── src/main/
+     ├── java/com/movito/movito/
+     │     ├── data/                 → Models + Retrofit API layer
+     │     │     ├── model/          → Movie.kt and related data classes
+     │     │     └── source/remote/  → RetrofitInstance, TmdbApi
+     │     ├── favorites/            → Firestore favorites repository
+     │     ├── notifications/        → All notification logic (Worker + helpers)
+     │     ├── theme/                → Compose theme (colors, typography, shapes)
+     │     ├── ui/                   → All screens (Activities + Compose screens)
+     │     │     └── common/         → Shared composables (NavBar, dialogs, etc.)
+     │     └── viewmodel/            → ViewModels for each feature
+     ├── res/                        → Resources
+     │     ├── anim/                 → Custom animations
+     │     ├── drawable/             → Genre icons, UI icons, logos
+     │     ├── layout/               → Notification layout XMLs
+     │     ├── mipmap/               → Launcher icons
+     │     └── values/               → strings.xml, themes.xml, colors.xml
+     └── AndroidManifest.xml         → Activities, permissions, services (Worker)
 
-Logic:  
-- Splash Screen Logic  
-- Home Logic (ViewModel, Pagination, API integration)  
-- Theme Mode Logic (Dark/Light Mode)  
-- Navigation Logic (Navigation Graph + Bottom Navigation Bar)  
-- Project Setup (Git Repository, Dependencies)  
-- Code Review & Merging Pull Requests
-- Authentication Logic (Logout)
-- Watch Movie Trailer Logic
-  
-### Basmala Wahid
-UI:  
-- Favorites Screen  
-- Settings Screen  
 
-Logic:  
-- Favorites Logic (Add/Remove + Firestore DB)  
-- Notifications Logic (Handling settings toggles)  
+```
 
-### Alyaa Osama
-UI:  
-- Sign Up Screen  
-Logic:  
-- Sign Up Logic
-  
-### Youssef Sayed
-UI:  
-- Sign In Screen
-  
-Logic:  
-- Authentication Logic (Sign In, Continue with Google)  
-- Session Management  
-- Sign Out Logic  
-- Profile Info Logic  
+---
 
-### Yehia Mohamed
-UI:  
-- Search Results UI  
+## 🔧 Setup
 
-Logic:  
-- API Service Setup  
-- Search & Filter Logic (ViewModel)  
+### Requirements
+- Android Studio Ladybug or newer  
+- Minimum SDK: 29
+- Target SDK: 36  
+- TMDB API key  
 
-### Ahmed Essam
-UI:  
-- Movie Details Screen (DetailsActivity.kt)  
-- Categories Screen (UI Enhancements)n  
+### Add your TMDB API key  
+Create or update:
 
-Logic:  
-- Database Integration (Favorites DB operations)  
-- Movie Details Logic (Scrollable Overview)
-- Share Movie Trailer Logic
+`local.properties`
+`tmdb_api_key=<your_api_key_here>`
+
+### Run the App  
+1. Open project in Android Studio
+2. Sync Gradle
+3. Run app on an emulator or device
+    
+---
+
+## 🌍 Localization
+
+Movito supports:
+
+- 🇬🇧 English  
+- 🇪🇬 Arabic (RTL + localized notifications)  
+
+---
+
+## 🤝 Contributors
+
+|     Member<br>      | Role                                                                                                                                                                  |
+| :-----------------: | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Mohamed Ibrahim** | Team Lead · Home screen · Some Movie Details screen logic <br>Navigation · Theme system · Core architecture · UI Test                                                 |
+|   **Ahmed Essam**   | Movie Details screen · Favorites integration<br>Full Notification System · Notifications Settings<br>Localization and bilingual support with Arabic/English switching |
+|  **Basmala Wahid**  | Favorites screen · Settings screen · Unit Test                                                                                                                        |
+|   **Alyaa Osama**   | Sign-Up screen · Welcome Notification                                                                                                                                 |
+|  **Youssef Sayed**  | Sign-In screen · Firebase Auth logic · Profile screen · Instrumented Test                                                                                             |
+|  **Yehia Mohamed**  | Search screen · API integration                                                                                                                                       |
+
+---
+
+## 🧪 Tests & QA
+
+- RTL checks (Arabic)
+- Notification scheduling & Firebase sync tests
+- UI Test
+- Instrumented Test
+- Uint Test
+
+---
+
+## 🚀 Roadmap
+
+- Migrate from using intent to navigate to using compose navigation component
+- Animations
+- Actor details & filmography  
+- Performance enhancement
+- Search filters
+
+---
+
+## 🔐 License
+
+This project is licensed under the **MIT License**.  
+See the [LICENSE](./LICENSE) file for details.
+
+---
+
+## ⭐ Support
+
+Star ⭐ the repo to support development!  
+Feedback & PRs are welcome!
+
