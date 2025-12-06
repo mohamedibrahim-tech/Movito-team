@@ -99,7 +99,7 @@ class CategoriesViewModelTest {
         viewModel = CategoriesViewModel()
         advanceUntilIdle()
 
-        assertEquals("فشل تحميل الأنواع: لا يوجد اتصال", viewModel.uiState.value.error)
+        assertEquals("تعذر تحميل الفئات: لا يوجد اتصال", viewModel.uiState.value.error)
     }
 
     @Test
