@@ -159,7 +159,7 @@
     <string name="details_title">Details</string>
     <string name="details_back_button_description">back</string>
     <!-- Poster and actions Section -->
-    <string name="details_added_to_favorites">%1$s added to favorites</string>
+    <string name="details_added_to_favorites">\"%1$s\" added to favorites</string>
     <string name="details_favorites_button">Favorites</string>
     <string name="details_play_trailer_button">Play Trailer</string>
     <string name="details_share_button">Share</string>
@@ -183,10 +183,10 @@
     <string name="notification_welcome_msg">Glad to have you in Movito app 🎬</string>
     <!-- Recommendation Notifications -->
     <string name="notification_general_msg">Check out this popular movie!</string>
-    <string name="notification_recommend_based_on_fav_genre">Since you liked %1$s, check out this similar movie!</string>
+    <string name="notification_recommend_based_on_fav_genre">Since you liked \"%1$s\", check out this similar movie!</string>
     <string name="notification_movie_suggestion_title">Suggested Movie</string>
     <string name="notification_movie_suggestion_title_collapsed">We have a great movie for you!</string>
-    <string name="notification_recommendation_based_on_fav_recommendation">Since you liked %1$s, we think you\'ll love %2$s because it\'s similar!</string>
+    <string name="notification_recommendation_based_on_fav_recommendation">Since you liked \"%1$s\", we think you\'ll love \"%2$s\" because it\'s similar!</string>
     <string name="notification_limit_must_be_between_and">Notification limit must be between %1$d and %2$d</string>
     <string name="please">Please</string>
     <string name="confirm_to_the_interval_constraints">confirm to the interval constraints</string>
