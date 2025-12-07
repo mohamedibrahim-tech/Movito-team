@@ -79,6 +79,10 @@ import com.movito.movito.ui.common.SettingsCards
 import com.movito.movito.viewmodel.LanguageViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import androidx.lifecycle.ViewModel
+import androidx.compose.material3.Snackbar
+import android.content.SharedPreferences
+import androidx.compose.material3.Button
 
 /**
  * COMPREHENSIVE APP SETTINGS INTERFACE
@@ -88,9 +92,9 @@ import kotlinx.coroutines.launch
  * settings into logical sections with intuitive controls and real-time feedback.
  *
  * ARCHITECTURE:
- * - Material 3 Scaffold with consistent navigation patterns
+ * - Material 3 [Scaffold] with consistent navigation patterns
  * - Section-based organization for clarity and discoverability
- * - Real-time preference synchronization with ViewModels
+ * - Real-time preference synchronization with [ViewModel]s
  * - Comprehensive notification management with validation
  *
  * SECTION ORGANIZATION:
@@ -132,20 +136,20 @@ import kotlinx.coroutines.launch
  * - Maintains state across permission dialogs
  *
  * FREQUENCY CUSTOMIZATION:
- * - Number input with digit validation (1-99)
+ * - Number input with digit validation (`1`-`99`)
  * - Unit selection dropdown (minutes/hours/days)
  * - Minimum interval enforcement (15min/1hr/1day)
  * - Real-time display of current vs pending settings
  *
  * NOTIFICATION LIMIT:
- * - Maximum number of notifications to keep in history (1-20)
+ * - Maximum number of notifications to keep in history (`1`-`20`)
  * - Oldest notifications are removed when limit is reached
  * - Helps manage notification clutter
  *
  * VALIDATION AND FEEDBACK:
  * - Visual indicators for invalid inputs
  * - Color-coded status messages
- * - Snackbar confirmations for actions
+ * - [Snackbar] confirmations for actions
  * - Progressive disclosure of complex options
  *
  * BATTERY OPTIMIZATION GUIDANCE:
@@ -168,16 +172,22 @@ import kotlinx.coroutines.launch
  * 5. Consistency: Material Design 3 patterns throughout
  *
  * TECHNICAL INTEGRATION:
- * - WorkManager: Background notification scheduling
- * - SharedPreferences: User preference persistence
- * - LiveData: Real-time status observation
+ * - [WorkManager]: Background notification scheduling
+ * - [SharedPreferences]: User preference persistence
+ * - [LiveData]: Real-time status observation
  * - Permission APIs: Android 13+ compatibility
  *
- * ACCESSIBILITY FEATURES:
- * - Proper content descriptions for all controls
- * - Sufficient color contrast ratios
- * - Logical focus navigation order
- * - Screen reader compatibility
+ * **Author**: Movito Development Team Member [Basmala Wahid](http://github.com/basmala-wahid)
+ *
+ * @param onThemeToggle Callback triggered when theme is toggled (`true` for dark, `false` for light)
+ * @param onSignOut Callback triggered when user signs out
+ * @param userEmail The current user's email address, or null if not signed in
+ * @param onChangePassword Callback triggered when password reset is requested
+ * @param notificationsEnabled Current state of notification permission
+ * @param onNotificationsStateUpdate Callback when notification state changes
+ * @param isDarkTheme Whether dark theme is currently enabled
+ *
+ * @since first appear in the SettingsActivity.kt file (11 Nov 2025), then moved to separate file (1 Dec 2025)
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -441,6 +451,8 @@ fun SettingsScreen(
  *
  * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
  *
+ * @param languageViewModel The [ViewModel] managing language preferences and state
+ *
  * @since 1 Dec 2025
  */
 @Composable
@@ -499,9 +511,14 @@ fun LanguageSection(
 /**
  * REUSABLE LANGUAGE BUTTON COMPOSABLE
  *
- * PURPOSE: Individual language button with selection visual feedback
+ * PURPOSE: Individual language [Button] with selection visual feedback
  *
  * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
+ *
+ * @param displayText The text to display on the button (e.g., "English" or "العربية")
+ * @param isSelected Whether this language is currently selected
+ * @param onClick Callback when the button is clicked
+ * @param modifier [Modifier] for styling and layout*
  *
  * @since 4 Dec 2025
  */
@@ -539,6 +556,18 @@ private fun LanguageButton(
  * 1. NotificationHeader: Master switch with explanation
  * 2. NotificationSettings: Frequency customization (when enabled)
  * 3. TestNotificationSection: Debugging tools (when enabled)
+ *
+ * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
+ *
+ * @param notifications Current notification permission/enabled state
+ * @param onNotificationsChange Callback when notification state changes
+ * @param prefs [NotificationPreferences] instance for storing settings
+ * @param snackbarHostState [Snackbar] state for showing feedback messages
+ * @param scope [CoroutineScope] for launching snackbar updates
+ * @param context Android context for accessing system services
+ * @param onNotificationsStateUpdate Callback to update parent state
+ *
+ * @since 5 Dec 2025
  */
 @Composable
 fun NotificationSection(
@@ -596,6 +625,18 @@ fun NotificationSection(
  *
  * PURPOSE: Master notification control with intelligent permission handling
  * and contextual explanations.
+ *
+ * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
+ *
+ * @param notifications Current notification enabled state
+ * @param onNotificationsChange Callback when notification toggle changes
+ * @param context Android context for permission checking
+ * @param prefs [NotificationPreferences] for storing settings
+ * @param snackbarHostState [Snackbar] state for permission requests
+ * @param scope [CoroutineScope] for snackbar operations
+ * @param onNotificationsStateUpdate Callback to update parent state
+ *
+ * @since 5 Dec 2025
  */
 @Composable
 fun NotificationHeader(
@@ -644,6 +685,19 @@ fun NotificationHeader(
  *
  * PURPOSE: Intelligent switch that handles Android 13+ permissions
  * and provides contextual user guidance.
+ *
+ * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
+ *
+ * @param notifications Current notification enabled state
+ * @param onNotificationsChange Callback when switch state changes
+ * @param context Android context for permission checking
+ * @param prefs [NotificationPreferences] for storing settings
+ * @param snackbarHostState [Snackbar] state for permission requests
+ * @param scope [CoroutineScope] for snackbar operations
+ * @param onNotificationsStateUpdate Callback to update parent state
+ *
+ * @since 5 Dec 2025
+ *
  */
 @Composable
 fun NotificationMasterSwitch(
@@ -684,6 +738,15 @@ fun NotificationMasterSwitch(
  *
  * PURPOSE: Frequency customization interface with real-time validation
  * and battery optimization guidance.
+ *
+ * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
+ *
+ * @param prefs [NotificationPreferences] instance for storing/retrieving settings
+ * @param snackbarHostState [Snackbar] state for showing feedback messages
+ * @param scope [CoroutineScope] for launching snackbar updates
+ * @param context Android context for accessing system services
+ *
+ * @since 5 Dec 2025
  */
 @Composable
 fun NotificationSettings(
@@ -936,6 +999,18 @@ fun NotificationSettings(
 
 /**
  * INTERVAL INPUT ROW COMPOSABLE
+ *
+ * PURPOSE: Layout row containing the interval number input and unit dropdown.
+ *
+ * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
+ *
+ * @param intervalText Current interval value as text
+ * @param onIntervalTextChange Callback when interval text changes
+ * @param currentUnitToDisplay Localized display text for current unit
+ * @param listOfUnitsToDisplay [List] of available unit options for display
+ * @param onUnitSelected Callback when a unit is selected from dropdown
+ *
+ * @since 5 Dec 2025
  */
 @Composable
 fun IntervalInputRow(
@@ -969,6 +1044,16 @@ fun IntervalInputRow(
 
 /**
  * INTERVAL TEXT FIELD COMPOSABLE
+ *
+ * PURPOSE: Number input field for notification interval with validation.
+ *
+ * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
+ *
+ * @param value Current interval value as text
+ * @param onValueChange Callback when text field value changes
+ * @param modifier [Modifier] for styling and layout
+ *
+ * @since 5 Dec 2025
  */
 @Composable
 fun IntervalTextField(
@@ -988,6 +1073,17 @@ fun IntervalTextField(
 
 /**
  * INTERVAL UNIT DROPDOWN COMPOSABLE
+ *
+ * PURPOSE: Dropdown selector for time units (minutes/hours/days).
+ *
+ * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
+ *
+ * @param currentUnitToDisplay Localized display text for current unit
+ * @param listOfUnitsToDisplay [List] of available unit options for display
+ * @param onUnitSelected Callback when a unit is selected
+ * @param modifier [Modifier] for styling and layout
+ *
+ * @since 5 Dec 2025
  */
 @Composable
 fun IntervalUnitDropdown(
@@ -1026,6 +1122,21 @@ fun IntervalUnitDropdown(
 
 /**
  * INTERVAL STATUS DISPLAY COMPOSABLE
+ *
+ * PURPOSE: Shows validation messages, current settings, and pending changes
+ * for the notification interval.
+ *
+ * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
+ *
+ * @param prefs [NotificationPreferences] for retrieving current settings
+ * @param currentUnit Currently selected time unit (minutes/hours/days)
+ * @param intervalValue Numeric interval value
+ * @param hasUnsavedChanges Whether there are unsaved changes
+ * @param isValid Whether the current interval value is valid
+ * @param minValue Minimum allowed value for the current unit
+ * @param context Android context for string localization
+ *
+ * @since 5 Dec 2025
  */
 @Composable
 fun IntervalStatusDisplay(
@@ -1089,6 +1200,26 @@ fun IntervalStatusDisplay(
 
 /**
  * SAVE SETTINGS BUTTON COMPOSABLE
+ *
+ * PURPOSE: [Button] that saves both interval and notification limit settings
+ * with validation and feedback.
+ *
+ * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
+ *
+ * @param hasUnsavedChanges Whether there are unsaved changes to save
+ * @param isIntervalValid Whether the interval value is valid
+ * @param isLimitValid Whether the notification limit value is valid
+ * @param intervalText Interval value as text for display
+ * @param intervalValue Numeric interval value for saving
+ * @param limitValue Numeric notification limit value for saving
+ * @param currentUnit Currently selected time unit
+ * @param prefs [NotificationPreferences] for storing settings
+ * @param snackbarHostState [Snackbar] state for showing feedback
+ * @param scope [CoroutineScope] for launching snackbar updates
+ * @param context Android context for string resources
+ * @param onSaveComplete Callback when save operation is complete
+ *
+ * @since 5 Dec 2025
  */
 @Composable
 fun SaveSettingsButton(
@@ -1212,6 +1343,17 @@ fun SaveSettingsButton(
  *
  * PURPOSE: Provides debugging tools for notification system testing
  * and troubleshooting.
+ *
+ * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
+ *
+ * @param snackbarHostState [Snackbar] state for showing test feedback
+ * @param scope [CoroutineScope] for launching snackbar updates
+ * @param context Android context for notification operations
+ * @param prefs [NotificationPreferences] for storing settings
+ * @param onNotificationsStateUpdate Callback to update notification state
+ * @param updateNotificationState Callback to update local notification state
+ *
+ * @since 5 Dec 2025
  */
 @Composable
 fun TestNotificationSection(
@@ -1312,6 +1454,18 @@ fun TestNotificationSection(
 
 /**
  * Handles notification toggle with permission checking
+ *
+ * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
+ *
+ * @param newValue New desired notification state
+ * @param context Android context for permission checking
+ * @param prefs [NotificationPreferences] for storing settings
+ * @param snackbarHostState [Snackbar] state for permission requests
+ * @param scope [CoroutineScope] for snackbar operations
+ * @param onNotificationsStateUpdate Callback to update parent state
+ * @param updateNotificationState Callback to update local UI state
+ *
+ * @since 5 Dec 2025
  */
 private fun handleNotificationToggle(
     newValue: Boolean,
@@ -1375,6 +1529,15 @@ private fun handleNotificationToggle(
 
 /**
  * Enables notifications and schedules them
+ *
+ * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
+ *
+ * @param context Android context for notification operations
+ * @param prefs [NotificationPreferences] for storing enabled state
+ * @param onNotificationsStateUpdate Callback to update parent state
+ * @param updateNotificationState Callback to update local UI state
+ *
+ * @since 5 Dec 2025
  */
 private fun enableNotifications(
     context: Context,
@@ -1390,6 +1553,15 @@ private fun enableNotifications(
 
 /**
  * Disables notifications and cancels all scheduling
+ *
+ * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
+ *
+ * @param context Android context for cancelling notifications
+ * @param prefs [NotificationPreferences] for storing disabled state
+ * @param onNotificationsStateUpdate Callback to update parent state
+ * @param updateNotificationState Callback to update local UI state
+ *
+ * @since 5 Dec 2025
  */
 private fun disableNotifications(
     context: Context,
@@ -1405,6 +1577,13 @@ private fun disableNotifications(
 
 /**
  * Checks current notification scheduling status
+ *
+ * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
+ *
+ * @param context Android context for [WorkManager] access
+ * @param onStatusChecked Callback with current scheduling status (`true` if scheduled)
+ *
+ * @since 5 Dec 2025
  */
 private fun checkNotificationStatus(
     context: Context,
@@ -1420,6 +1599,9 @@ private fun checkNotificationStatus(
     }
 }
 
+/**
+ * Preview function for SettingsScreen in dark theme mode
+ */
 @Preview(showSystemUi = true, name = "Dark Mode")
 @Composable
 fun SettingsPreviewDark() {
@@ -1437,6 +1619,9 @@ fun SettingsPreviewDark() {
     }
 }
 
+/**
+ * Preview function for SettingsScreen in light theme mode
+ */
 @Preview(showSystemUi = true, name = "Light Mode")
 @Composable
 fun SettingsPreviewLight() {

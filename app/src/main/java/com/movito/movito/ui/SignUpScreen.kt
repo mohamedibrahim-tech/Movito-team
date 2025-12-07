@@ -1,9 +1,7 @@
-
 package com.movito.movito.ui
 
 import android.widget.Toast
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -13,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
@@ -31,8 +28,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -44,9 +39,29 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.movito.movito.R
 import com.movito.movito.theme.MovitoTheme
+import com.movito.movito.ui.common.CustomAuthTextField
 import com.movito.movito.ui.common.MovitoButton
+import com.movito.movito.ui.common.MovitoLogo
 import com.movito.movito.viewmodel.AuthViewModel
 
+/**
+ * [Composable] screen for user registration/sign-up functionality.
+ *
+ * This screen provides a form for new users to create an account with email and password.
+ * It includes validation for email format, password requirements, and password confirmation.
+ *
+ * @param modifier The Modifier to be applied to the screen
+ * @param authViewModel The ViewModel that handles authentication logic and state
+ * @param onSignUpSuccess Callback triggered when sign-up is successful
+ * @param onSignInClicked Callback triggered when user clicks "Sign In" link
+ *
+ * **Author**: Movito Development Team Member [Alyaa Osama](https://github.com/AlyaaOsamaZaki)
+ *
+ * @see AuthViewModel
+ * @see MovitoButton
+ *
+ * @since 12 Nov 2025
+ */
 @Composable
 fun SignUpScreen(
     modifier: Modifier = Modifier,
@@ -62,6 +77,10 @@ fun SignUpScreen(
     val authState by authViewModel.authState.collectAsState()
     val context = LocalContext.current
 
+    /*
+     * Observes authentication state changes and shows appropriate Toast messages.
+     * Also triggers navigation on successful sign-up.
+     */
     LaunchedEffect(authState) {
         if (authState.message != null) {
             Toast.makeText(context, authState.message, Toast.LENGTH_LONG).show()
@@ -74,7 +93,24 @@ fun SignUpScreen(
         }
     }
 
-
+    /**
+     * Validates user input and initiates the sign-up process if validation passes.
+     *
+     * Validation checks include:
+     * 1. If email [isBlank] or not
+     * 2. Email format is invalid or valid
+     * 3. If password [isBlank] or not
+     * 4. Password meets minimum length requirement (`6` characters)
+     * 5. If confirmation password [isBlank] or not
+     * 6. Password and confirmation match
+     *
+     * If validation fails, sets an appropriate error message.
+     * If validation passes, calls [AuthViewModel.signUpWithEmailPassword].
+     *
+     * **Author**: Movito Development Team Member [Alyaa Osama](https://github.com/AlyaaOsamaZaki)
+     *
+     * @since 14 Nov 2025
+     */
     fun validateAndSignUp() {
         validationError = null
 
@@ -113,7 +149,8 @@ fun SignUpScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.TopCenter
-    ) {
+    )
+    {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -172,21 +209,17 @@ fun SignUpScreen(
 
             Spacer(Modifier.height(40.dp))
 
-
             if (authState.isLoading) {
                 CircularProgressIndicator(
                     color = MaterialTheme.colorScheme.primary
                 )
             } else {
-
                 Spacer(Modifier.height(16.dp))
-
                 MovitoButton(
                     text = stringResource(id = R.string.signup_button),
                     onClick = { validateAndSignUp() },
                     modifier = Modifier.testTag("SignUpButton")
                 )
-
             }
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -234,6 +267,10 @@ fun SignUpScreen(
         }
     }
 }
+
+/**
+ * Preview function for [SignUpScreen] in dark theme mode.
+ */
 @Preview(
     showBackground = true,
     showSystemUi = true,
@@ -249,6 +286,9 @@ fun FinalSignUpScreenPreviewDark() {
     }
 }
 
+/**
+ * Preview function for [SignUpScreen] in light theme mode.
+ */
 @Preview(
     showBackground = true,
     showSystemUi = true,

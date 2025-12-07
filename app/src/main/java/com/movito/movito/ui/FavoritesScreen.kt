@@ -51,7 +51,27 @@ import com.movito.movito.ui.common.MovieCard
 import com.movito.movito.ui.common.MovitoNavBar
 import com.movito.movito.viewmodel.FavoritesViewModel
 
-
+/**
+ * Main screen for displaying the user's favorite movies.
+ *
+ * This screen provides:
+ * - Grid layout of favorite movies (2 columns)
+ * - Real-time updates when favorites change
+ * - Remove from favorites functionality with confirmation dialog
+ * - Empty state and loading indicators
+ * - Integration with [FavoritesViewModel] for data management
+ *
+ * **Author**: Movito Development Team Member [Basmala Wahid](http://github.com/basmala-wahid)
+ *
+ * @param modifier [Modifier] for styling and layout
+ * @param viewModel The [FavoritesViewModel] instance managing favorite movies data
+ *
+ * @since 11 Nov 2025
+ *
+ * @see FavoritesViewModel
+ * @see FavoriteMovieCard
+ * @see FavoriteDialog
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoritesScreen(
@@ -147,6 +167,25 @@ fun FavoritesScreen(
     }
 }
 
+/**
+ * Custom [MovieCard]-[Composable] for displaying favorite movies with remove functionality.
+ *
+ * This card includes:
+ * - Standard movie information (poster, title, rating, year)
+ * - Heart icon in the top-right corner for removing from favorites
+ * - Confirmation dialog before removal
+ *
+ * **Author**: Movito Development Team Member [Basmala Wahid](http://github.com/basmala-wahid)
+ *
+ * @param modifier [Modifier] for styling and layout
+ * @param movie The [Movie] object to display
+ * @param onRemoveFavorite Callback when user confirms removal from favorites
+ *
+ * @since 11 Nov 2025
+ *
+ * @see MovieCard
+ * @see FavoriteDialog
+ */
 @Composable
 fun FavoriteMovieCard(
     modifier: Modifier = Modifier,
@@ -186,7 +225,6 @@ fun FavoriteMovieCard(
         }
     }
 }
-
 
 // Dark Mode Preview - Empty
 @Preview(showSystemUi = true, name = "Favorites - Empty Dark Mode")

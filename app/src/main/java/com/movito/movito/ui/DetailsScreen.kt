@@ -81,12 +81,14 @@ import com.movito.movito.ui.common.RatingBar
 import com.movito.movito.viewmodel.DetailsViewModel
 import com.movito.movito.viewmodel.FavoritesViewModel
 import kotlinx.coroutines.launch
+import androidx.lifecycle.ViewModel
+import android.content.Intent.ACTION_SEND
 
 
 /**
  * Main details screen showing comprehensive movie information.
  *
- * Features:
+ * This composable provides a rich interface for viewing movie details including:
  * - Blurred background with movie poster
  * - Poster, rating, and action buttons section
  * - Scrollable movie overview
@@ -94,10 +96,23 @@ import kotlinx.coroutines.launch
  * - Movie recommendations carousel
  * - Favorite management with dialogs
  *
- * @param viewModel ViewModel handling movie details and recommendations
- * @param movie The movie to display details for
- * @param modifier Modifier for styling and layout
- * @param onClickBackButton Callback when back button is pressed
+ * The screen is divided into four weighted sections (35%, 25%, 5%, 35%) to maintain
+ * consistent proportions across different screen sizes.
+ *
+ * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
+ *
+ * @param viewModel The [DetailsViewModel] handling movie details and recommendations
+ * @param movie The [Movie] object containing movie data to display
+ * @param modifier The [Modifier] to be applied to the screen
+ * @param onClickBackButton Callback triggered when the back button is pressed
+ *
+ * @since 14 Nov 2025
+ *
+ * @see DetailsViewModel
+ * @see MoviePosterAndActionsSection
+ * @see MovieOverviewSection
+ * @see GenresSection
+ * @see RecommendationsSection
  */
 @SuppressLint("UseKtx")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -276,7 +291,17 @@ fun DetailsScreen(
 }
 
 /**
- * Background with blurred movie poster and gradient overlay.
+ * Creates a blurred background with the movie poster and gradient overlay.
+ *
+ * This background provides a visually appealing foundation for the details screen
+ * with a frosted glass effect that maintains readability of foreground content.
+ *
+ * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
+ *
+ * @param posterPath The TMDB poster path for the movie background image
+ * @param content The main content to display over the blurred background
+ *
+ * @since 27 Nov 2025
  */
 @Composable
 private fun BackgroundWithBlur(
@@ -317,8 +342,29 @@ private fun BackgroundWithBlur(
 
 /**
  * Displays the main movie poster alongside rating info and action buttons.
- * Uses weighted layout to maintain proportional sizing across screen sizes.
+ *
+ * This section uses a weighted layout to maintain proportional sizing:
+ * - Poster (50% width)
+ * - Actions column (50% width) containing:
+ *      - Rating display (30% height)
+ *      - Play Trailer button (20% height)
+ *      - Share + Favorite buttons (20% height)
+ *      - Spacers (30% height total)
+ *
+ * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
+ *
+ * @param movie The [Movie] object containing movie data
+ * @param isLoading Whether the trailer is currently loading
+ * @param isFavorite Whether the movie is in the user's favorites
+ * @param heartAnimationTrigger Trigger for the heart icon animation (increment to animate)
+ * @param onPlayTrailer Callback when the play trailer button is clicked
+ * @param onShare Callback when the share button is clicked
+ * @param onFavoriteClick Callback when the favorite button is clicked
+ * @param modifier [Modifier] for styling and layout
+ *
+ * @since 27 Nov 2025
  */
+
 @Composable
 fun MoviePosterAndActionsSection(
     movie: Movie,
@@ -451,7 +497,16 @@ fun MoviePosterAndActionsSection(
 
 /**
  * Shows the movie overview/description in a scrollable text area.
- * Handles long text content with proper scrolling and text justification.
+ *
+ * This section displays the movie's plot summary with proper text justification
+ * and scrolling for long content. Uses 25% of the screen height by default.
+ *
+ * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
+ *
+ * @param overview The movie's plot summary text
+ * @param modifier [Modifier] for styling and layout
+ *
+ * @since 27 Nov 2025
  */
 @Composable
 fun MovieOverviewSection(
@@ -487,7 +542,18 @@ fun MovieOverviewSection(
 
 /**
  * Displays genre tags for the movie in a horizontal scrollable row.
- * Matches genre IDs with names from the provided genres list.
+ *
+ * This section matches genre IDs with names from the provided genres list.
+ * Uses 5% of the screen height by default with a 75/25 split between
+ * genre tags and the "Genres" label.
+ *
+ * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
+ *
+ * @param genres List of available [Genre] objects from TMDB
+ * @param movieGenreIds List of genre IDs associated with the current movie
+ * @param modifier [Modifier] for styling and layout
+ *
+ * @since 27 Nov 2025
  */
 @Composable
 fun GenresSection(
@@ -529,7 +595,15 @@ fun GenresSection(
 
 /**
  * Individual genre tag with glassmorphism styling.
- * Used within the GenresSection to display each genre.
+ *
+ * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
+ *
+ * Creates a visually appealing chip with gradient background and subtle border
+ * for displaying genre names. Used within the [GenresSection].
+ *
+ * @param genreName The name of the genre to display
+ *
+ * @since 27 Nov 2025
  */
 @Composable
 private fun GenreChip(genreName: String) {
@@ -574,7 +648,18 @@ private fun GenreChip(genreName: String) {
 
 /**
  * Shows recommended movies in a horizontal carousel.
- * Handles empty states and error messages gracefully.
+ *
+ * This section displays movies similar to the current movie in a scrollable
+ * horizontal list. Uses 35% of the screen height by default with an 80/20
+ * split between the carousel and the section title.
+ *
+ * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
+ *
+ * @param recommendedMovies List of [Movie] objects recommended based on the current movie
+ * @param error Error message to display if no recommendations are available
+ * @param modifier [Modifier] for styling and layout
+ *
+ * @since 27 Nov 2025
  */
 @Composable
 fun RecommendationsSection(
@@ -631,6 +716,17 @@ fun RecommendationsSection(
 
 /**
  * Shares a URL using Android's share intent.
+ *
+ * Creates and launches an [ACTION_SEND] intent with the provided URL,
+ * allowing the user to share the movie trailer link through any
+ * installed sharing application.
+ *
+ * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
+ *
+ * @param context The Android context for starting the intent
+ * @param url The YouTube URL to share
+ *
+ * @since 14 Nov 2025
  */
 fun shareUrl(context: Context, url: String) {
     val intent = Intent(Intent.ACTION_SEND).apply {
@@ -641,9 +737,26 @@ fun shareUrl(context: Context, url: String) {
     context.startActivity(chooser)
 }
 
+// --- Preview ---
+
 /**
- * Preview-only version of DetailsScreen for design and testing.
- * Uses the same UI components but with mock data and no ViewModel dependencies.
+ * Preview-only version of [DetailsScreen] for design and testing.
+ *
+ * This composable provides the same UI structure as [DetailsScreen] but uses
+ * mock data and callbacks instead of [ViewModel] dependencies. Useful for
+ * previewing different states in Android Studio's design tab.
+ *
+ * @param movie The mock [Movie] object to display
+ * @param genres List of mock [Genre] objects for genre display
+ * @param recommendedMovies List of mock [Movie] objects for recommendations
+ * @param isLoading Whether to show loading state for the trailer button
+ * @param error Error message to display for recommendations
+ * @param isFavorite Whether the movie is marked as favorite
+ * @param modifier Modifier for styling and layout
+ * @param onBackClick Callback for back button press
+ * @param onPlayTrailer Callback for trailer button press
+ * @param onShare Callback for share button press
+ * @param onFavoriteClick Callback for favorite button press
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -203,6 +203,13 @@ class CategoriesActivity : ComponentActivity() {
         }
     }
 
+    /**
+     * Removes the language change listener when activity is destroyed.
+     *
+     * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
+     *
+     * @since 1 Dec 2025
+     */
     override fun onDestroy() {
         super.onDestroy()
         MovitoApplication.LanguageChangeObserver.removeListener(languageChangeListener)

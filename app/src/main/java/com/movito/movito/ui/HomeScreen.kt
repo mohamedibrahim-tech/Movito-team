@@ -49,6 +49,30 @@ import com.movito.movito.viewmodel.MoviesUiState
 import com.movito.movito.viewmodel.MoviesByGenreViewModel
 import kotlinx.coroutines.launch
 
+/**
+ * Main screen for displaying movies filtered by a specific genre.
+ *
+ * This screen provides:
+ * - Grid layout of movies (2 columns) for a selected genre
+ * - Infinite scroll/pagination with load more functionality
+ * - Pull-to-refresh capability
+ * - Back navigation to return to categories
+ * - Error and loading states
+ * - Genre-specific title in the app bar
+ *
+ * **Author**: Movito Development Team Member [Mohamed Ibrahim](https://github.com/mohamedibrahim-tech/)
+ *
+ * @param modifier Modifier for styling and layout
+ * @param viewModel The [MoviesByGenreViewModel] instance managing movie data for the selected genre
+ * @param genreName The name of the selected genre for display in the app bar
+ * @param onBackPressed Callback triggered when the back button is pressed
+ *
+ * @since 8 Nov 2025
+ *
+ * @see MoviesByGenreViewModel
+ * @see MovieCard
+ * @see MoviesByGenreContent
+ */
 @Composable
 fun MoviesByGenreScreen(
     modifier: Modifier = Modifier,
@@ -76,6 +100,27 @@ fun MoviesByGenreScreen(
     )
 }
 
+/**
+ * [Composable] content for the movies by genre screen with scaffold layout.
+ *
+ * This function handles the complete UI layout including:
+ * - Top app bar with back button and refresh action
+ * - Grid of movie cards with infinite scrolling
+ * - Loading, error, and empty states
+ * - Bottom navigation bar
+ *
+ * **Author**: Movito Development Team Member [Mohamed Ibrahim](https://github.com/mohamedibrahim-tech/)
+ *
+ * @param modifier Modifier for styling and layout
+ * @param uiState The current state from [MoviesByGenreViewModel]
+ * @param gridState The [LazyGridState] for controlling the scroll position and observing scroll events
+ * @param genreName The name of the selected genre for display
+ * @param onRefresh Callback triggered when refresh action is initiated
+ * @param onLoadMore Callback triggered when more movies should be loaded (infinite scroll)
+ * @param onBackPressed Callback triggered when back button is pressed
+ *
+ * @since 8 Nov 2025
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MoviesByGenreContent(
@@ -173,6 +218,12 @@ fun MoviesByGenreContent(
                         }
                     }
 
+                    /*
+                     * Observes scroll position and triggers loading more movies when
+                     * the user scrolls near the end of the list.
+                     *
+                     * Uses a buffer of 4 items to start loading before reaching the absolute end.
+                     */
                     val buffer = 4 // Start loading when 4 items are left
                     val shouldLoadMore by remember {
                         derivedStateOf { // to detect when the list is scrolled to the end
@@ -195,50 +246,65 @@ fun MoviesByGenreContent(
 
 // --- Previews ---
 
+/**
+ * Preview function for MoviesByGenreContent with mock data in dark theme.
+ */
 @Preview(showSystemUi = true, name = "Dark Mode - Success")
 @Composable
 fun MoviesByGenrePreviewSuccessDark() {
     val mockMovie = Movie(1, "Cosmic Echoes", "2025-03-15", "/qA9b2xSJ8nCK2z3yIuVnAwmWsum.jpg", 8.5, "An epic space opera.", listOf(878))
     val mockState = MoviesUiState(movies = List(10) { mockMovie })
     MovitoTheme(darkTheme = true) {
-        MoviesByGenreContent(uiState = mockState, gridState = rememberLazyGridState(), genreName = "Action", onRefresh = {}, onLoadMore = {}, onBackPressed = {}) 
+        MoviesByGenreContent(uiState = mockState, gridState = rememberLazyGridState(), genreName = "Action", onRefresh = {}, onLoadMore = {}, onBackPressed = {})
     }
 }
 
+/**
+ * Preview function for MoviesByGenreContent with mock data in light theme.
+ */
 @Preview(showSystemUi = true, name = "Light Mode - Success")
 @Composable
 fun MoviesByGenrePreviewSuccessLight() {
     val mockMovie = Movie(1, "Cosmic Echoes", "2025-03-15", "/qA9b2xSJ8nCK2z3yIuVnAwmWsum.jpg", 8.5, "An epic space opera.", listOf(878))
     val mockState = MoviesUiState(movies = List(10) { mockMovie })
     MovitoTheme(darkTheme = false) {
-        MoviesByGenreContent(uiState = mockState, gridState = rememberLazyGridState(), genreName = "Action", onRefresh = {}, onLoadMore = {}, onBackPressed = {}) 
+        MoviesByGenreContent(uiState = mockState, gridState = rememberLazyGridState(), genreName = "Action", onRefresh = {}, onLoadMore = {}, onBackPressed = {})
     }
 }
 
+/**
+ * Preview function for MoviesByGenreContent in loading state.
+ */
 @Preview(showSystemUi = true, name = "Dark Mode - Loading")
 @Composable
 fun MoviesByGenrePreviewLoading() {
     val mockState = MoviesUiState(isLoading = true)
     MovitoTheme(darkTheme = true) {
-        MoviesByGenreContent(uiState = mockState, gridState = rememberLazyGridState(), genreName = "Action", onRefresh = {}, onLoadMore = {}, onBackPressed = {}) 
+        MoviesByGenreContent(uiState = mockState, gridState = rememberLazyGridState(), genreName = "Action", onRefresh = {}, onLoadMore = {}, onBackPressed = {})
     }
 }
 
+/**
+ * Preview function for MoviesByGenreContent in error state.
+ */
 @Preview(showSystemUi = true, name = "Dark Mode - Error")
 @Composable
 fun MoviesByGenrePreviewError() {
     val mockState = MoviesUiState(error = "Failed to load movies")
     MovitoTheme(darkTheme = true) {
-        MoviesByGenreContent(uiState = mockState, gridState = rememberLazyGridState(), genreName = "Action", onRefresh = {}, onLoadMore = {}, onBackPressed = {}) 
+        MoviesByGenreContent(uiState = mockState, gridState = rememberLazyGridState(), genreName = "Action", onRefresh = {}, onLoadMore = {}, onBackPressed = {})
     }
 }
 
+/**
+ * Preview function for MoviesByGenreContent in "loading more" state.
+ */
 @Preview(showSystemUi = true, name = "Dark Mode - Loading More")
 @Composable
 fun MoviesByGenrePreviewLoadingMore() {
     val mockMovie = Movie(1, "Cosmic Echoes", "2025-03-15", "/qA9b2xSJ8nCK2z3yIuVnAwmWsum.jpg", 8.5, "An epic space opera.", listOf(878))
     val mockState = MoviesUiState(movies = List(10) { mockMovie }, isLoadingMore = true)
     MovitoTheme(darkTheme = true) {
-        MoviesByGenreContent(uiState = mockState, gridState = rememberLazyGridState(), genreName = "Action", onRefresh = {}, onLoadMore = {}, onBackPressed = {}) 
+        MoviesByGenreContent(uiState = mockState, gridState = rememberLazyGridState(), genreName = "Action", onRefresh = {}, onLoadMore = {}, onBackPressed = {})
     }
 }

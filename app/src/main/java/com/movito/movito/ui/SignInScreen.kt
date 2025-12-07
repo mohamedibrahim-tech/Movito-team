@@ -56,73 +56,38 @@ import com.movito.movito.R
 import com.movito.movito.theme.MovitoTheme
 import com.movito.movito.ui.common.MovitoButton
 import com.movito.movito.viewmodel.AuthViewModel
+import androidx.lifecycle.ViewModel
+import com.movito.movito.ui.common.CustomAuthTextField
+import com.movito.movito.ui.common.MovitoLogo
 
 
-@Composable
-fun MovitoLogo() {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Image(
-            painter = painterResource(id = R.drawable.movito_logo),
-            contentDescription = stringResource(id = R.string.signin_movito_logo_description),
-            modifier = Modifier.size(100.dp)
-        )
-        Spacer(Modifier.height(8.dp))
-        Text(
-            text = stringResource(id = R.string.app_name),
-            color = MaterialTheme.colorScheme.onBackground,
-            fontSize = 28.sp,
-            fontWeight = FontWeight.Bold
-        )
-    }
-}
-
-@Composable
-fun CustomAuthTextField(
-    value: String,
-    onValueChange: (String) -> Unit,
-    label: String,
-    icon: ImageVector,
-    isPassword: Boolean = false
-) {
-    TextField(
-        value = value,
-        onValueChange = onValueChange,
-
-        placeholder = { Text(label, color = MaterialTheme.colorScheme.onSurfaceVariant) },
-
-        leadingIcon = {
-            Icon(
-                icon,
-                contentDescription = label,
-                tint = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        },
-        keyboardOptions = KeyboardOptions(keyboardType = if (isPassword) KeyboardType.Password else KeyboardType.Email),
-        visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
-        colors = TextFieldDefaults.colors(
-
-            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
-            focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
 
 
-            cursorColor = MaterialTheme.colorScheme.primary,
-
-            focusedTextColor = MaterialTheme.colorScheme.onSurface,
-            unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
-
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent,
-            disabledIndicatorColor = Color.Transparent
-        ),
-        shape = RoundedCornerShape(12.dp),
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(56.dp)
-            .clip(RoundedCornerShape(12.dp))
-    )
-}
-
-
+/**
+ * Authentication screen for user sign-in with email and password.
+ *
+ * This screen provides:
+ * - Email and password input fields
+ * - "Forgot Password" functionality
+ * - "Sign In" and "Sign Up" navigation
+ * - Language switching between English and Arabic
+ * - Real-time validation and error feedback
+ *
+ * * **Author**: Movito Development Team Member [Yossef Sayed](https://github.com/yossefsayedhassan)
+ *
+ * @param authViewModel The [ViewModel] that handles authentication logic
+ * @param onSignInSuccess Callback triggered when sign-in is successful
+ * @param onSignUpClicked Callback triggered when user clicks "Sign Up" link
+ * @param onForgotPasswordClicked Callback triggered when user clicks "Forgot Password"
+ * @param onLanguageChange Callback triggered when user changes language preference
+ *
+ * @since 14 Nov 2025
+ *
+ * @see AuthViewModel
+ * @see MovitoButton
+ * @see MovitoLogo
+ *
+ */
 @Composable
 fun SignInScreen(
     authViewModel: AuthViewModel = viewModel(),
@@ -136,6 +101,10 @@ fun SignInScreen(
     val authState by authViewModel.authState.collectAsState()
     val context = LocalContext.current
 
+    /*
+     * Observes authentication state changes and handles navigation on successful sign-in.
+     * Shows appropriate Toast messages for errors and success states.
+     */
     LaunchedEffect(authState) {
         if (authState.user != null) {
             onSignInSuccess()
@@ -271,7 +240,9 @@ fun SignInScreen(
     }
 }
 
-
+/**
+ * Preview function for SignInScreen in dark theme mode.
+ */
 @Preview(
     showBackground = true,
     showSystemUi = true,
@@ -280,10 +251,18 @@ fun SignInScreen(
 @Composable
 fun FinalSignInScreenPreviewDark() {
     MovitoTheme(darkTheme = true) {
-        SignInScreen(onSignInSuccess = {}, onSignUpClicked = {}, onForgotPasswordClicked = {}, onLanguageChange = {})
+        SignInScreen(
+            onSignInSuccess = {},
+            onSignUpClicked = {},
+            onForgotPasswordClicked = {},
+            onLanguageChange = {}
+        )
     }
 }
 
+/**
+ * Preview function for SignInScreen in light theme mode.
+ */
 @Preview(
     showBackground = true,
     showSystemUi = true,
@@ -292,6 +271,11 @@ fun FinalSignInScreenPreviewDark() {
 @Composable
 fun FinalSignInScreenPreviewLight() {
     MovitoTheme(darkTheme = false) {
-        SignInScreen(onSignInSuccess = {}, onSignUpClicked = {}, onForgotPasswordClicked = {}, onLanguageChange = {})
+        SignInScreen(
+            onSignInSuccess = {},
+            onSignUpClicked = {},
+            onForgotPasswordClicked = {},
+            onLanguageChange = {}
+        )
     }
 }

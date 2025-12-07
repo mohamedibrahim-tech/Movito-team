@@ -43,25 +43,32 @@ import com.movito.movito.theme.HeartColor
 import com.movito.movito.theme.MovitoTheme
 
 /**
- * Enum representing the type of favorite dialog to display.
+ * [Enum] representing the type of [FavoriteDialog] to display.
  *
- * - ADD: Dialog for adding a movie to favorites
- * - REMOVE: Dialog for removing a movie from favorites
+ * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
+ *
+ * - `ADD`: [FavoriteDialog] for adding a movie to favorites
+ * - `REMOVE`: [FavoriteDialog] for removing a movie from favorites
+ *
+ * @since 27 Nov 2025
  */
 enum class FavoriteDialogType {
     ADD, REMOVE
 }
 
 /**
- * Configuration data class for FavoriteDialog.
+ * Configuration data class for [FavoriteDialog].
  *
  * This class holds all the necessary information to configure the appearance
- * and behavior of the favorite dialog, including type, content, and callbacks.
+ * and behavior of the [FavoriteDialog], including type, content, and callbacks.
  *
- * @param type The type of dialog (add or remove)
+ * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
+ *
+ * @param type The type of [FavoriteDialog] (add or remove)
  * @param movieTitle The title of the movie being acted upon
  * @param onConfirm Callback when user confirms the action
- * @param onDismiss Callback when user dismisses the dialog
+ * @param onDismiss Callback when user dismisses the [Dialog]
+ * @since 27 Nov 2025
  */
 data class FavoriteDialogConfig(
     val type: FavoriteDialogType,
@@ -70,9 +77,13 @@ data class FavoriteDialogConfig(
     val onDismiss: () -> Unit
 ) {
     /**
-     * The icon to display based on dialog type.
-     * - ADD: Filled heart icon
-     * - REMOVE: Outline heart icon
+     * The icon to display based on [FavoriteDialog] type.
+     * - `ADD`: Filled heart icon
+     * - `REMOVE`: Outline heart icon
+     *
+     * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
+     *
+     * @since 27 Nov 2025
      */
     val icon: ImageVector
         get() = when (type) {
@@ -81,9 +92,13 @@ data class FavoriteDialogConfig(
         }
 
     /**
-     * The color for the icon based on dialog type.
-     * - ADD: Heart color (typically red/pink)
-     * - REMOVE: Error color for destructive action
+     * The color for the icon based on [FavoriteDialog] type.
+     * - `ADD`: Heart color (typically red/pink)
+     * - `REMOVE`: Error color for destructive action
+     *
+     * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
+     *
+     * @since 27 Nov 2025
      */
     val iconColor
         @Composable
@@ -93,9 +108,13 @@ data class FavoriteDialogConfig(
         }
 
     /**
-     * The title text based on dialog type.
-     * - ADD: "Add to Favorites?"
-     * - REMOVE: "Remove from Favorites?"
+     * The title text based on [FavoriteDialog] type.
+     * - `ADD`: `"Add to Favorites?"`
+     * - `REMOVE`: `"Remove from Favorites?"`
+     *
+     * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
+     *
+     * @since 27 Nov 2025
      */
     val title: String
         @Composable
@@ -105,9 +124,13 @@ data class FavoriteDialogConfig(
         }
 
     /**
-     * The message text based on dialog type.
-     * - ADD: Asks if user wants to add to favorites
-     * - REMOVE: Confirms removal from favorites
+     * The message text based on [FavoriteDialog] type.
+     * - `ADD`: Asks if user wants to add to favorites
+     * - `REMOVE`: Confirms removal from favorites
+     *
+     * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
+     *
+     * @since 27 Nov 2025
      */
     val message: String
         @Composable
@@ -117,9 +140,13 @@ data class FavoriteDialogConfig(
         }
 
     /**
-     * The text for the confirm button based on dialog type.
-     * - ADD: "Add"
-     * - REMOVE: "Remove"
+     * The text for the confirm button based on [FavoriteDialog] type.
+     * - `ADD`: `"Add"`
+     * - `REMOVE`: `"Remove"`
+     *
+     * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
+     *
+     * @since 27 Nov 2025
      */
     val confirmButtonText: String
         @Composable
@@ -130,12 +157,15 @@ data class FavoriteDialogConfig(
 }
 
 /**
- * A dialog for confirming favorite movie actions (add/remove).
+ * A [Dialog] for confirming favorite movie actions (add/remove).
  *
- * Displays a glass-morphism styled dialog with appropriate icon, title,
+ * Displays a glass-morphism styled [Dialog] with appropriate icon, title,
  * movie title, message, and action buttons based on the configuration.
  *
- * @param config The configuration for dialog appearance and behavior
+ * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
+ *
+ * @param config The configuration for [FavoriteDialog] appearance and behavior
+ * @since 27 Nov 2025
  */
 @Composable
 fun FavoriteDialog(
@@ -150,16 +180,19 @@ fun FavoriteDialog(
 }
 
 /**
- * The main content of the FavoriteDialog.
+ * The main content of the [FavoriteDialog].
  *
- * Arranges the dialog elements in a column with weighted sections:
- * - Icon (40%): Animated heart icon
+ * Arranges the [FavoriteDialog] elements in a column with weighted sections:
+ * - Icon (45%): Animated heart icon
  * - Title (10%): Action title (Add/Remove)
- * - Movie Title (15%): The movie being acted upon
+ * - Movie Title (10%): The movie being acted upon
  * - Message (20%): Explanatory text
  * - Buttons (15%): Cancel and action buttons
  *
- * @param config The configuration for dialog content
+ * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
+ *
+ * @param config The configuration for [FavoriteDialog] content
+ * @since 27 Nov 2025
  */
 @Composable
 private fun FavoriteDialogContent(
@@ -185,13 +218,13 @@ private fun FavoriteDialogContent(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         )
         {
-            // Icon (40% of the dialog) - Uses heartbeat animation for add action
+            // Icon (45% of the dialog) - Uses heartbeat animation for add action
             HeartBeatIcon(
                 imageVector = config.icon,
                 contentDescription = null,
                 tint = config.iconColor,
                 modifier = Modifier
-                    .weight(0.40f)
+                    .weight(0.45f)
                     .size(100.dp),
                 trigger = if (config.type == FavoriteDialogType.ADD) 0 else null
             )
@@ -206,7 +239,7 @@ private fun FavoriteDialogContent(
                 maxLines = 1
             )
 
-            // Movie Title (15% of the dialog)
+            // Movie Title (10% of the dialog)
             Text(
                 modifier = Modifier
                     .weight(0.10f)
@@ -278,12 +311,15 @@ private fun FavoriteDialogContent(
  * Scales the icon in a heartbeat pattern when triggered. The animation
  * sequence: normal → big → small → normal to create a pulsating effect.
  *
+ * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
+ *
  * @param imageVector The icon to display
  * @param contentDescription Accessibility description for the icon
  * @param tint The color of the icon
  * @param modifier Modifier for styling and layout
  * @param trigger When non-null, triggers the animation. Use different values
  *                to retrigger. Animation only plays for ADD actions.
+ * @since 27 Nov 2025
  */
 @Composable
 fun HeartBeatIcon(
