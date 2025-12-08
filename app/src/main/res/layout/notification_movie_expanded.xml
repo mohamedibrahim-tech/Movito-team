@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:background="@android:color/transparent"
     android:layoutDirection="locale"
     android:orientation="horizontal">
@@ -40,10 +40,11 @@
                 android:layout_gravity="start"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
+                android:fontFamily="sans-serif"
                 android:maxLines="2"
                 android:text="@string/notification_movie_suggestion_title"
-                android:textColor="@android:color/white"
-                android:textSize="16sp"
+                android:textColor="@color/primary"
+                android:textSize="14sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -53,10 +54,11 @@
                 android:layout_gravity="start"
                 android:layout_marginStart="12dp"
                 android:background="@drawable/rating_background"
+                android:fontFamily="sans-serif"
                 android:gravity="center_vertical"
-                android:paddingHorizontal="12dp"
+                android:paddingHorizontal="6dp"
                 android:paddingVertical="6dp"
-                android:textColor="@android:color/white"
+                android:textColor="?android:attr/textColorPrimary"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -66,10 +68,11 @@
         <TextView
             android:id="@+id/recommendation_msg"
             android:layout_width="match_parent"
+            android:fontFamily="sans-serif"
             android:layout_height="match_parent"
             android:layout_gravity="start"
             android:layout_marginTop="8dp"
-            android:textColor="@android:color/white"
+            android:textColor="@color/secondary"
             android:textSize="12sp" />
 
     </LinearLayout>
