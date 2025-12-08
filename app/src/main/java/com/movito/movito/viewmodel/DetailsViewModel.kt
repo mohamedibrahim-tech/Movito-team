@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.movito.movito.BuildConfig
 import com.movito.movito.LanguageManager
-import com.movito.movito.MovitoApplication
 import com.movito.movito.data.model.Genre
 import com.movito.movito.data.model.Movie
 import com.movito.movito.data.source.remote.RetrofitInstance
@@ -15,16 +14,26 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.IOException
+import com.movito.movito.data.source.remote.TmdbApi
 
 /**
- * UI state representation for the Details screen.
+ * UI state representation for the movie details screen.
+ *
+ * This comprehensive state class holds all data needed to display movie details,
+ * including genres, recommendations, trailer information, and error states.
+ *
+ * **Author**: Movito Development Team Member [Mohamed Ibrahim](https://github.com/mohamedibrahim-tech)
  *
  * @property isLoading Indicates if a network request is in progress
  * @property genres List of available movie genres from TMDB
  * @property recommendedMovies List of movies recommended based on the current movie
  * @property trailerUrl YouTube URL for the movie trailer, null if not loaded
  * @property urlToShare URL prepared for sharing, null if not loaded
- * @property error Error message string, null if no error occurred
+ * @property genreError Error message for genre loading failures
+ * @property trailerError Error message for trailer loading failures
+ * @property recommendationsError Error message for recommendations loading failures
+ *
+ * @since 14 Nov 2025
  */
 data class DetailsUiState(
     val isLoading: Boolean = false,
@@ -38,38 +47,132 @@ data class DetailsUiState(
 )
 
 /**
- * ViewModel for managing movie details screen state and data.
+ * [ViewModel] for managing movie details screen state and data.
  *
- * Handles:
+ * This [ViewModel] handles multiple data sources for a comprehensive movie details view:
  * - Loading movie genres from TMDB API
- * - Fetching movie recommendations
- * - Finding and preparing trailer URLs
- * - Managing share functionality
- * - Error state handling
+ * - Fetching movie recommendations based on similarity
+ * - Finding and preparing trailer URLs from YouTube
+ * - Managing share functionality for trailers
+ * - Comprehensive error state handling per data type
  *
- * Uses TMDB API for all data operations and maintains UI state through [DetailsUiState].
+ * The [ViewModel] uses TMDB API for all data operations and maintains UI state
+ * through [DetailsUiState]. It's designed to be extended for specific use cases.
+ *
+ * **Author**: Movito Development Team Member [Mohamed Ibrahim](https://github.com/mohamedibrahim-tech)
+ *
+ * @see Movie for the primary data model
+ * @see Genre for genre information
+ * @see Video for trailer/video data
+ *
+ * @since 14 Nov 2025
  */
 open class DetailsViewModel : ViewModel() {
 
+    /**
+     * Internal mutable state flow for details UI state.
+     *
+     * **Author**: Movito Development Team Member [Mohamed Ibrahim](https://github.com/mohamedibrahim-tech)
+     *
+     * @since 14 Nov 2025
+     */
     private val _uiState = MutableStateFlow(DetailsUiState())
+
+    /**
+     * `public` immutable [StateFlow] exposing the current details UI state.
+     *
+     * Collect this flow to reactively update UI with movie details, trailers,
+     * recommendations, and error states.
+     *
+     * **Author**: Movito Development Team Member [Mohamed Ibrahim](https://github.com/mohamedibrahim-tech)
+     *
+     * @since 14 Nov 2025
+     */
     val uiState: StateFlow<DetailsUiState> = _uiState.asStateFlow()
 
+    /**
+     * TMDB API key for authentication.
+     *
+     * **Author**: Movito Development Team Member [Mohamed Ibrahim](https://github.com/mohamedibrahim-tech)
+     *
+     * @since 14 Nov 2025
+     */
     private val apiKey = BuildConfig.TMDB_API_KEY
+
+    /**
+     * Current language state for localized API requests.
+     *
+     * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
+     *
+     * @since 1 Dec 2025
+     */
     private val currentLanguage = LanguageManager.currentLanguage
 
-    // Load genres automatically when ViewModel is created
+    /**
+     * Initializes the ViewModel and automatically loads genres.
+     *
+     * Genres are loaded immediately as they're needed for displaying
+     * movie genre names throughout the details screen.
+     *
+     * **Author**: Movito Development Team Member [Mohamed Ibrahim](https://github.com/mohamedibrahim-tech)
+     *
+     * @since 14 Nov 2025
+     */
     init {
         loadGenres()
     }
-    private fun noTrailerFoundMsg() = if(LanguageManager.currentLanguage.value == "ar")  "لم يتم العثور على مقطع دعائي." else "No Trailer Found."
-    private fun falidToLoadTrailerMsg(errorMsg: String?) = if(LanguageManager.currentLanguage.value == "ar")  "تعذر تحميل المقطع الدعائي: $errorMsg" else "Failed to load trailer: $errorMsg"
-    private fun unexpectedErrorMsg(errorMsg: String?) = if(LanguageManager.currentLanguage.value == "ar")  "حدث خطأ غير متوقع: $errorMsg" else "An unexpected error occurred: $errorMsg"
+
+    /**
+     * Localized message for when no trailer is found.
+     *
+     * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
+     *
+     * @return Localized `"No Trailer Found"` message
+     *
+     * @since 1 Dec 2025
+     */
+    private fun noTrailerFoundMsg() = if (LanguageManager.currentLanguage.value == "ar") "لم يتم العثور على مقطع دعائي." else "No Trailer Found."
+
+    /**
+     * Localized error message for trailer loading failures.
+     *
+     * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
+     *
+     * @param errorMsg Original error message
+     * @return Localized error message
+     *
+     * @since 1 Dec 2025
+     */
+    private fun falidToLoadTrailerMsg(errorMsg: String?) = if (LanguageManager.currentLanguage.value == "ar") "تعذر تحميل المقطع الدعائي: $errorMsg" else "Failed to load trailer: $errorMsg"
+
+    /**
+     * Localized generic error message for unexpected failures.
+     *
+     * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
+     *
+     * @param errorMsg Original error message
+     * @return Localized error message
+     *
+     * @since 1 Dec 2025
+     */
+    private fun unexpectedErrorMsg(errorMsg: String?) = if (LanguageManager.currentLanguage.value == "ar") "حدث خطأ غير متوقع: $errorMsg" else "An unexpected error occurred: $errorMsg"
 
     /**
      * Loads all available movie genres from TMDB API.
      *
-     * Updates [DetailsUiState.genres] on success, or [DetailsUiState.error] on failure.
-     * Sets [DetailsUiState.isLoading] during the network request.
+     * This method fetches the complete list of movie genres with localized names.
+     * Genres are used to display movie categories throughout the details screen.
+     *
+     * State updates:
+     * - Sets [DetailsUiState.isLoading] during request
+     * - Updates [DetailsUiState.genres] on success
+     * - Sets [DetailsUiState.genreError] on failure
+     *
+     * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
+     *
+     * @since 27 Nov 2025
+     *
+     * @see TmdbApi.getGenres for API implementation
      */
     fun loadGenres() {
         viewModelScope.launch {
@@ -104,10 +207,20 @@ open class DetailsViewModel : ViewModel() {
     /**
      * Loads movie recommendations based on the provided movie ID.
      *
+     * This method fetches movies that are similar to the specified movie
+     * using TMDB's recommendation algorithm.
+     *
+     * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
+     *
      * @param movieId The TMDB movie ID to get recommendations for
-     * Updates [DetailsUiState.recommendedMovies] on success, or [DetailsUiState.error] on failure.
+     *
+     * State updates:
+     * - Updates [DetailsUiState.recommendedMovies] on success
+     * - Sets [DetailsUiState.recommendationsError] on failure
+     *
+     * @since 24 Nov 2025
      */
-    fun loadRecommendations(movieId: Int){
+    fun loadRecommendations(movieId: Int) {
         viewModelScope.launch {
             try {
                 val response = RetrofitInstance.api.getMovieRecommendations(movieId, apiKey, currentLanguage.value)
@@ -127,10 +240,21 @@ open class DetailsViewModel : ViewModel() {
     /**
      * Finds the best available trailer for a movie and prepares it for playback.
      *
+     * This method searches for available videos and selects the most appropriate
+     * trailer based on a priority algorithm (official trailers first).
+     *
+     * **Author**: Movito Development Team Member [Mohamed Ibrahim](https://github.com/mohamedibrahim-tech)
+     *
      * @param movieId The TMDB movie ID to find trailer for
-     * Sets [DetailsUiState.isLoading] during the search.
-     * On success, sets [DetailsUiState.trailerUrl] with YouTube URL.
-     * On failure, sets [DetailsUiState.error] with appropriate message.
+     *
+     * State updates:
+     * - Sets [DetailsUiState.isLoading] during search
+     * - Sets [DetailsUiState.trailerUrl] with YouTube URL on success
+     * - Sets [DetailsUiState.trailerError] on failure or if no trailer found
+     *
+     * @since 14 Nov 2025
+     *
+     * @see findBestTrailer for trailer selection algorithm
      */
     open fun findTrailer(movieId: Int) {
         viewModelScope.launch {
@@ -165,9 +289,18 @@ open class DetailsViewModel : ViewModel() {
     /**
      * Prepares a shareable URL for the movie trailer.
      *
+     * This method finds the best trailer and creates a shareable URL
+     * that can be used with Android's share intent.
+     *
+     * **Author**: Movito Development Team Member [Mohamed Ibrahim](https://github.com/mohamedibrahim-tech)
+     *
      * @param movieId The TMDB movie ID to get share URL for
-     * On success, sets [DetailsUiState.urlToShare] with YouTube URL.
-     * On failure, sets [DetailsUiState.error] with appropriate message.
+     *
+     * State updates:
+     * - Sets [DetailsUiState.urlToShare] with YouTube URL on success
+     * - Sets [DetailsUiState.trailerError] on failure
+     *
+     * @since 16 Nov 2025
      */
     open fun prepareShareUrl(movieId: Int) {
         viewModelScope.launch {
@@ -183,7 +316,7 @@ open class DetailsViewModel : ViewModel() {
                     _uiState.update { it.copy(trailerError = noTrailerFoundMsg()) }
                 }
             } catch (e: IOException) {
-                _uiState.update { it.copy(trailerError =  falidToLoadTrailerMsg(e.message)) }
+                _uiState.update { it.copy(trailerError = falidToLoadTrailerMsg(e.message)) }
             } catch (e: Exception) {
                 _uiState.update { it.copy(trailerError = falidToLoadTrailerMsg(e.message)) }
             }
@@ -194,7 +327,13 @@ open class DetailsViewModel : ViewModel() {
 
     /**
      * Clears the trailer URL after it has been launched.
-     * Called when the trailer player is opened to reset the state.
+     *
+     * Call this method when the trailer player is opened to reset the state
+     * and prevent duplicate launches.
+     *
+     * **Author**: Movito Development Team Member [Mohamed Ibrahim](https://github.com/mohamedibrahim-tech)
+     *
+     * @since 15 Nov 2025
      */
     fun onTrailerLaunched() {
         _uiState.update { it.copy(trailerUrl = null) }
@@ -202,7 +341,12 @@ open class DetailsViewModel : ViewModel() {
 
     /**
      * Clears the share URL after it has been shared.
-     * Called when the share intent is completed to reset the state.
+     *
+     * Call this method when the share intent is completed to reset the state.
+     *
+     * **Author**: Movito Development Team Member [Mohamed Ibrahim](https://github.com/mohamedibrahim-tech)
+     *
+     * @since 15 Nov 2025
      */
     fun onUrlShared() {
         _uiState.update { it.copy(urlToShare = null) }
@@ -210,7 +354,12 @@ open class DetailsViewModel : ViewModel() {
 
     /**
      * Clears the error message after it has been shown to the user.
-     * Called when an error toast/snackbar is displayed to reset the state.
+     *
+     * Call this method when an error toast/snackbar is displayed to reset
+     * the error state and prevent duplicate error displays.
+     * **Author**: Movito Development Team Member [Mohamed Ibrahim](https://github.com/mohamedibrahim-tech)
+     *
+     * @since 16 Nov 2025
      */
     fun onTrailerToastShown() {
         _uiState.update { it.copy(trailerError = null) }
@@ -219,7 +368,7 @@ open class DetailsViewModel : ViewModel() {
     /**
      * Finds the best trailer from a list of videos using a priority-based algorithm.
      *
-     * Priority order:
+     * Priority order (highest to lowest):
      * 1. Official Trailer on YouTube
      * 2. Any Trailer on YouTube
      * 3. Official Teaser on YouTube
@@ -227,8 +376,14 @@ open class DetailsViewModel : ViewModel() {
      * 5. Any Official video on YouTube
      * 6. Any video on YouTube
      *
-     * @param videos List of videos from TMDB API
-     * @return The best available trailer video, or null if no suitable video found
+     * This algorithm ensures the best possible trailer is selected for playback.
+     *
+     * **Author**: Movito Development Team Member [Mohamed Ibrahim](https://github.com/mohamedibrahim-tech)
+     *
+     * @since 14 Nov 2025
+     *
+     * @param videos [List] of [Video]s from TMDB API
+     * @return The best available trailer video, or `null` if no suitable video found
      */
     private fun findBestTrailer(videos: List<Video>): Video? {
         val youtubeVideos = videos.filter { it.site == "YouTube" }

@@ -6,11 +6,11 @@ import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.ExistingWorkPolicy
 import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequest
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequest
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
-import androidx.work.await
 import com.movito.movito.R
 import java.util.concurrent.TimeUnit
 
@@ -33,13 +33,13 @@ import java.util.concurrent.TimeUnit
  *
  * WORK MANAGER:
  * - Uses [PeriodicWorkRequest] for recurring notifications
- * - Uses [androidx.work.OneTimeWorkRequest] for test notifications
+ * - Uses [OneTimeWorkRequest] for test notifications
  * - Unique work names prevent duplicates
  * - Network constraint: Requires [NetworkType.CONNECTED]
  *
  * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
  *
- * @since 4 Dec 2025
+ * @since 5 Dec 2025
  */
 class NotificationScheduler {
 
@@ -58,14 +58,14 @@ class NotificationScheduler {
          * 5. Persists schedule time and state
          *
          * VALIDATION:
-         * - Minutes: Minimum 15
-         * - Hours: Minimum 1
-         * - Days: Minimum 1
+         * - Minutes: Minimum `15`
+         * - Hours: Minimum `1`
+         * - Days: Minimum `1`
          *
          * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
          *
          * @param context Application context for [WorkManager]
-         * @since 4 Dec 2025
+         * @since 5 Dec 2025
          */
         fun scheduleNotifications(context: Context) {
             try {
@@ -177,12 +177,12 @@ class NotificationScheduler {
          * BEHAVIOR:
          * - Runs immediately (0 second delay)
          * - Requires network connection
-         * - Uses [androidx.work.OneTimeWorkRequest]
+         * - Uses [OneTimeWorkRequest]
          *
          * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
          *
          * @param context Application context
-         * @since 4 Dec 2025
+         * @since 5 Dec 2025
          */
         fun scheduleImmediateNotification(context: Context) {
             try {
@@ -239,14 +239,14 @@ class NotificationScheduler {
          * - Debugging recommendation logic
          *
          * BEHAVIOR:
-         * - Creates 5 [androidx.work.OneTimeWorkRequest] instances
+         * - Creates 5 [OneTimeWorkRequest] instances
          * - Each delayed by 30 seconds more than previous
          * - Tagged for easy cancellation
          *
          * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
          *
          * @param context Application context
-         * @since 4 Dec 2025
+         * @since 5 Dec 2025
          */
         fun scheduleRepeatingTestNotifications(context: Context) {
             try {
@@ -305,7 +305,7 @@ class NotificationScheduler {
          * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
          *
          * @param context Application context
-         * @since 4 Dec 2025
+         * @since 5 Dec 2025
          */
         fun cancelNotifications(context: Context) {
             try {
@@ -325,30 +325,6 @@ class NotificationScheduler {
                 }.show()
             } catch (e: Exception) {
                 e.printStackTrace()
-            }
-        }
-
-        /**
-         * Checks if notifications are currently scheduled.
-         *
-         * QUERY LOGIC:
-         * - Queries [WorkManager] for enqueued work
-         * - Checks if any work is in [androidx.work.WorkInfo.State.ENQUEUED] state
-         * - Async suspend function
-         *
-         * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
-         *
-         * @param context Application context
-         * @return [Boolean] indicating if notifications are scheduled
-         * @since 4 Dec 2025
-         */
-        suspend fun areNotificationsScheduled(context: Context): Boolean {
-            return try {
-                val workManager = WorkManager.getInstance(context)
-                val workInfo = workManager.getWorkInfosForUniqueWork(WORK_NAME).await()
-                workInfo.any { it.state == androidx.work.WorkInfo.State.ENQUEUED }
-            } catch (e: Exception) {
-                false
             }
         }
     }

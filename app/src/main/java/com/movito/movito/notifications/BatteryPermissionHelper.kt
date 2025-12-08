@@ -2,10 +2,15 @@ package com.movito.movito.notifications
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.os.PowerManager
 import android.provider.Settings
+import android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+import android.provider.Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS
+import android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+import android.provider.Settings.ACTION_SETTINGS
+import androidx.work.WorkManager
+import androidx.core.net.toUri
 
 /**
  * MAIN PURPOSE: Manages battery optimization permissions for reliable
@@ -13,7 +18,7 @@ import android.provider.Settings
  *
  * PROBLEM ADDRESSED:
  * Android's battery optimization can delay or prevent background work
- * including [androidx.work.WorkManager] notifications, especially on:
+ * including [WorkManager] notifications, especially on:
  * - Huawei, Xiaomi, Oppo, Vivo devices
  * - Samsung with aggressive power saving
  * - Devices with custom Android skins
@@ -31,7 +36,7 @@ import android.provider.Settings
  *
  * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
  *
- * @since 4 Dec 2025
+ * @since 5 Dec 2025
  */
 object BatteryPermissionHelper {
 
@@ -45,14 +50,14 @@ object BatteryPermissionHelper {
      *
      * STATISTICS:
      * - Default: `false` (app is optimized)
-     * - After user grant: true
+     * - After user grant: `true`
      * - May reset after OS updates or factory resets
      *
      * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
      *
      * @param context Application context
      * @return [Boolean] indicating unrestricted battery access
-     * @since 4 Dec 2025
+     * @since 5 Dec 2025
      */
     fun hasUnrestrictedBatteryAccess(context: Context): Boolean {
         val powerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager
@@ -63,11 +68,11 @@ object BatteryPermissionHelper {
      * Opens battery optimization settings for the app.
      *
      * INTENT STRATEGY (in order):
-     * 1. [Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS] (standard)
+     * 1. [ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS] (standard)
      * 2. Samsung-specific intent (`com.samsung.android.sm.ACTION_POWER_MANAGER`)
-     * 3. [Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS] (list view)
-     * 4. [Settings.ACTION_APPLICATION_DETAILS_SETTINGS] (app info)
-     * 5. [Settings.ACTION_SETTINGS] (general settings fallback)
+     * 3. [ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS] (list view)
+     * 4. [ACTION_APPLICATION_DETAILS_SETTINGS] (app info)
+     * 5. [ACTION_SETTINGS] (general settings fallback)
      *
      * MANUFACTURER HANDLING:
      * - Samsung: Uses custom intent for better UX
@@ -76,13 +81,13 @@ object BatteryPermissionHelper {
      * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
      *
      * @param context Application context
-     * @since 4 Dec 2025
+     * @since 5 Dec 2025
      */
     fun openBatteryOptimizationSettings(context: Context) {
         try {
             // Direct intent to battery optimization settings for this app
             val intent = Intent().apply {
-                action = Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+                action = ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK
             }
             context.startActivity(intent)
@@ -93,7 +98,7 @@ object BatteryPermissionHelper {
             val isSamsungDevice =
                 Build.MANUFACTURER.equals("samsung", ignoreCase = true) ||
                         Build.BRAND.equals("samsung", ignoreCase = true)
-            if(isSamsungDevice){
+            if (isSamsungDevice) {
                 try {
                     val intent = Intent().apply {
                         action = "com.samsung.android.sm.ACTION_POWER_MANAGER"
@@ -113,12 +118,11 @@ object BatteryPermissionHelper {
                 }
                 context.startActivity(intent)
 
-            } catch(e2: Exception)
-            {
+            } catch (e2: Exception) {
                 // Fallback to app info settings
                 try {
                     val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                        data = Uri.parse("package:${context.packageName}")
+                        data = "package:${context.packageName}".toUri()
                         flags = Intent.FLAG_ACTIVITY_NEW_TASK
                     }
                     context.startActivity(intent)

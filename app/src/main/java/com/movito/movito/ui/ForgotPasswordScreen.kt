@@ -11,9 +11,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,7 +22,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -33,8 +29,34 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.movito.movito.R
+import com.movito.movito.ui.common.CustomAuthTextField
+import com.movito.movito.ui.common.MovitoButton
 import com.movito.movito.viewmodel.AuthViewModel
 
+/**
+ * Screen for requesting a password reset via email.
+ *
+ * This screen provides a simple form where users can enter their email address
+ * to receive a password reset link. It integrates with [AuthViewModel] to handle
+ * the password reset request and provide feedback to the user.
+ *
+ * Features:
+ * - Email input field with validation
+ * - Loading state during request
+ * - Success/error feedback via Toast messages
+ * - Auto-navigation back on successful reset email sent
+ *
+ * * **Author**: Movito Development Team Member [Yossef Sayed](https://github.com/yossefsayedhassan)
+ *
+ * @param modifier [Modifier] for styling and layout
+ * @param authViewModel The [AuthViewModel] instance handling authentication operations
+ * @param onPasswordResetSent Callback triggered when password reset email is successfully sent
+ *
+ * @since 15 Nov 2025
+ *
+ * @see AuthViewModel.sendPasswordResetEmail
+ *
+ */
 @Composable
 fun ForgotPasswordScreen(
     modifier: Modifier = Modifier,
@@ -45,6 +67,10 @@ fun ForgotPasswordScreen(
     val authState by authViewModel.authState.collectAsState()
     val context = LocalContext.current
 
+    /*
+     * Observes authentication state changes and shows appropriate Toast messages.
+     * Also triggers navigation back when password reset email is successfully sent.
+     */
     LaunchedEffect(authState) {
         if (authState.message != null) {
             Toast.makeText(context, authState.message, Toast.LENGTH_SHORT)
@@ -87,21 +113,14 @@ fun ForgotPasswordScreen(
         )
         Spacer(Modifier.height(40.dp))
 
-        if (authState.isLoading) {
-            CircularProgressIndicator()
-        } else {
-            Button(
-                onClick = { authViewModel.sendPasswordResetEmail(email.trim()) },
-                enabled = email.isNotBlank(),
-                modifier = Modifier
+        MovitoButton(
+            text = stringResource(id = R.string.forgotpassword_send_button),
+            modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary
-                )
-            ) {
-                Text(stringResource(id = R.string.forgotpassword_send_button), color = Color.White)
-            }
-        }
+            isLoading = authState.isLoading,
+            enabled = email.isNotBlank(),
+            onClick = { authViewModel.sendPasswordResetEmail(email.trim()) },
+        )
     }
 }

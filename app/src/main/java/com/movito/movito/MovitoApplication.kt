@@ -6,21 +6,49 @@ import android.content.res.Configuration
 import android.os.Build
 import dagger.hilt.android.HiltAndroidApp
 import java.util.Locale
+import com.movito.movito.LanguageManager.currentLanguage
+import android.content.res.Resources
+import android.app.Activity
+import com.movito.movito.viewmodel.LanguageViewModel
+import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.flow.StateFlow
 
 /**
- * The main Application class for the Movito app.
+ * Main Application class for the Movito movie discovery app.
  *
- * Responsibilities:
- * - Initializes app-wide components (theme, language)
- * - Provides helper methods for locale/context configuration
- * - Manages language change observers for activity coordination
+ * This class serves as the entry point for the application and is responsible for:
+ * - Initializing app-wide components (theme, language managers)
+ * - Managing application-level configuration
+ * - Providing locale/context configuration utilities
+ * - Coordinating activity restarts on language changes
  *
- * Note: This class is created when the app process starts and exists
- * for the entire lifecycle of the app.
+ * The class is annotated with [HiltAndroidApp] to enable Hilt dependency injection
+ * throughout the application.
+ *
+ * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
+ *
+ * @since 1 Dec 2025
+ *
+ * @see ThemeManager for theme management
+ * @see LanguageManager for language management
  */
 @HiltAndroidApp
 class MovitoApplication : Application() {
 
+    /**
+     * Called when the application is starting, before any activity, service,
+     * or receiver objects (excluding content providers) have been created.
+     *
+     * This method initializes application-wide components:
+     * 1. Loads the saved theme preference via [ThemeManager]
+     * 2. Loads the saved language preference via [LanguageManager]
+     *
+     * Note: This method is called only once during the application lifecycle.
+     *
+     * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
+     *
+     * @since 1 Dec 2025
+     */
     override fun onCreate() {
         super.onCreate()
         // Initialize theme and language when app starts
@@ -33,34 +61,45 @@ class MovitoApplication : Application() {
          * Gets the currently saved language preference.
          *
          * This method retrieves the language from [LanguageManager] which
-         * is the single source of truth. Use this when you need the current
-         * language outside of a reactive context.
+         * maintains the single source of truth for language state. Use this
+         * method when you need the current language outside of a reactive
+         * context (i.e., when you can't observe the [StateFlow]).
          *
-         * @param context The context (unused, but required for consistency)
-         * @return The current language code ("en" or "ar")
+         * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
+         *
+         * @param context The context (parameter maintained for API consistency)
+         * @return The current language code (`"en"` or `"ar"`)
+         *
+         * @since 1 Dec 2025
+         *
+         * @see currentLanguage for reactive observation
          */
         fun getSavedLanguage(context: Context): String {
             return LanguageManager.currentLanguage.value
         }
 
         /**
-         * Creates a new Context with the specified locale configuration.
+         * Creates a new Context with the specified locale configuration applied.
          *
-         * This method:
-         * 1. Creates a Locale from the language code
-         * 2. Updates the Configuration with the new locale
-         * 3. Creates and returns a new Context with updated configuration
+         * This method is used to wrap an existing context with updated locale
+         * settings. It's typically called in [Activity.attachBaseContext]
+         * to ensure activities start with the correct language configuration.
          *
-         * This is used in [android.app.Activity.attachBaseContext] to ensure
-         * activities start with the correct language configuration.
+         * Implementation notes:
+         * - For API 24+ (Nougat): Uses [Context.createConfigurationContext] (recommended)
+         * - For API < 24: Uses deprecated [Resources.updateConfiguration]
+         * - Sets both locale and layout direction for RTL languages
          *
-         * Note: Different implementation for different API levels:
-         * - API 24+ (Nougat): Uses createConfigurationContext (recommended)
-         * - API <24: Uses deprecated updateConfiguration
+         * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
          *
-         * @param newBase The original context to wrap
-         * @param languageCode The language code ("en" or "ar")
+         * @param context The original context to wrap
+         * @param languageCode The language code (`"en"` or `"ar"`)
          * @return A new Context configured with the specified locale
+         *
+         * @since 1 Dec 2025
+         *
+         * @see Locale for locale configuration
+         * @see Configuration for system configuration
          */
         fun updateBaseContextLocale(context: Context, languageCode: String): Context {
             val locale = Locale(languageCode)
@@ -70,7 +109,7 @@ class MovitoApplication : Application() {
             val configuration = Configuration(resources.configuration)
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                // Modern approach for API 24+
+                // Modern approach for API 24+ (Nougat)
                 configuration.setLocale(locale)
                 configuration.setLayoutDirection(locale)
                 return context.createConfigurationContext(configuration)
@@ -88,30 +127,57 @@ class MovitoApplication : Application() {
     }
 
     /**
-     * Observer pattern implementation for coordinating activity restarts.
+     * Observer pattern implementation for coordinating activity restarts on language changes.
      *
-     * This object manages a list of listeners (typically Activities) that
-     * need to restart when the language changes. When [notifyLanguageChanged]
-     * is called, all registered listeners are invoked.
+     * This object manages a list of listeners (typically Activities) that need to
+     * restart when the language changes. When [notifyLanguageChanged] is called,
+     * all registered listeners are invoked.
      *
-     * Usage in Activities:
-     * 1. Register in onCreate(): LanguageChangeObserver.addListener { restartActivity() }
-     * 2. Unregister in onDestroy(): LanguageChangeObserver.removeListener(listener)
+     * Usage pattern in Activities:
+     * ```
+     * // Register in onCreate():
+     * MovitoApplication.LanguageChangeObserver.addListener { restartActivity() }
      *
-     * Note: This is an alternative to using [LanguageViewModel.shouldRestartActivity]
-     * and is useful for non-Compose activities or when ViewModel isn't available.
+     * // Unregister in onDestroy():
+     * MovitoApplication.LanguageChangeObserver.removeListener(listener)
+     * ```
+     *
+     * > Note: This is an alternative to using [LanguageViewModel.shouldRestartActivity]
+     * > and is useful for non-Compose activities or when [ViewModel] isn't available.
+     *
+     * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
+     *
+     * @since 1 Dec 2025
+     *
+     * @see LanguageManager.setLanguage which triggers notifications
      */
     object LanguageChangeObserver {
         /**
          * Set of listeners to notify when language changes.
-         * Using a Set ensures each listener is only added once.
+         *
+         * Using a [MutableSet] ensures:
+         * - Each listener is only added once (prevents duplicate notifications)
+         * - Fast O(1) lookup for removal
+         *
+         * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
+         *
+         * @since 1 Dec 2025
          */
         private val listeners = mutableSetOf<() -> Unit>()
 
         /**
-         * Registers a listener to be notified when language changes.
+         * Registers a listener to be notified when the application language changes.
          *
-         * @param listener A lambda that typically restarts the calling activity
+         * The listener is typically a lambda that restarts the calling activity
+         * (e.g., `{ activity.recreate() }`).
+         *
+         * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
+         *
+         * @param listener A lambda that will be invoked when language changes
+         *
+         * @since 1 Dec 2025
+         *
+         * @see removeListener to unregister the listener
          */
         fun addListener(listener: () -> Unit) {
             listeners.add(listener)
@@ -120,9 +186,16 @@ class MovitoApplication : Application() {
         /**
          * Unregisters a previously registered listener.
          *
-         * Important: Always unregister in Activity.onDestroy() to prevent memory leaks.
+         * Important: Always unregister listeners in [Activity.onDestroy]
+         * to prevent memory leaks and ensure proper cleanup.
          *
-         * @param listener The listener to remove
+         * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
+         *
+         * @param listener The listener to remove from notification list
+         *
+         * @since 1 Dec 2025
+         *
+         * @see addListener to register a listener
          */
         fun removeListener(listener: () -> Unit) {
             listeners.remove(listener)
@@ -131,9 +204,16 @@ class MovitoApplication : Application() {
         /**
          * Notifies all registered listeners that the language has changed.
          *
-         * This is called by [LanguageManager.setLanguage] after the language
+         * This method is called by [LanguageManager.setLanguage] after the language
          * preference has been updated. Each listener should handle the restart
-         * appropriately (usually by calling Activity.recreate()).
+         * appropriately (typically by calling [Activity.recreate]).
+         *
+         * > Note: Notifications are delivered synchronously in the order listeners
+         * > were added.
+         *
+         * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
+         *
+         * @since 1 Dec 2025
          */
         fun notifyLanguageChanged() {
             listeners.forEach { it.invoke() }

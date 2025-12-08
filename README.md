@@ -98,6 +98,7 @@ It allows users to browse trending movies, search titles, view deep movie detail
   <img src="docs/screen_settings_ar.jpeg" width="30%" />
   <img src="docs/screen_notification_ar.jpeg" width="30%" />
 </p>
+
 ---
 
 ### 🏛 Architecture
@@ -201,7 +202,7 @@ Movito supports:
 
 ---
 
-## 🧪 Tests & QA
+## 🔬 Tests & QA
 
 - RTL checks (Arabic)
 - Notification scheduling & Firebase sync tests
@@ -211,7 +212,7 @@ Movito supports:
 
 ---
 
-## 🚀 Roadmap
+## 📅 Roadmap & Future Vision
 
 - Migrate from using intent to navigate to using compose navigation component
 - Animations

@@ -20,10 +20,14 @@ import com.movito.movito.R
 import com.movito.movito.data.model.Movie
 import com.movito.movito.ui.CategoriesActivity
 import com.movito.movito.ui.DetailsActivity
+import com.movito.movito.ui.SettingsScreen
+import com.movito.movito.ui.SignInActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import android.provider.Settings.ACTION_APP_NOTIFICATION_SETTINGS
+import android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
 
 /**
  * MAIN PURPOSE: Centralized utility for managing all notification-related operations
@@ -37,11 +41,11 @@ import kotlinx.coroutines.withContext
  * - Builds proper task stacks for notification navigation
  *
  * DEPENDENCIES: Android [NotificationManager], [TaskStackBuilder]
- * INTEGRATION: Used by [com.movito.movito.ui.SignInActivity], [com.movito.movito.ui.SettingsScreen], [NotificationWorker]
+ * INTEGRATION: Used by [SignInActivity], [SettingsScreen], [NotificationWorker]
  *
  * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
  *
- * @since 4 Dec 2025
+ * @since 5 Dec 2025
  *
  * @see android.app.NotificationManager
  * @see android.app.TaskStackBuilder
@@ -62,53 +66,54 @@ object NotificationHelper {
      * 1. "movie_suggestions" - For personalized movie recommendations
      * 2. "welcome_channel" - For welcome messages to new users
      *
-     * ⚠️ REQUIRED: Must be called early in app lifecycle (i.e., [com.movito.movito.ui.SignInActivity.onCreate], [com.movito.movito.ui.CategoriesActivity.onCreate])
+     * ⚠️ REQUIRED: Must be called early in app lifecycle (i.e., [SignInActivity.onCreate], [CategoriesActivity.onCreate])
      *
      * **Author**: Movito Development Team Members [Ahmed Essam](https://github.com/ahmed-essam-dev/), [Alyaa Osama](https://github.com/AlyaaOsamaZaki)
      *
      * @param context Application context for accessing [NotificationManager]
      * @see com.movito.movito.ui.SignInActivity.onCreate
      * @see com.movito.movito.ui.CategoriesActivity.onCreate
-     * @since 4 Dec 2025
+     * @since 5 Dec 2025
      */
     fun createAllNotificationChannels(context: Context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val notificationManager =
-                context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager =
+            context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
 
-            // 1. Movie Suggestions Channel
-            val movieChannel = NotificationChannel(
-                "movie_suggestions",
-                "Movie Suggestions",
-                NotificationManager.IMPORTANCE_DEFAULT
-            ).apply {
-                description = "Get personalized movie suggestions based on your favorites"
-                enableVibration(true)
-                setShowBadge(true)
-            }
-
-            // 2. Welcome Channel
-            val welcomeChannel = NotificationChannel(
-                "welcome_channel",
-                "Welcome Notifications",
-                NotificationManager.IMPORTANCE_DEFAULT
-            ).apply {
-                description = "Notifications to welcome users"
-                enableVibration(true)
-                setShowBadge(true)
-            }
-
-            // Create both channels
-            notificationManager.createNotificationChannel(movieChannel)
-            notificationManager.createNotificationChannel(welcomeChannel)
+        // 1. Movie Suggestions Channel
+        val movieChannel = NotificationChannel(
+            "movie_suggestions",
+            "Movie Suggestions",
+            NotificationManager.IMPORTANCE_DEFAULT
+        ).apply {
+            description = "Get personalized movie suggestions based on your favorites"
+            enableVibration(true)
+            setShowBadge(true)
         }
+
+        // 2. Welcome Channel
+        val welcomeChannel = NotificationChannel(
+            "welcome_channel",
+            "Welcome Notifications",
+            NotificationManager.IMPORTANCE_DEFAULT
+        ).apply {
+            description = "Notifications to welcome users"
+            enableVibration(true)
+            setShowBadge(true)
+        }
+
+        // Create both channels
+        notificationManager.createNotificationChannel(movieChannel)
+        notificationManager.createNotificationChannel(welcomeChannel)
     }
 
     /**
      * Gets the next notification ID in a rotating manner.
      * Uses a circular buffer approach to avoid overwriting recent notifications.
      *
+     * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
+     *
+     * @since 5 Dec 2025
      * @param context Context for accessing shared preferences
      * @return Notification ID to use for the next notification
      */
@@ -178,7 +183,7 @@ object NotificationHelper {
      * @param context Application context
      * @param recommendedMovie Movie object to suggest
      * @param customMessage Personalized explanation for the recommendation
-     * @since 4 Dec 2025
+     * @since 5 Dec 2025
      */
     fun sendMovieSuggestionNotification(
         context: Context,
@@ -402,15 +407,15 @@ object NotificationHelper {
      * - Catches exceptions and shows error snackbar (caller responsibility)
      *
      * ANDROID VERSIONS:
-     * - Android O+: Uses ACTION_APP_NOTIFICATION_SETTINGS
-     * - Below O: Uses ACTION_APPLICATION_DETAILS_SETTINGS
+     * - Android O+: Uses [ACTION_APP_NOTIFICATION_SETTINGS]
+     * - Below O: Uses [ACTION_APPLICATION_DETAILS_SETTINGS]
      *
      * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
      *
      * @param context Application context
      * @param prefs NotificationPreferences instance
      * @param onStateUpdate Callback to update UI switch state
-     * @since 4 Dec 2025
+     * @since 5 Dec 2025
      */
     fun openNotificationSettings(
         context: Context,
@@ -434,6 +439,10 @@ object NotificationHelper {
 
     /**
      * Cancels all movie suggestion notifications (up to the max limit)
+     *
+     * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
+     *
+     * @since 5 Dec 2025
      */
     fun cancelAllMovieSuggestions(context: Context) {
         val prefs = NotificationPreferences.getInstance(context)

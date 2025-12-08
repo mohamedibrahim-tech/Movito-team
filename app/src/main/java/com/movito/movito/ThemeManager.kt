@@ -4,47 +4,88 @@ import android.content.Context
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import com.movito.movito.viewmodel.ThemeViewModel
+import androidx.lifecycle.ViewModel
+import android.content.SharedPreferences
+import androidx.compose.runtime.Composable
+import android.app.Activity
 
 /**
- * Singleton manager for app theme state and persistence.
+ * Singleton manager for application theme state and persistence.
  *
- * This object serves as the single source of truth for theme state, providing:
- * - Reactive theme state via StateFlow
- * - Theme preference persistence using SharedPreferences
- * - App-wide theme consistency
+ * This object serves as the single source of truth for theme state throughout the app,
+ * providing:
+ * - Reactive theme state via [StateFlow] for real-time UI updates
+ * - Theme preference persistence using [SharedPreferences]
+ * - App-wide theme consistency across all activities and fragments
  *
- * Why use a singleton instead of DataStore/ViewModel only?
- * 1. **App-wide consistency**: All activities observe the same theme state
- * 2. **Simple persistence**: SharedPreferences is sufficient for simple boolean preference
- * 3. **Reduced complexity**: Avoids unnecessary ViewModel/DataStore overhead for simple feature
- * 4. **Performance**: Direct SharedPreferences access is fast for single boolean value
+ * Theme states:
+ * - `false`: Light theme
+ * - `true`: Dark theme
  *
- * Architecture: This singleton pattern is appropriate because theme state is truly
- * global - all parts of the app need consistent access to the current theme.
- * ViewModels wrap this singleton to provide lifecycle-aware observation.
+ * Architecture rationale: This singleton pattern is appropriate because theme state is
+ * truly global - all parts of the app need consistent access to the current theme.
+ * [ViewModel]s wrap this singleton to provide lifecycle-aware observation.
+ *
+ * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
+ *
+ * @see ThemeViewModel for [ViewModel] layer that uses this manager
+ *
+ * @since 2 Dec 2025
  */
 object ThemeManager {
     /**
      * Internal mutable state flow for the current theme.
-     * Initialized to light theme (false) and updated when preferences are loaded.
+     *
+     * Initialized to light theme (`false`) and updated when preferences are loaded.
+     * This is the backing field for [isDarkTheme] StateFlow.
+     *
+     * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
+     *
+     * @see isDarkTheme for the public read-only StateFlow
+     * @since 2 Dec 2025
      */
     private val _isDarkTheme = MutableStateFlow(false)
 
     /**
-     * Public StateFlow that emits the current theme state.
+     * `Public` [StateFlow] that emits the current theme state.
      *
-     * Activities and Composables should collect this flow (through ThemeViewModel)
-     * to reactively update UI when theme changes.
+     * any [Activity] and [Composable] should collect this flow (typically through
+     * [ThemeViewModel]) to reactively update UI when the theme changes.
+     *
+     * Flow values:
+     * - `true`: Dark theme is enabled
+     * - `false`: Light theme is enabled (default)
+     *
+     * Usage example in Compose:
+     * ```kotlin
+     * val isDarkTheme by ThemeManager.isDarkTheme.collectAsState()
+     * MaterialTheme(
+     *     colorScheme = if (isDarkTheme) DarkColorScheme else LightColorScheme
+     * ) { /* Content */ }
+     * ```
+     *
+     * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
+     *
+     * @since 2 Dec 2025
      */
     val isDarkTheme: StateFlow<Boolean> = _isDarkTheme.asStateFlow()
 
     /**
-     * Loads the theme preference from SharedPreferences into the StateFlow.
+     * Loads the theme preference from [SharedPreferences] into the [StateFlow].
      *
-     * Call this during app startup (MovitoApplication.onCreate) and in each
-     * Activity's onCreate to ensure the StateFlow has the latest preference.
+     * This method should be called during app startup ([MovitoApplication.onCreate])
+     * and in each Activity's onCreate to ensure the StateFlow has the latest
+     * preference value. It reads from the "app_settings" shared preferences file
+     * with key "dark_theme".
      *
-     * @param context The context used to access SharedPreferences
+     * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
+     *
+     * @param context The context used to access SharedPreferences storage
+     *
+     * @see toggleTheme to update and persist theme preference
+     *
+     * @since 2 Dec 2025
      */
     fun loadThemePreference(context: Context) {
         val prefs = context.getSharedPreferences("app_settings", Context.MODE_PRIVATE)
@@ -52,13 +93,25 @@ object ThemeManager {
     }
 
     /**
-     * Updates the theme preference and persists it to SharedPreferences.
+     * Updates the theme preference and persists it to [SharedPreferences].
      *
-     * This method updates the reactive StateFlow immediately (for instant UI updates)
-     * and persists the change to SharedPreferences (for future app sessions).
+     * This method performs two key operations:
+     * 1. Updates the reactive [StateFlow] immediately (for instant UI updates)
+     * 2. Persists the change to [SharedPreferences] (for future app sessions)
+     *
+     * The method uses `apply()` for [SharedPreferences] to write asynchronously
+     * without blocking the UI thread.
+     *
+     * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
      *
      * @param enableDarkTheme Boolean indicating whether to enable dark theme
-     * @param context The context used to save the preference to SharedPreferences
+     *                        - `true`: Enable dark theme
+     *                        - `false`: Enable light theme
+     * @param context The context used to save the preference to [SharedPreferences]
+     *
+     * @see loadThemePreference to load the saved preference
+     *
+     * @since 2 Dec 2025
      */
     fun toggleTheme(enableDarkTheme: Boolean, context: Context) {
         _isDarkTheme.value = enableDarkTheme

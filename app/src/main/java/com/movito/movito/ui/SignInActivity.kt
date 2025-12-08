@@ -113,7 +113,6 @@ import dagger.hilt.android.AndroidEntryPoint
  *
  * @since 14 Nov 2025
  */
-
 @OptIn(ExperimentalPermissionsApi::class)
 @AndroidEntryPoint
 class SignInActivity : ComponentActivity() {
@@ -134,6 +133,16 @@ class SignInActivity : ComponentActivity() {
         super.attachBaseContext(updatedContext)
     }
 
+    /**
+     * Sets up the activity with splash screen, theme/language preferences,
+     * and notification system initialization.
+     *
+     * **Author**: Movito Development Team Member [Mohamed Ibrahim](https://github.com/mohamedibrahim-tech)
+     *
+     * @param savedInstanceState Previously saved instance state, or null
+     *
+     * @since 14 Nov 2025
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         // Install splash screen before any UI initialization
         val splashScreen = installSplashScreen()
@@ -231,6 +240,9 @@ class SignInActivity : ComponentActivity() {
                 }
             }
 
+            /**
+             * Observes language change requests and restarts activity when needed.
+             */
             LaunchedEffect(shouldRestartActivity) {
                 if (shouldRestartActivity) {
                     // Restart the activity to apply the new language
@@ -276,7 +288,7 @@ class SignInActivity : ComponentActivity() {
      *
      * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
      *
-     * @since 3 Dec 2025
+     * @since 5 Dec 2025
      */
     private fun completeNotificationSetup(context: Context, prefs: NotificationPreferences) {
         NotificationHelper.sendWelcomeNotification(context)
@@ -290,22 +302,6 @@ class SignInActivity : ComponentActivity() {
         navigateToCategories(context)
     }
 
-
-    private fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = "Welcome Channel"
-            val descriptionText = "Notifications to welcome users"
-            val importance = NotificationManager.IMPORTANCE_DEFAULT
-
-            val channel = NotificationChannel("welcome_channel", name, importance).apply {
-                description = descriptionText
-            }
-
-            val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(channel)
-        }
-    }
-
     /**
      * Determines if notifications should be auto-enabled for the user.
      * New users (no preference set) get notifications by default (opt-out model).
@@ -313,7 +309,7 @@ class SignInActivity : ComponentActivity() {
      *
      * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
      *
-     * @since 3 Dec 2025
+     * @since 5 Dec 2025
      */
     private fun shouldAutoEnableNotifications(): Boolean {
         val prefs = NotificationPreferences.getInstance(this)
@@ -327,7 +323,7 @@ class SignInActivity : ComponentActivity() {
      *
      * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
      *
-     * @since 3 Dec 2025
+     * @since 5 Dec 2025
      */
     private fun navigateToCategories(context: Context) {
         Handler(Looper.getMainLooper()).postDelayed({

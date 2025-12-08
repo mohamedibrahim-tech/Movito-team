@@ -23,7 +23,30 @@ import com.movito.movito.theme.MovitoTheme
 import com.movito.movito.viewmodel.AuthViewModel
 import com.movito.movito.viewmodel.LanguageViewModel
 import com.movito.movito.viewmodel.ThemeViewModel
+import android.app.Activity
 
+/**
+ * [Activity] for managing application settings and user preferences.
+ *
+ * This [Activity] provides access to:
+ * - Account management (email display, password reset, sign out)
+ * - Language selection (English/Arabic)
+ * - Theme toggling (dark/light mode)
+ * - Notification settings (frequency, limits, testing)
+ * - About information (version, GitHub repository)
+ *
+ * The [Activity] automatically redirects to [SignInActivity] if the user is not authenticated.
+ *
+ * **Author**: Movito Development Team Member [Basmala Wahid](http://github.com/basmala-wahid)
+ *
+ * @since 11 Nov 2025
+ *
+ * @see SettingsScreen
+ * @see AuthViewModel
+ * @see ThemeViewModel
+ * @see LanguageViewModel
+ *
+ */
 class SettingsActivity : ComponentActivity() {
     private val authViewModel: AuthViewModel by viewModels()
     private val themeViewModel: ThemeViewModel by viewModels()
@@ -44,6 +67,16 @@ class SettingsActivity : ComponentActivity() {
         finish()
     }
 
+    /**
+     * Sets up the [Activity] with edge-to-edge display and theme/language preferences.
+     * Observes authentication state and redirects to sign-in if user is not authenticated.
+     *
+     * **Author**: Movito Development Team Member [Basmala Wahid](http://github.com/basmala-wahid)
+     *
+     * @since 11 Nov 2025
+     *
+     * @param savedInstanceState Previously saved instance state, or null
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         MovitoApplication.LanguageChangeObserver.addListener(languageChangeListener)
@@ -54,7 +87,6 @@ class SettingsActivity : ComponentActivity() {
         setContent {
             val authState by authViewModel.authState.collectAsState()
             val isDarkTheme by themeViewModel.isDarkTheme.collectAsState()
-            val currentLanguage by languageViewModel.currentLanguage.collectAsState()
 
             var notificationsState by remember {
                 mutableStateOf(
@@ -62,6 +94,9 @@ class SettingsActivity : ComponentActivity() {
                 )
             }
 
+            /*
+             * Observes authentication state and redirects to sign-in if user is not authenticated.
+             */
             LaunchedEffect(authState.user) {
                 if (authState.user == null && authState.isInitialCheckDone) {
                     val intent = Intent(this@SettingsActivity, SignInActivity::class.java)
@@ -98,12 +133,28 @@ class SettingsActivity : ComponentActivity() {
         }
     }
 
+    /**
+     * Updates the base context with the saved language preference for proper localization.
+     *
+     * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
+     *
+     * @param newBase The base context
+     *
+     * @since 1 Dec 2025
+     */
     override fun attachBaseContext(newBase: Context) {
         val savedLanguage = MovitoApplication.getSavedLanguage(newBase)
         val updatedContext = MovitoApplication.updateBaseContextLocale(newBase, savedLanguage)
         super.attachBaseContext(updatedContext)
     }
 
+    /**
+     * Removes the language change listener when activity is destroyed.
+     *
+     * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
+     *
+     * @since 1 Dec 2025
+     */
     override fun onDestroy() {
         super.onDestroy()
         MovitoApplication.LanguageChangeObserver.removeListener(languageChangeListener)

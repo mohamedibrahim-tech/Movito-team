@@ -6,6 +6,7 @@ import com.movito.movito.R
 import androidx.core.content.edit
 import androidx.work.WorkManager
 import com.movito.movito.ui.CategoriesScreen
+import com.movito.movito.ui.SettingsScreen
 
 /**
  * MAIN PURPOSE: Manages persistent storage for all notification-related
@@ -32,7 +33,7 @@ import com.movito.movito.ui.CategoriesScreen
  *
  * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
  *
- * @since 4 Dec 2025
+ * @since 5 Dec 2025
  */
 class NotificationPreferences(context: Context) {
     private val prefs: SharedPreferences = context.getSharedPreferences(
@@ -77,7 +78,7 @@ class NotificationPreferences(context: Context) {
          *
          * @param context Application or Activity context
          * @return Singleton [NotificationPreferences] instance
-         * @since 4 Dec 2025
+         * @since 5 Dec 2025
          */
         fun getInstance(context: Context): NotificationPreferences =
             INSTANCE ?: synchronized(this) {
@@ -100,7 +101,7 @@ class NotificationPreferences(context: Context) {
      *
      * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
      *
-     * @since 4 Dec 2025
+     * @since 5 Dec 2025
      */
     fun setShouldShowPermissionReminder(shouldShow: Boolean) {
         prefs.edit { putBoolean(KEY_SHOULD_SHOW_PERMISSION_REMINDER, shouldShow) }
@@ -120,12 +121,14 @@ class NotificationPreferences(context: Context) {
      * Stores whether notifications are enabled by user.
      *
      * DEFAULT: `true` (opt-out model)
-     * SYNC: Mirrors switch state in SettingsScreen
+     *
+     * SYNC: Mirrors switch state in [SettingsScreen]
+     *
      * PERMISSION: Independent of system permission state
      *
      * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
      *
-     * @since 4 Dec 2025
+     * @since 5 Dec 2025
      */
     fun setNotificationsEnabled(enabled: Boolean) {
         prefs.edit { putBoolean(KEY_NOTIFICATIONS_ENABLED, enabled) }
@@ -184,7 +187,7 @@ class NotificationPreferences(context: Context) {
      * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
      *
      * @return Minimum [Int] value for current unit
-     * @since 4 Dec 2025
+     * @since 5 Dec 2025
      */
     fun getMinIntervalForCurrentUnit(): Int {
         return when (getNotificationIntervalUnit()) {
@@ -209,7 +212,7 @@ class NotificationPreferences(context: Context) {
      *
      * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
      *
-     * @since 4 Dec 2025
+     * @since 5 Dec 2025
      */
     fun getIntervalInMillis(): Long {
         val interval = getNotificationInterval()
@@ -231,7 +234,7 @@ class NotificationPreferences(context: Context) {
      * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
      *
      * @return Interval in minutes (minimum `15`)
-     * @since 4 Dec 2025
+     * @since 5 Dec 2025
      */
     fun getWorkManagerInterval(): Long {
         val intervalMillis = getIntervalInMillis()
@@ -259,7 +262,7 @@ class NotificationPreferences(context: Context) {
      * @param unit Internal unit (`"minutes"`, `"hours"`, `"days"`)
      * @param count Quantity for plural selection
      * @return Localized plural [String]
-     * @since 4 Dec 2025
+     * @since 5 Dec 2025
      */
     fun getLocalUnit(context: Context, unit: String, count: Int): String = when (unit) {
         "minutes" -> context.resources.getQuantityString(R.plurals.minutes, count)

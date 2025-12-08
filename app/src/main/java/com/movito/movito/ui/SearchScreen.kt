@@ -62,7 +62,28 @@ import com.movito.movito.theme.MovitoTheme
 import com.movito.movito.ui.common.MovitoNavBar
 import com.movito.movito.viewmodel.SearchViewModel
 
-
+/**
+ * Main screen for searching movies by title.
+ *
+ * This screen provides:
+ * - Real-time search with Material 3 SearchBar component
+ * - Search suggestions as the user types
+ * - Search results display with movie posters and details
+ * - Loading, error, and empty states
+ * - Navigation to movie details on selection
+ * - Integration with [SearchViewModel] for search operations
+ *
+ * **Author**: Movito Development Team Member [Yahia Mohamed](https://github.com/YahiaMohamed24)
+ *
+ * @param modifier [Modifier] for styling and layout
+ * @param viewModel The [SearchViewModel] instance managing search operations
+ *
+ * @since 12 Nov 2025
+ *
+ * @see SearchViewModel
+ * @see MovieListItem
+ * @see SearchBar
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(
@@ -75,7 +96,6 @@ fun SearchScreen(
     var active by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
-
     // Show a snackbar when an error occurs
     LaunchedEffect(uiState.error) {
         uiState.error?.let {
@@ -84,8 +104,6 @@ fun SearchScreen(
             // viewModel.errorShown() // Notify ViewModel that the error has been shown
         }
     }
-
-
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -146,8 +164,6 @@ fun SearchScreen(
                                 active = false // Close the active search view
                                 viewModel.updateSearchQuery(movie.title) // Update the text field
                                 viewModel.searchMovies() // Trigger the search
-
-
                             }
                         )
                     }
@@ -230,6 +246,17 @@ fun SearchScreen(
     }
 }
 
+/**
+ * Navigates to [DetailsActivity] with the selected movie.
+ * Uses a 0-duration transition to prevent flickering between activities.
+ *
+ * **Author**: Movito Development Team Member [Yahia Mohamed](https://github.com/YahiaMohamed24)
+ *
+ * @param context The current context
+ * @param movie The [Movie] object to pass to the details activity
+ *
+ * @since 23 Nov 2025
+ */
 private fun navigateToActivity(context: Context, movie: Movie) {
     val intent = Intent(context, DetailsActivity::class.java)
     intent.putExtra("movie", movie)
@@ -243,7 +270,19 @@ private fun navigateToActivity(context: Context, movie: Movie) {
     }
 }
 
-
+/**
+ * [Composable] for displaying a movie item in the search results list.
+ *
+ * Each item shows:
+ * - Movie poster thumbnail
+ * - Movie title
+ * - Release year (first 4 characters)
+ * - Short overview (2 lines maximum)
+ *
+ * @param modifier [Modifier] for styling and layout
+ * @param movie The [Movie] object to display
+ * @param onClick Callback when the movie item is clicked
+ */
 @Composable
 fun MovieListItem(
     modifier: Modifier = Modifier,
@@ -303,7 +342,9 @@ fun MovieListItem(
     }
 }
 
-
+/**
+ * Preview function for SearchScreen in dark theme mode.
+ */
 @Preview(showSystemUi = true, name = "Dark Mode")
 @Composable
 fun SearchPreview() {
@@ -312,6 +353,9 @@ fun SearchPreview() {
     }
 }
 
+/**
+ * Preview function for SearchScreen in light theme mode.
+ */
 @Preview(showSystemUi = true, name = "Light Mode")
 @Composable
 fun SearchPreviewLight() {

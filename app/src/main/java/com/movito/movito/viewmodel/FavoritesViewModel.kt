@@ -1,5 +1,7 @@
 package com.movito.movito.viewmodel
 
+import android.app.Activity
+import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
@@ -16,9 +18,16 @@ import kotlinx.coroutines.launch
 /**
  * UI state representing the current state of the favorites screen.
  *
- * @property favorites List of favorite movies for the current user
+ * This data class holds all state needed for displaying user's favorite movies,
+ * including the list of favorites, loading states, and error handling.
+ *
+ * **Author**: Movito Development Team Member [Basmala Wahid](http://github.com/basmala-wahid)
+ *
+ * @property favorites [List] of favorite movies for the current user
  * @property isLoading Whether the data is currently being loaded
  * @property error Optional error message if something went wrong
+ *
+ * @since 15 Nov 2025
  */
 data class FavoritesUiState(
     val favorites: List<Movie> = emptyList(),
@@ -27,45 +36,96 @@ data class FavoritesUiState(
 )
 
 /**
- * ViewModel responsible for managing favorite movies data.
+ * [ViewModel] responsible for managing favorite movies data and UI state.
  *
- * This ViewModel:
- * - Listens to real-time Firestore updates for the current user's favorites
- * - Handles optimistic UI updates for better user experience
- * - Provides methods to add/remove favorites with immediate UI feedback
- * - Uses singleton pattern to share state across the app
+ * This [ViewModel] provides real-time Firestore synchronization for user favorites
+ * with the following features:
+ * - Real-time Firestore updates via snapshot listeners
+ * - Optimistic UI updates for immediate user feedback
+ * - User-specific favorite isolation
+ * - Singleton pattern for app-wide state consistency
+ *
+ * The [ViewModel] uses a singleton pattern to ensure consistent favorite state
+ * across the entire application. It automatically cleans up Firestore listeners
+ * when destroyed to prevent memory leaks.
+ *
+ * **Author**: Movito Development Team Member [Basmala Wahid](http://github.com/basmala-wahid)
  *
  * @property repository The repository handling Firestore operations
+ *
+ * @since 15 Nov 2025
+ *
+ * @see FavoritesRepository for data layer operations
  */
 class FavoritesViewModel(
     private val repository: FavoritesRepository = FavoritesRepository()
 ) : ViewModel() {
 
-    // Mutable state flow for internal state management
+    /**
+     * Internal mutable state flow for favorites UI state.
+     *
+     * This private flow holds the current state and allows controlled updates
+     * from within the [ViewModel].
+     *
+     * **Author**: Movito Development Team Member [Basmala Wahid](http://github.com/basmala-wahid)
+     *
+     * @since 15 Nov 2025
+     */
     private val _uiState = MutableStateFlow(FavoritesUiState())
 
     /**
-     * Exposed immutable state flow for UI observation.
-     * Collect this in your Composables to get real-time favorites updates.
+     * Public immutable StateFlow exposing the current favorites UI state.
+     *
+     * Collect this flow in [Composable]s or any [Activity] to get real-time
+     * favorites updates as they change in Firestore.
+     *
+     * **Author**: Movito Development Team Member [Basmala Wahid](http://github.com/basmala-wahid)
+     *
+     * @since 15 Nov 2025
      */
     val uiState: StateFlow<FavoritesUiState> = _uiState.asStateFlow()
 
-    // Firestore listener registration for cleanup
+    /**
+     * Firestore listener registration for cleanup.
+     *
+     * This holds the reference to the active Firestore snapshot listener
+     * and is used to properly remove the listener when the ViewModel is cleared.
+     *
+     * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
+     *
+     * @since 24 Nov 2025
+     */
     private var listener: ListenerRegistration? = null
 
+    /**
+     * Initializes the [ViewModel] and starts listening to Firestore updates.
+     *
+     * The init block automatically calls [startListening] to establish
+     * real-time Firestore synchronization when the [ViewModel] is created.
+     *
+     * **Author**: Movito Development Team Member [Basmala Wahid](http://github.com/basmala-wahid)
+     *
+     * @since 15 Nov 2025
+     */
     init {
-        // Start listening to Firestore updates when ViewModel is created
         startListening()
     }
 
     /**
      * Starts listening to Firestore for real-time favorites updates.
      *
-     * This method:
-     * - Gets the current user ID from Firebase Auth
-     * - Sets up a snapshot listener on the favorites collection
-     * - Updates UI state when favorites change
-     * - Handles errors gracefully
+     * This method establishes a snapshot listener on the Firestore `"favorites"`
+     * collection filtered by the current user ID. It provides:
+     * - Real-time updates when favorites are added/removed
+     * - Automatic error handling
+     * - UI state updates with the latest favorites list
+     *
+     * The listener is established in [viewModelScope] and automatically
+     * cancels when the [ViewModel] is cleared.
+     *
+     * **Author**: Movito Development Team Member [Basmala Wahid](http://github.com/basmala-wahid)
+     *
+     * @since 15 Nov 2025
      */
     private fun startListening() {
         viewModelScope.launch {
@@ -103,14 +163,19 @@ class FavoritesViewModel(
     }
 
     /**
-     * Resets the ViewModel when a new user signs in.
+     * Resets the [ViewModel] when a new user signs in or out.
      *
-     * This method:
-     * - Removes the existing Firestore listener
-     * - Clears the current favorites state
-     * - Restarts listening for the new user's favorites
+     * This method ensures proper user separation by:
+     * 1. Removing existing Firestore listener to prevent memory leaks
+     * 2. Clearing current favorites state
+     * 3. Restarting listening for the new user's favorites
      *
-     * Call this method after sign-in/sign-out to ensure proper user separation.
+     * Call this method after sign-in/sign-out operations to maintain
+     * data isolation between users.
+     *
+     * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
+     *
+     * @since 24 Nov 2025
      */
     fun resetForNewUser() {
         // Remove old listener to prevent memory leaks
@@ -127,11 +192,19 @@ class FavoritesViewModel(
     /**
      * Adds a movie to favorites with optimistic UI update.
      *
-     * This method provides immediate UI feedback by:
-     * 1. First updating the UI optimistically
-     * 2. Then persisting to Firestore
+     * This method provides immediate UI feedback (optimistic update) before
+     * persisting to Firestore, resulting in a smooth user experience.
+     *
+     * Process:
+     * 1. Optimistically updates UI by adding movie to local state
+     * 2. Persists to Firestore asynchronously
+     * 3. New movies are added to beginning of list (most recent first)
+     *
+     * **Author**: Movito Development Team Member [Basmala Wahid](http://github.com/basmala-wahid)
      *
      * @param movie The movie to add to favorites
+     *
+     * @since 15 Nov 2025
      */
     fun addToFavorites(movie: Movie) {
         viewModelScope.launch {
@@ -161,11 +234,14 @@ class FavoritesViewModel(
     /**
      * Removes a movie from favorites with optimistic UI update.
      *
-     * This method provides immediate UI feedback by:
-     * 1. First removing from UI
-     * 2. Then removing from Firestore
+     * This method provides immediate UI feedback by removing the movie
+     * from local state before deleting from Firestore.
+     *
+     * **Author**: Movito Development Team Member [Basmala Wahid](http://github.com/basmala-wahid)
      *
      * @param movieId The ID of the movie to remove from favorites
+     *
+     * @since 15 Nov 2025
      */
     fun removeFromFavorites(movieId: Int) {
         viewModelScope.launch {
@@ -184,18 +260,29 @@ class FavoritesViewModel(
     /**
      * Checks if a movie is currently in favorites.
      *
-     * This is a local check only - it doesn't query Firestore.
-     * Use this for quick UI state checks.
+     * This is a local check only - it doesn't query Firestore. Use this
+     * for quick UI state checks like showing/hoving favorite icons.
+     *
+     * **Author**: Movito Development Team Member [Basmala Wahid](http://github.com/basmala-wahid)
      *
      * @param movieId The ID of the movie to check
-     * @return true if the movie is in the current favorites list, false otherwise
+     * @return `true` if the movie is in the current favorites list, `false` otherwise
+     *
+     * @since 15 Nov 2025
      */
     suspend fun isFavorite(movieId: Int): Boolean {
         return _uiState.value.favorites.any { it.id == movieId }
     }
 
     /**
-     * Clean up resources when ViewModel is destroyed.
+     * Cleans up resources when [ViewModel] is destroyed.
+     *
+     * This override ensures proper cleanup by removing the Firestore
+     * listener to prevent memory leaks.
+     *
+     * **Author**: Movito Development Team Member [Ahmed Essam](https://github.com/ahmed-essam-dev/)
+     *
+     * @since 24 Nov 2025
      */
     override fun onCleared() {
         // Remove Firestore listener to prevent memory leaks
@@ -204,19 +291,40 @@ class FavoritesViewModel(
     }
 
     /**
-     * Companion object implementing the singleton pattern.
+     * Companion object implementing the singleton pattern for [FavoritesViewModel].
      *
-     * This ensures the same ViewModel instance is used across the app
-     * for consistent state management.
+     * This ensures the same [ViewModel] instance is used across the app
+     * for consistent state management. The singleton pattern is appropriate
+     * here because favorite state needs to be consistent across all screens.
+     *
+     * **Author**: Movito Development Team Member [Basmala Wahid](http://github.com/basmala-wahid)
+     *
+     * @since Nov 22 2025
      */
     companion object {
+        /**
+         * [Volatile] instance reference for thread-safe singleton initialization.
+         *
+         * **Author**: Movito Development Team Member [Basmala Wahid](http://github.com/basmala-wahid)
+         *
+         * @since Nov 22 2025
+         */
         @Volatile
         private var instance: FavoritesViewModel? = null
 
         /**
-         * Returns the singleton instance of FavoritesViewModel.
+         * Returns the singleton instance of [FavoritesViewModel].
          *
-         * @return The shared FavoritesViewModel instance
+         * This method uses double-checked locking for thread safety:
+         * 1. First check without synchronization (performance)
+         * 2. Synchronized block for thread-safe initialization
+         * 3. Second check inside synchronized block
+         *
+         * **Author**: Movito Development Team Member [Basmala Wahid](http://github.com/basmala-wahid)
+         *
+         * @return The shared [FavoritesViewModel] instance
+         *
+         * @since Nov 22 2025
          */
         fun getInstance(): FavoritesViewModel {
             return instance ?: synchronized(this) {

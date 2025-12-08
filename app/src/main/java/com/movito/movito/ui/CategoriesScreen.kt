@@ -47,6 +47,26 @@ import com.movito.movito.ui.common.MovitoNavBar
 import com.movito.movito.viewmodel.CategoriesUiState
 import com.movito.movito.viewmodel.CategoriesViewModel
 
+/**
+ * Main screen for browsing movies by genre categories.
+ *
+ * This screen displays a grid of movie genres with associated images.
+ * Users can tap on any genre to navigate to [MoviesByGenreActivity] for that specific genre.
+ *
+ * Features:
+ * - Grid layout with genre cards (2 columns)
+ * - Genre-specific background images
+ * - Loading and error states
+ * - Integration with [CategoriesViewModel] for data management
+ *
+ * **Author**: Movito Development Team Member [Mohamed Ibrahim](https://github.com/mohamedibrahim-tech/)
+ *
+ * @since 14 Nov 2025
+ *
+ * @see CategoriesViewModel
+ * @see GenreCard
+ * @see MoviesByGenreActivity
+ */
 @Composable
 fun CategoriesScreen(viewModel: CategoriesViewModel = viewModel(), snackbarHost: @Composable () -> Unit = {},) {
     val uiState by viewModel.uiState.collectAsState()
@@ -66,6 +86,18 @@ fun CategoriesScreen(viewModel: CategoriesViewModel = viewModel(), snackbarHost:
     }
 }
 
+/**
+ * [Composable] content for the categories screen with scaffold layout.
+ *
+ * **Author**: Movito Development Team Member [Mohamed Ibrahim](https://github.com/mohamedibrahim-tech/)
+ *
+ * @param modifier [Modifier] for styling and layout
+ * @param uiState The current state from [CategoriesViewModel]
+ * @param snackbarHost [Composable] for displaying snackbar notifications
+ * @param onGenreClick Callback when a genre card is clicked, receives the selected [Genre]
+ *
+ * @since 14 Nov 2025
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CategoriesScreenContent(
@@ -119,6 +151,19 @@ fun CategoriesScreenContent(
     }
 }
 
+/**
+ * Displays a grid of genre cards in a 2-column layout.
+ *
+ * **Author**: Movito Development Team Member [Mohamed Ibrahim](https://github.com/mohamedibrahim-tech/)
+ *
+ * @param genres List of [Genre] objects to display
+ * @param onGenreClick Callback when a genre card is clicked
+ *
+ * @since 14 Nov 2025
+ *
+ * @see LazyVerticalGrid
+ * @see GenreCard
+ */
 @Composable
 fun CategoriesGrid(genres: List<Genre>, onGenreClick: (Genre) -> Unit) {
     LazyVerticalGrid(
@@ -134,6 +179,21 @@ fun CategoriesGrid(genres: List<Genre>, onGenreClick: (Genre) -> Unit) {
     }
 }
 
+/**
+ * Individual card representing a movie genre.
+ *
+ * Each card displays:
+ * - Genre name in the top-left corner
+ * - Genre-specific background image
+ * - Clickable area for navigation
+ *
+ * **Author**: Movito Development Team Member [Mohamed Ibrahim](https://github.com/mohamedibrahim-tech/)
+ *
+ * @param genre The [Genre] object containing genre data
+ * @param onClick Callback when the card is clicked
+ *
+ * @since 14 Nov 2025
+ */
 @Composable
 fun GenreCard(genre: Genre, onClick: () -> Unit) {
     Card(
@@ -166,6 +226,19 @@ fun GenreCard(genre: Genre, onClick: () -> Unit) {
     }
 }
 
+/**
+ * Maps a genre name to a corresponding drawable resource ID.
+ *
+ * This function provides localized support for both English and Arabic genre names.
+ * Includes fallback to default logo image if genre is not recognized.
+ *
+ * **Author**: Movito Development Team Member [Mohamed Ibrahim](https://github.com/mohamedibrahim-tech/)
+ *
+ * @param genreName The name of the genre (can be in English or Arabic)
+ * @return Drawable resource ID for the genre image
+ *
+ * @since 14 Nov 2025
+ */
 @DrawableRes
 private fun mapGenreNameToDrawable(genreName: String): Int {
     return when (genreName.lowercase()) {
@@ -195,6 +268,9 @@ private fun mapGenreNameToDrawable(genreName: String): Int {
 
 // --- Previews ---
 
+/**
+ * Preview function for CategoriesScreen with mock genres in dark theme.
+ */
 @Preview(showSystemUi = true, name = "Dark Mode - Success")
 @Composable
 fun CategoriesScreenSuccessPreviewDark() {
@@ -210,6 +286,9 @@ fun CategoriesScreenSuccessPreviewDark() {
     }
 }
 
+/**
+ * Preview function for CategoriesScreen with mock genres in light theme.
+ */
 @Preview(showSystemUi = true, name = "Light Mode - Success")
 @Composable
 fun CategoriesScreenSuccessPreviewLight() {
@@ -225,6 +304,9 @@ fun CategoriesScreenSuccessPreviewLight() {
     }
 }
 
+/**
+ * Preview function for CategoriesScreen in loading state.
+ */
 @Preview(showSystemUi = true, name = "Dark Mode - Loading")
 @Composable
 fun CategoriesScreenLoadingPreview() {
@@ -234,6 +316,9 @@ fun CategoriesScreenLoadingPreview() {
     }
 }
 
+/**
+ * Preview function for CategoriesScreen in error state.
+ */
 @Preview(showSystemUi = true, name = "Dark Mode - Error")
 @Composable
 fun CategoriesScreenErrorPreview() {
