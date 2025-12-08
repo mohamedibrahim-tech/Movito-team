@@ -23,22 +23,42 @@
         android:layout_height="wrap_content"
         android:layout_gravity="top"
         android:background="@drawable/rating_background"
-        android:paddingHorizontal="4dp"
+        android:fontFamily="sans-serif"
+        android:paddingHorizontal="2dp"
         android:paddingVertical="2dp"
-        android:textColor="@android:color/white"
+        android:textColor="?android:attr/textColorPrimary"
         android:textSize="8sp"
         android:textStyle="bold" />
 
-    <!-- Text content -->
-    <TextView
+    <!-- Content area -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:gravity="center"
-        android:text="@string/notification_movie_suggestion_title_collapsed"
-        android:textAlignment="center"
-        android:textColor="@android:color/white"
-        android:textSize="12sp"
-        android:textStyle="bold" />
+        android:orientation="horizontal"
+        >
+
+        <!-- Text content -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="75"
+            android:fontFamily="sans-serif"
+            android:text="@string/notification_movie_suggestion_title_collapsed"
+            android:textAlignment="center"
+            android:textColor="@color/primary"
+            android:textSize="10sp"
+            android:textStyle="bold" />
+
+        <!-- movito logo -->
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:layout_weight="25"
+            android:importantForAccessibility="no"
+            android:src="@drawable/movito_logo" />
+    </LinearLayout>
 
 </LinearLayout>

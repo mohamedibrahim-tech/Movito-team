@@ -33,21 +33,53 @@ It allows users to browse trending movies, search titles, view deep movie detail
 ---
 
 ## ✨ Features
+<table>
+<tr>
+<td width="40%"><img src="docs/discover.gif"></td>
+<td>
 
 ### 🎞 Discover Movies
 - Popular, trending, and top-rated lists  
 - Genre-based browsing  
 
+</td>
+</tr>
+</table>
+
+<table>
+<tr>
+<td width="40%"><img src="docs/details.gif"></td>
+<td>
+
 ### 📄 Movie Details
 - HD posters, overview, release info  
 - Watch/Sheare Trailer  
 - Add to favorites  
-- Similar movies  
+- Similar movies 
+
+</td>
+</tr>
+</table>
+
+<table>
+<tr>
+<td width="40%"><img src="docs/add2fav.gif"></td>
+<td>
 
 ### ❤️ Favorites
-- Save movies with Room  
+- Save movies
 - Persistent storage  
 - Smooth animated UI  
+
+</td>
+</tr>
+</table>
+
+
+<table>
+<tr>
+<td width="40%"><img src="docs/notification.gif"></td>
+<td>
 
 ### 🔔 Smart Notifications
 - Scheduled movie suggestions  
@@ -56,47 +88,32 @@ It allows users to browse trending movies, search titles, view deep movie detail
 - Test notification buttons
 - Arabic localization  
 
+</td>
+</tr>
+</table>
+
+
 ### 🧑‍💻 Authentication
 - Email & password login    
 - Session persistence  
+
+<p align="center">
+  <img src="docs/screen_login.jpeg" width="40%" align="center"/>
+  <img src="docs/screen_settings.jpeg" width="30%" align="center"/>
+  <img src="docs/screen_notification.jpeg" width="20%" align="center"/>
+</p>
 
 ### 🎨 Modern UI
 - 100% Jetpack Compose  
 - Material 3 
 - Light / Dark / System themes  
 - Custom splash screen  
-- Arabic localization  
-
----
-
-## 🖼️ Screenshots
-### English 🇬🇧
+- Arabic localization
 
 <p align="center">
-  <img src="docs/screen_home.jpeg" width="30%" />
-  <img src="docs/screen_details.jpeg" width="30%" />
-  <img src="docs/screen_favorites.jpeg" width="30%" />
-</p>
-
-<p align="center">
-  <img src="docs/screen_login.jpeg" width="30%" />
-  <img src="docs/screen_settings.jpeg" width="30%" />
-  <img src="docs/screen_notification.jpeg" width="30%" />
-</p>
-
-
-### Arabic 🇪🇬
-
-<p align="center">
-  <img src="docs/screen_home_ar.jpeg" width="30%" />
-  <img src="docs/screen_details_ar.jpeg" width="30%" />
-  <img src="docs/screen_favorites_ar.jpeg" width="30%" />
-</p>
-
-<p align="center">
-  <img src="docs/screen_login_ar.jpeg" width="30%" />
-  <img src="docs/screen_settings_ar.jpeg" width="30%" />
-  <img src="docs/screen_notification_ar.jpeg" width="30%" />
+  <img src="docs/screen_home.jpeg" width="25%" align="center"/>
+  <img src="docs/screen_details.jpeg" width="40%"align="center" />
+  <img src="docs/screen_favorites.jpeg" width="25%" align="center"/>
 </p>
 
 ---
@@ -191,14 +208,14 @@ Movito supports:
 
 ## 🤝 Contributors
 
-|     Member<br>      | Role                                                                                                                                                                  |
-| :-----------------: | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Mohamed Ibrahim** | Team Lead · Home screen · Some Movie Details screen logic <br>Navigation · Theme system · Core architecture · UI Test                                                 |
-|   **Ahmed Essam**   | Movie Details screen · Favorites integration<br>Full Notification System · Notifications Settings<br>Localization and bilingual support with Arabic/English switching |
-|  **Basmala Wahid**  | Favorites screen · Settings screen · Unit Test                                                                                                                        |
-|   **Alyaa Osama**   | Sign-Up screen · Welcome Notification                                                                                                                                 |
-|  **Youssef Sayed**  | Sign-In screen · Firebase Auth logic · Profile screen · Instrumented Test                                                                                             |
-|  **Yehia Mohamed**  | Search screen · API integration                                                                                                                                       |
+|     Member<br>      | Role                                                                                                                                                                                        |
+| :-----------------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Mohamed Ibrahim** | Team Lead · Home screen · Some Movie Details screen logic · <br>Navigation · Theme system · Core architecture · UI Test                                                                     |
+|   **Ahmed Essam**   | Movie Details screen · Favorites integration · <br>Full Notification System · Notifications Settings · <br>Localization and bilingual support with Arabic/English switching · Documentation |
+|  **Basmala Wahid**  | Favorites screen · Settings screen ·<br>Assist in theme system creation · Unit Test                                                                                                         |
+|   **Alyaa Osama**   | Sign-Up screen · Welcome Notification                                                                                                                                                       |
+|  **Youssef Sayed**  | Sign-In screen · Firebase Auth logic · Profile screen · Instrumented Test                                                                                                                   |
+|  **Yehia Mohamed**  | Search screen · API integration                                                                                                                                                             |
 
 ---
 
