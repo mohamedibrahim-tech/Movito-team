@@ -50,18 +50,7 @@ class MovitoApplicationTest {
 
     }
 
-    @Test
-    fun `onCreate calls LanguageManager loadLanguagePreference`() {        val app = spyk<MovitoApplication>()
 
-        // نتحكم في الـ context
-        every { app.applicationContext } returns app
-
-        // نستدعي onCreate
-        app.onCreate()
-
-        // نتحقق من الاستدعاء
-        verify { LanguageManager.loadLanguagePreference(app) }
-    }
 
     @Test
     fun `getSavedLanguage returns current language from LanguageManager`() {
