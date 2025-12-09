@@ -1,4 +1,3 @@
-
 package com.movito.movito.ui
 
 import androidx.compose.ui.test.assertIsDisplayed
@@ -78,7 +77,7 @@ class DetailsScreenTest {
             )
         }
 
-        composeTestRule.onNodeWithText(text = "Play Trailer", useUnmergedTree = true).performClick()
+        composeTestRule.onNodeWithText("Play Trailer").performClick()
         assertEquals(mockMovie.id, fakeViewModel.findTrailerCalledWith)
     }
 

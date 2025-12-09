@@ -9,6 +9,8 @@ plugins {
     id("com.google.gms.google-services")
     id("kotlin-parcelize")
     id("kotlin-kapt")
+    // dokka for generating the documentation
+    id("org.jetbrains.dokka") version "1.9.20" apply false
     alias(libs.plugins.hilt)
 }
 
@@ -46,11 +48,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
@@ -151,4 +153,36 @@ dependencies {
     testImplementation("app.cash.turbine:turbine:1.0.0")
     testImplementation("io.mockk:mockk:1.13.10")
     testImplementation("androidx.test:core:1.5.0")
+}
+
+// Documentation task (dokka)
+tasks.register<org.jetbrains.dokka.gradle.DokkaTask>("dokkaMovito") {
+    moduleName.set("Movito Movie App")
+    outputDirectory.set(file("../docs"))
+
+    dokkaSourceSets {
+        configureEach {
+            sourceRoots.from(file("src/main/kotlin"))
+
+            // Exclude test packages and generated code
+            perPackageOption {
+                matchingRegex.set(".*\\.test\\..*")
+                suppress.set(true)
+            }
+            perPackageOption {
+                matchingRegex.set(".*\\.di\\..*")  // Exclude Dagger generated files
+                suppress.set(true)
+            }
+            perPackageOption {
+                matchingRegex.set(".*\\.BuildConfig")  // Exclude BuildConfig
+                suppress.set(true)
+            }
+
+            // Skip generated/synthetic files
+            skipDeprecated.set(true)
+            skipEmptyPackages.set(true)
+
+            //includes.from("README.md")
+        }
+    }
 }

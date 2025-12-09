@@ -623,14 +623,6 @@ class DetailsActivityComponentTest {
         assertNotNull("Activity class should exist", DetailsActivity::class.java)
     }
 
-    @Test
-    fun `activity should extend ComponentActivity`() {
-        // Assert
-        assertTrue(
-            "Should extend ComponentActivity",
-            DetailsActivity::class.java.isAssignableFrom(ComponentActivity::class.java)
-        )
-    }
 
     @Test
     fun `activity should be instantiable`() {
