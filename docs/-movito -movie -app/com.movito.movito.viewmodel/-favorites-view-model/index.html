@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>FavoritesViewModel</title>
+    <link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">
+    <script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async="async"></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer="defer"></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer="defer"></script>
+</head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+                    <a class="library-name--link" href="../../../index.html">
+                            Movito Movie App
+                    </a>
+            </div>
+            <div class="library-version">
+            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":app:dokkaMovito/release">androidJvm</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageIds="Movito Movie App::com.movito.movito.viewmodel/FavoritesViewModel///PointingToDeclaration//1047749926">
+  <div class="breadcrumbs"><a href="../../../index.html">Movito Movie App</a><span class="delimiter">/</span><a href="../index.html">com.movito.movito.viewmodel</a><span class="delimiter">/</span><span class="current">FavoritesViewModel</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Favorites</span><wbr></wbr><span>View</span><wbr></wbr><span><span>Model</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaMovito/release"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">FavoritesViewModel</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">repository<span class="token operator">: </span><a href="../../com.movito.movito.favorites/-favorites-repository/index.html">FavoritesRepository</a><span class="token operator"> = </span>FavoritesRepository()</span></span><span class="token punctuation">)</span> : <a href="https://developer.android.com/reference/kotlin/androidx/lifecycle/ViewModel.html">ViewModel</a></div><p class="paragraph"><a href="https://developer.android.com/reference/kotlin/androidx/lifecycle/ViewModel.html">ViewModel</a> responsible for managing favorite movies data and UI state.</p><p class="paragraph">This <a href="https://developer.android.com/reference/kotlin/androidx/lifecycle/ViewModel.html">ViewModel</a> provides real-time Firestore synchronization for user favorites with the following features:</p><ul><li><p class="paragraph">Real-time Firestore updates via snapshot listeners</p></li><li><p class="paragraph">Optimistic UI updates for immediate user feedback</p></li><li><p class="paragraph">User-specific favorite isolation</p></li><li><p class="paragraph">Singleton pattern for app-wide state consistency</p></li></ul><p class="paragraph">The <a href="https://developer.android.com/reference/kotlin/androidx/lifecycle/ViewModel.html">ViewModel</a> uses a singleton pattern to ensure consistent favorite state across the entire application. It automatically cleans up Firestore listeners when destroyed to prevent memory leaks.</p><p class="paragraph"><strong>Author</strong>: Movito Development Team Member <a href="http://github.com/basmala-wahid">Basmala Wahid</a></p><span class="kdoc-tag"><h4 class="">Since</h4><p class="paragraph">15 Nov 2025</p></span><h4 class="">See also</h4><div class="table"><div class="table-row" data-filterable-current=":app:dokkaMovito/release" data-filterable-set=":app:dokkaMovito/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../com.movito.movito.favorites/-favorites-repository/index.html"><span>Favorites</span><wbr></wbr><span><span>Repository</span></span></a></div></span></div><div><div class="title"><p class="paragraph">for data layer operations</p></div></div></div></div></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="CONSTRUCTOR">
+        <h2 class="">Constructors</h2>
+        <div class="table"><a data-name="-1894214433%2FConstructors%2F1047749926" anchor-label="FavoritesViewModel" id="-1894214433%2FConstructors%2F1047749926" data-filterable-set=":app:dokkaMovito/release"></a>
+          <div class="table-row" data-togglable="CONSTRUCTOR" data-filterable-current=":app:dokkaMovito/release" data-filterable-set=":app:dokkaMovito/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-favorites-view-model.html"><span>Favorites</span><wbr></wbr><span>View</span><wbr></wbr><span><span>Model</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1894214433%2FConstructors%2F1047749926"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaMovito/release"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">repository<span class="token operator">: </span><a href="../../com.movito.movito.favorites/-favorites-repository/index.html">FavoritesRepository</a><span class="token operator"> = </span>FavoritesRepository()</span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="TYPE">
+        <h2 class="">Types</h2>
+        <div class="table"><a data-name="1955599150%2FClasslikes%2F1047749926" anchor-label="Companion" id="1955599150%2FClasslikes%2F1047749926" data-filterable-set=":app:dokkaMovito/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaMovito/release" data-filterable-set=":app:dokkaMovito/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-companion/index.html"><span><span>Companion</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1955599150%2FClasslikes%2F1047749926"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaMovito/release"><div class="symbol monospace"><span class="token keyword">object </span><a href="-companion/index.html">Companion</a></div><div class="brief "><p class="paragraph">Companion object implementing the singleton pattern for <a href="index.html">FavoritesViewModel</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="473724074%2FProperties%2F1047749926" anchor-label="uiState" id="473724074%2FProperties%2F1047749926" data-filterable-set=":app:dokkaMovito/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaMovito/release" data-filterable-set=":app:dokkaMovito/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="ui-state.html"><span>ui</span><wbr></wbr><span><span>State</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="473724074%2FProperties%2F1047749926"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaMovito/release"><div class="symbol monospace"><span class="token keyword">val </span><a href="ui-state.html">uiState</a><span class="token operator">: </span><span data-unresolved-link="kotlinx.coroutines.flow/StateFlow///PointingToDeclaration/">StateFlow</span><span class="token operator">&lt;</span><a href="../-favorites-ui-state/index.html">FavoritesUiState</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Public immutable StateFlow exposing the current favorites UI state.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="978795377%2FFunctions%2F1047749926" anchor-label="addCloseable" id="978795377%2FFunctions%2F1047749926" data-filterable-set=":app:dokkaMovito/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaMovito/release" data-filterable-set=":app:dokkaMovito/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-theme-view-model/index.html#383812252%2FFunctions%2F1047749926"><span>add</span><wbr></wbr><span><span>Closeable</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="978795377%2FFunctions%2F1047749926"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaMovito/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="../-theme-view-model/index.html#383812252%2FFunctions%2F1047749926"><span class="token function">addCloseable</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">closeable<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></span></span><span class="token punctuation">)</span></div><div class="symbol monospace"><span class="token keyword">fun </span><a href="../-theme-view-model/index.html#1722490497%2FFunctions%2F1047749926"><span class="token function">addCloseable</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">key<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">closeable<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-238421724%2FFunctions%2F1047749926" anchor-label="addToFavorites" id="-238421724%2FFunctions%2F1047749926" data-filterable-set=":app:dokkaMovito/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaMovito/release" data-filterable-set=":app:dokkaMovito/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="add-to-favorites.html"><span>add</span><wbr></wbr><span>To</span><wbr></wbr><span><span>Favorites</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-238421724%2FFunctions%2F1047749926"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaMovito/release"><div class="symbol monospace"><span class="token keyword">fun </span><a href="add-to-favorites.html"><span class="token function">addToFavorites</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">movie<span class="token operator">: </span><a href="../../com.movito.movito.data.model/-movie/index.html">Movie</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Adds a movie to favorites with optimistic UI update.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1102255800%2FFunctions%2F1047749926" anchor-label="getCloseable" id="1102255800%2FFunctions%2F1047749926" data-filterable-set=":app:dokkaMovito/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaMovito/release" data-filterable-set=":app:dokkaMovito/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../-theme-view-model/index.html#1102255800%2FFunctions%2F1047749926"><span>get</span><wbr></wbr><span><span>Closeable</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1102255800%2FFunctions%2F1047749926"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaMovito/release"><div class="symbol monospace"><span class="token keyword">fun </span><span class="token operator">&lt;</span><a href="../-theme-view-model/index.html#1102255800%2FFunctions%2F1047749926">T</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-auto-closeable/index.html">AutoCloseable</a><span class="token operator">&gt; </span><a href="../-theme-view-model/index.html#1102255800%2FFunctions%2F1047749926"><span class="token function">getCloseable</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">key<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-theme-view-model/index.html#1102255800%2FFunctions%2F1047749926">T</a><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="142462475%2FFunctions%2F1047749926" anchor-label="isFavorite" id="142462475%2FFunctions%2F1047749926" data-filterable-set=":app:dokkaMovito/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaMovito/release" data-filterable-set=":app:dokkaMovito/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="is-favorite.html"><span>is</span><wbr></wbr><span><span>Favorite</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="142462475%2FFunctions%2F1047749926"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaMovito/release"><div class="symbol monospace"><span class="token keyword">suspend </span><span class="token keyword">fun </span><a href="is-favorite.html"><span class="token function">isFavorite</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">movieId<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Checks if a movie is currently in favorites.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1173163524%2FFunctions%2F1047749926" anchor-label="removeFromFavorites" id="-1173163524%2FFunctions%2F1047749926" data-filterable-set=":app:dokkaMovito/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaMovito/release" data-filterable-set=":app:dokkaMovito/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="remove-from-favorites.html"><span>remove</span><wbr></wbr><span>From</span><wbr></wbr><span><span>Favorites</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1173163524%2FFunctions%2F1047749926"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaMovito/release"><div class="symbol monospace"><span class="token keyword">fun </span><a href="remove-from-favorites.html"><span class="token function">removeFromFavorites</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">movieId<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Removes a movie from favorites with optimistic UI update.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="653516886%2FFunctions%2F1047749926" anchor-label="resetForNewUser" id="653516886%2FFunctions%2F1047749926" data-filterable-set=":app:dokkaMovito/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaMovito/release" data-filterable-set=":app:dokkaMovito/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="reset-for-new-user.html"><span>reset</span><wbr></wbr><span>For</span><wbr></wbr><span>New</span><wbr></wbr><span><span>User</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="653516886%2FFunctions%2F1047749926"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaMovito/release"><div class="symbol monospace"><span class="token keyword">fun </span><a href="reset-for-new-user.html"><span class="token function">resetForNewUser</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Resets the <a href="https://developer.android.com/reference/kotlin/androidx/lifecycle/ViewModel.html">ViewModel</a> when a new user signs in or out.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2025 Copyright</span><span
+                class="pull-right"><span>Generated by </span><a
+                href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

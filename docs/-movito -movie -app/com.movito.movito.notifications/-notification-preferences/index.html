@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>NotificationPreferences</title>
+    <link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">
+    <script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async="async"></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer="defer"></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer="defer"></script>
+</head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+                    <a class="library-name--link" href="../../../index.html">
+                            Movito Movie App
+                    </a>
+            </div>
+            <div class="library-version">
+            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":app:dokkaMovito/release">androidJvm</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageIds="Movito Movie App::com.movito.movito.notifications/NotificationPreferences///PointingToDeclaration//1047749926">
+  <div class="breadcrumbs"><a href="../../../index.html">Movito Movie App</a><span class="delimiter">/</span><a href="../index.html">com.movito.movito.notifications</a><span class="delimiter">/</span><span class="current">NotificationPreferences</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Notification</span><wbr></wbr><span><span>Preferences</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaMovito/release"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">NotificationPreferences</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">context<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/content/Context.html">Context</a></span></span><span class="token punctuation">)</span></div><p class="paragraph">MAIN PURPOSE: Manages persistent storage for all notification-related user preferences and scheduling state.</p><p class="paragraph">STORAGE: Android <a href="https://developer.android.com/reference/kotlin/android/content/SharedPreferences.html">SharedPreferences</a> (singleton pattern)</p><p class="paragraph">PREFERENCES MANAGED:</p><ul><li><p class="paragraph">Notification enabled/disabled state</p></li><li><p class="paragraph">Custom interval (number + unit)</p></li><li><p class="paragraph">Last schedule timestamp</p></li><li><p class="paragraph">Permission reminder flags</p></li><li><p class="paragraph">Battery notice flags</p></li><li><p class="paragraph">Schedule persistence state</p></li></ul><p class="paragraph">VALIDATION:</p><ul><li><p class="paragraph">Minimum interval enforcement (15min/1hour/1day)</p></li><li><p class="paragraph">Unit conversion (minutes/hours/days → milliseconds)</p></li><li><p class="paragraph">WorkManager constraint compliance (minimum 15 minutes)</p></li></ul><p class="paragraph">LOCALIZATION:</p><ul><li><p class="paragraph">Proper plural string handling</p></li><li><p class="paragraph">RTL support for Arabic intervals</p></li></ul><p class="paragraph"><strong>Author</strong>: Movito Development Team Member <a href="https://github.com/ahmed-essam-dev/">Ahmed Essam</a></p><span class="kdoc-tag"><h4 class="">Since</h4><p class="paragraph">5 Dec 2025</p></span></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="CONSTRUCTOR">
+        <h2 class="">Constructors</h2>
+        <div class="table"><a data-name="1685314145%2FConstructors%2F1047749926" anchor-label="NotificationPreferences" id="1685314145%2FConstructors%2F1047749926" data-filterable-set=":app:dokkaMovito/release"></a>
+          <div class="table-row" data-togglable="CONSTRUCTOR" data-filterable-current=":app:dokkaMovito/release" data-filterable-set=":app:dokkaMovito/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-notification-preferences.html"><span>Notification</span><wbr></wbr><span><span>Preferences</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1685314145%2FConstructors%2F1047749926"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaMovito/release"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">context<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/content/Context.html">Context</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="TYPE">
+        <h2 class="">Types</h2>
+        <div class="table"><a data-name="-1665177542%2FClasslikes%2F1047749926" anchor-label="Companion" id="-1665177542%2FClasslikes%2F1047749926" data-filterable-set=":app:dokkaMovito/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaMovito/release" data-filterable-set=":app:dokkaMovito/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-companion/index.html"><span><span>Companion</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1665177542%2FClasslikes%2F1047749926"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaMovito/release"><div class="symbol monospace"><span class="token keyword">object </span><a href="-companion/index.html">Companion</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="1506178639%2FFunctions%2F1047749926" anchor-label="getCurrentNotificationIndex" id="1506178639%2FFunctions%2F1047749926" data-filterable-set=":app:dokkaMovito/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaMovito/release" data-filterable-set=":app:dokkaMovito/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-current-notification-index.html"><span>get</span><wbr></wbr><span>Current</span><wbr></wbr><span>Notification</span><wbr></wbr><span><span>Index</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1506178639%2FFunctions%2F1047749926"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaMovito/release"><div class="symbol monospace"><span class="token keyword">fun </span><a href="get-current-notification-index.html"><span class="token function">getCurrentNotificationIndex</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1102363891%2FFunctions%2F1047749926" anchor-label="getIntervalInMillis" id="-1102363891%2FFunctions%2F1047749926" data-filterable-set=":app:dokkaMovito/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaMovito/release" data-filterable-set=":app:dokkaMovito/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-interval-in-millis.html"><span>get</span><wbr></wbr><span>Interval</span><wbr></wbr><span>In</span><wbr></wbr><span><span>Millis</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1102363891%2FFunctions%2F1047749926"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaMovito/release"><div class="symbol monospace"><span class="token keyword">fun </span><a href="get-interval-in-millis.html"><span class="token function">getIntervalInMillis</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-long/index.html">Long</a></div><div class="brief "><p class="paragraph">Converts stored interval to milliseconds for scheduling.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1568068029%2FFunctions%2F1047749926" anchor-label="getLastScheduleTime" id="-1568068029%2FFunctions%2F1047749926" data-filterable-set=":app:dokkaMovito/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaMovito/release" data-filterable-set=":app:dokkaMovito/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-last-schedule-time.html"><span>get</span><wbr></wbr><span>Last</span><wbr></wbr><span>Schedule</span><wbr></wbr><span><span>Time</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1568068029%2FFunctions%2F1047749926"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaMovito/release"><div class="symbol monospace"><span class="token keyword">fun </span><a href="get-last-schedule-time.html"><span class="token function">getLastScheduleTime</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-long/index.html">Long</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1374024191%2FFunctions%2F1047749926" anchor-label="getLocalUnit" id="1374024191%2FFunctions%2F1047749926" data-filterable-set=":app:dokkaMovito/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaMovito/release" data-filterable-set=":app:dokkaMovito/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-local-unit.html"><span>get</span><wbr></wbr><span>Local</span><wbr></wbr><span><span>Unit</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1374024191%2FFunctions%2F1047749926"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaMovito/release"><div class="symbol monospace"><span class="token keyword">fun </span><a href="get-local-unit.html"><span class="token function">getLocalUnit</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">context<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/content/Context.html">Context</a><span class="token punctuation">, </span></span><span class="parameter ">unit<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">count<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-string/index.html">String</a></div><div class="brief "><p class="paragraph">Gets localized plural <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-string/index.html">String</a> for interval unit.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="611741405%2FFunctions%2F1047749926" anchor-label="getMaxNotificationCount" id="611741405%2FFunctions%2F1047749926" data-filterable-set=":app:dokkaMovito/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaMovito/release" data-filterable-set=":app:dokkaMovito/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-max-notification-count.html"><span>get</span><wbr></wbr><span>Max</span><wbr></wbr><span>Notification</span><wbr></wbr><span><span>Count</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="611741405%2FFunctions%2F1047749926"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaMovito/release"><div class="symbol monospace"><span class="token keyword">fun </span><a href="get-max-notification-count.html"><span class="token function">getMaxNotificationCount</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1642164722%2FFunctions%2F1047749926" anchor-label="getMinIntervalForCurrentUnit" id="1642164722%2FFunctions%2F1047749926" data-filterable-set=":app:dokkaMovito/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaMovito/release" data-filterable-set=":app:dokkaMovito/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-min-interval-for-current-unit.html"><span>get</span><wbr></wbr><span>Min</span><wbr></wbr><span>Interval</span><wbr></wbr><span>For</span><wbr></wbr><span>Current</span><wbr></wbr><span><span>Unit</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1642164722%2FFunctions%2F1047749926"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaMovito/release"><div class="symbol monospace"><span class="token keyword">fun </span><a href="get-min-interval-for-current-unit.html"><span class="token function">getMinIntervalForCurrentUnit</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a></div><div class="brief "><p class="paragraph">Gets the minimum allowed interval for current unit.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-687904787%2FFunctions%2F1047749926" anchor-label="getNotificationInterval" id="-687904787%2FFunctions%2F1047749926" data-filterable-set=":app:dokkaMovito/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaMovito/release" data-filterable-set=":app:dokkaMovito/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-notification-interval.html"><span>get</span><wbr></wbr><span>Notification</span><wbr></wbr><span><span>Interval</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-687904787%2FFunctions%2F1047749926"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaMovito/release"><div class="symbol monospace"><span class="token keyword">fun </span><a href="get-notification-interval.html"><span class="token function">getNotificationInterval</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1110663881%2FFunctions%2F1047749926" anchor-label="getNotificationIntervalUnit" id="1110663881%2FFunctions%2F1047749926" data-filterable-set=":app:dokkaMovito/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaMovito/release" data-filterable-set=":app:dokkaMovito/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-notification-interval-unit.html"><span>get</span><wbr></wbr><span>Notification</span><wbr></wbr><span>Interval</span><wbr></wbr><span><span>Unit</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1110663881%2FFunctions%2F1047749926"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaMovito/release"><div class="symbol monospace"><span class="token keyword">fun </span><a href="get-notification-interval-unit.html"><span class="token function">getNotificationIntervalUnit</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-string/index.html">String</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1222306572%2FFunctions%2F1047749926" anchor-label="getShouldShowPermissionReminder" id="1222306572%2FFunctions%2F1047749926" data-filterable-set=":app:dokkaMovito/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaMovito/release" data-filterable-set=":app:dokkaMovito/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-should-show-permission-reminder.html"><span>get</span><wbr></wbr><span>Should</span><wbr></wbr><span>Show</span><wbr></wbr><span>Permission</span><wbr></wbr><span><span>Reminder</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1222306572%2FFunctions%2F1047749926"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaMovito/release"><div class="symbol monospace"><span class="token keyword">fun </span><a href="get-should-show-permission-reminder.html"><span class="token function">getShouldShowPermissionReminder</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="209143196%2FFunctions%2F1047749926" anchor-label="getWorkManagerInterval" id="209143196%2FFunctions%2F1047749926" data-filterable-set=":app:dokkaMovito/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaMovito/release" data-filterable-set=":app:dokkaMovito/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-work-manager-interval.html"><span>get</span><wbr></wbr><span>Work</span><wbr></wbr><span>Manager</span><wbr></wbr><span><span>Interval</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="209143196%2FFunctions%2F1047749926"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaMovito/release"><div class="symbol monospace"><span class="token keyword">fun </span><a href="get-work-manager-interval.html"><span class="token function">getWorkManagerInterval</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-long/index.html">Long</a></div><div class="brief "><p class="paragraph">Converts interval to minutes for <a href="https://developer.android.com/reference/kotlin/androidx/work/WorkManager.html">WorkManager</a> constraints.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-860280721%2FFunctions%2F1047749926" anchor-label="hasUserSetPreference" id="-860280721%2FFunctions%2F1047749926" data-filterable-set=":app:dokkaMovito/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaMovito/release" data-filterable-set=":app:dokkaMovito/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="has-user-set-preference.html"><span>has</span><wbr></wbr><span>User</span><wbr></wbr><span>Set</span><wbr></wbr><span><span>Preference</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-860280721%2FFunctions%2F1047749926"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaMovito/release"><div class="symbol monospace"><span class="token keyword">fun </span><a href="has-user-set-preference.html"><span class="token function">hasUserSetPreference</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-464773116%2FFunctions%2F1047749926" anchor-label="isIntervalValid" id="-464773116%2FFunctions%2F1047749926" data-filterable-set=":app:dokkaMovito/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaMovito/release" data-filterable-set=":app:dokkaMovito/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="is-interval-valid.html"><span>is</span><wbr></wbr><span>Interval</span><wbr></wbr><span><span>Valid</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-464773116%2FFunctions%2F1047749926"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaMovito/release"><div class="symbol monospace"><span class="token keyword">fun </span><a href="is-interval-valid.html"><span class="token function">isIntervalValid</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">interval<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1160215075%2FFunctions%2F1047749926" anchor-label="isNotificationCountValid" id="1160215075%2FFunctions%2F1047749926" data-filterable-set=":app:dokkaMovito/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaMovito/release" data-filterable-set=":app:dokkaMovito/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="is-notification-count-valid.html"><span>is</span><wbr></wbr><span>Notification</span><wbr></wbr><span>Count</span><wbr></wbr><span><span>Valid</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1160215075%2FFunctions%2F1047749926"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaMovito/release"><div class="symbol monospace"><span class="token keyword">fun </span><a href="is-notification-count-valid.html"><span class="token function">isNotificationCountValid</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">count<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Validate notification count</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1414528988%2FFunctions%2F1047749926" anchor-label="isNotificationsEnabled" id="-1414528988%2FFunctions%2F1047749926" data-filterable-set=":app:dokkaMovito/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaMovito/release" data-filterable-set=":app:dokkaMovito/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="is-notifications-enabled.html"><span>is</span><wbr></wbr><span>Notifications</span><wbr></wbr><span><span>Enabled</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1414528988%2FFunctions%2F1047749926"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaMovito/release"><div class="symbol monospace"><span class="token keyword">fun </span><a href="is-notifications-enabled.html"><span class="token function">isNotificationsEnabled</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="684706864%2FFunctions%2F1047749926" anchor-label="isScheduled" id="684706864%2FFunctions%2F1047749926" data-filterable-set=":app:dokkaMovito/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaMovito/release" data-filterable-set=":app:dokkaMovito/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="is-scheduled.html"><span>is</span><wbr></wbr><span><span>Scheduled</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="684706864%2FFunctions%2F1047749926"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaMovito/release"><div class="symbol monospace"><span class="token keyword">fun </span><a href="is-scheduled.html"><span class="token function">isScheduled</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1183393012%2FFunctions%2F1047749926" anchor-label="setBatteryRestrictionNoticeShown" id="1183393012%2FFunctions%2F1047749926" data-filterable-set=":app:dokkaMovito/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaMovito/release" data-filterable-set=":app:dokkaMovito/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-battery-restriction-notice-shown.html"><span>set</span><wbr></wbr><span>Battery</span><wbr></wbr><span>Restriction</span><wbr></wbr><span>Notice</span><wbr></wbr><span><span>Shown</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1183393012%2FFunctions%2F1047749926"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaMovito/release"><div class="symbol monospace"><span class="token keyword">fun </span><a href="set-battery-restriction-notice-shown.html"><span class="token function">setBatteryRestrictionNoticeShown</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">shown<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1766937761%2FFunctions%2F1047749926" anchor-label="setCurrentNotificationIndex" id="1766937761%2FFunctions%2F1047749926" data-filterable-set=":app:dokkaMovito/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaMovito/release" data-filterable-set=":app:dokkaMovito/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-current-notification-index.html"><span>set</span><wbr></wbr><span>Current</span><wbr></wbr><span>Notification</span><wbr></wbr><span><span>Index</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1766937761%2FFunctions%2F1047749926"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaMovito/release"><div class="symbol monospace"><span class="token keyword">fun </span><a href="set-current-notification-index.html"><span class="token function">setCurrentNotificationIndex</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">index<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Current notification index (for rotating IDs)</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-720653278%2FFunctions%2F1047749926" anchor-label="setLastScheduleTime" id="-720653278%2FFunctions%2F1047749926" data-filterable-set=":app:dokkaMovito/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaMovito/release" data-filterable-set=":app:dokkaMovito/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-last-schedule-time.html"><span>set</span><wbr></wbr><span>Last</span><wbr></wbr><span>Schedule</span><wbr></wbr><span><span>Time</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-720653278%2FFunctions%2F1047749926"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaMovito/release"><div class="symbol monospace"><span class="token keyword">fun </span><a href="set-last-schedule-time.html"><span class="token function">setLastScheduleTime</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">timeMillis<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-long/index.html">Long</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1317646929%2FFunctions%2F1047749926" anchor-label="setMaxNotificationCount" id="-1317646929%2FFunctions%2F1047749926" data-filterable-set=":app:dokkaMovito/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaMovito/release" data-filterable-set=":app:dokkaMovito/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-max-notification-count.html"><span>set</span><wbr></wbr><span>Max</span><wbr></wbr><span>Notification</span><wbr></wbr><span><span>Count</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1317646929%2FFunctions%2F1047749926"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaMovito/release"><div class="symbol monospace"><span class="token keyword">fun </span><a href="set-max-notification-count.html"><span class="token function">setMaxNotificationCount</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">count<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Maximum notification count</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1708707137%2FFunctions%2F1047749926" anchor-label="setNotificationInterval" id="-1708707137%2FFunctions%2F1047749926" data-filterable-set=":app:dokkaMovito/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaMovito/release" data-filterable-set=":app:dokkaMovito/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-notification-interval.html"><span>set</span><wbr></wbr><span>Notification</span><wbr></wbr><span><span>Interval</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1708707137%2FFunctions%2F1047749926"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaMovito/release"><div class="symbol monospace"><span class="token keyword">fun </span><a href="set-notification-interval.html"><span class="token function">setNotificationInterval</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">interval<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1558913817%2FFunctions%2F1047749926" anchor-label="setNotificationIntervalUnit" id="-1558913817%2FFunctions%2F1047749926" data-filterable-set=":app:dokkaMovito/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaMovito/release" data-filterable-set=":app:dokkaMovito/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-notification-interval-unit.html"><span>set</span><wbr></wbr><span>Notification</span><wbr></wbr><span>Interval</span><wbr></wbr><span><span>Unit</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1558913817%2FFunctions%2F1047749926"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaMovito/release"><div class="symbol monospace"><span class="token keyword">fun </span><a href="set-notification-interval-unit.html"><span class="token function">setNotificationIntervalUnit</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">unit<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-43110051%2FFunctions%2F1047749926" anchor-label="setNotificationsEnabled" id="-43110051%2FFunctions%2F1047749926" data-filterable-set=":app:dokkaMovito/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaMovito/release" data-filterable-set=":app:dokkaMovito/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-notifications-enabled.html"><span>set</span><wbr></wbr><span>Notifications</span><wbr></wbr><span><span>Enabled</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-43110051%2FFunctions%2F1047749926"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaMovito/release"><div class="symbol monospace"><span class="token keyword">fun </span><a href="set-notifications-enabled.html"><span class="token function">setNotificationsEnabled</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">enabled<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Stores whether notifications are enabled by user.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="938563329%2FFunctions%2F1047749926" anchor-label="setScheduled" id="938563329%2FFunctions%2F1047749926" data-filterable-set=":app:dokkaMovito/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaMovito/release" data-filterable-set=":app:dokkaMovito/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-scheduled.html"><span>set</span><wbr></wbr><span><span>Scheduled</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="938563329%2FFunctions%2F1047749926"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaMovito/release"><div class="symbol monospace"><span class="token keyword">fun </span><a href="set-scheduled.html"><span class="token function">setScheduled</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">scheduled<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1298328379%2FFunctions%2F1047749926" anchor-label="setShouldShowPermissionReminder" id="-1298328379%2FFunctions%2F1047749926" data-filterable-set=":app:dokkaMovito/release"></a>
+          <div class="table-row" data-filterable-current=":app:dokkaMovito/release" data-filterable-set=":app:dokkaMovito/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-should-show-permission-reminder.html"><span>set</span><wbr></wbr><span>Should</span><wbr></wbr><span>Show</span><wbr></wbr><span>Permission</span><wbr></wbr><span><span>Reminder</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1298328379%2FFunctions%2F1047749926"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":app:dokkaMovito/release"><div class="symbol monospace"><span class="token keyword">fun </span><a href="set-should-show-permission-reminder.html"><span class="token function">setShouldShowPermissionReminder</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">shouldShow<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Controls whether to show permission reminder in <a href="../../com.movito.movito.ui/-categories-screen.html">CategoriesScreen</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2025 Copyright</span><span
+                class="pull-right"><span>Generated by </span><a
+                href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
