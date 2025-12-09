@@ -25,7 +25,7 @@ android {
         minSdk = 29
         targetSdk = 36
         versionCode = 1
-        versionName = "5.0.4"
+        versionName = "1.0.0"
 
         testInstrumentationRunner = "com.movito.movito.HiltTestRunner"
 
